@@ -1,96 +1,89 @@
 #angle fit
+import numpy as np
+from surface_defined import SurfaceDefinition
+import numpy as np
+from scipy.optimize import curve_fit
 
-def circle_equation(XY, Xs, Ys, R):
-    """
-    Equation of a circle for fitting.
-    
-    Parameters:
-    XY : tuple of arrays
-        Coordinates (X, Y).
-    Xs : float
-        X-coordinate of circle center.
-    Ys : float
-        Y-coordinate of circle center.
-    R : float
-        Radius of the circle.
+class ContactAnglePredictor:
+    def __init__(self, o_coords, delta_gamma, max_dist, o_center_geom, z_wall, y_width, delta_y_axis, type='masspain'):
+        self.o_coords = o_coords
+        self.delta_gamma = delta_gamma
+        self.max_dist = max_dist
+        self.o_center_geom = o_center_geom
+        self.z_wall = z_wall
+        self.y_width = y_width
+        self.delta_y_axis = delta_y_axis
+        self.type = type
 
-    Returns:
-    array-like
-        Difference from the circle equation.
-    """
-    X, Y = XY
-    return np.sqrt((X - Xs)**2 + (Y - Ys)**2) - R
+    def calculate_y_axis_list(self):
+        if self.type == 'masspain':
+            return np.arange(0, self.y_width, self.delta_y_axis)
+        elif self.type == 'spherical':
+            return np.linspace(0, 180, int(180 / self.delta_gamma))
 
+    def surface_definition(self, gamma):
+        nn = 100
+        delta_angle = 4 if self.type == 'masspain' else 5
+        list_rr, list_xz = SurfaceDefinition(self.o_coords, delta_angle, nn, self.max_dist, gamma=gamma, o_center_geom=self.o_center_geom)
+        return np.array(list_xz), np.array(list_rr)
 
+    def separate_surface_data(self, surf, limit_med):
+        return surf[(surf[:, 1] > limit_med)]
 
-def contact_angle(o_coords,delta_gamma, max_dist, o_center_geom, z_wall , y_width, delta_y_axis):
-    gamma =0
-    y_axis_list = np.arange(0, y_width, delta_y_axis)
+    def fit_circle(self, X_data, Y_data, initial_guess, bounds):
+        lower_bounds, upper_bounds = zip(*bounds)
+        popt, _ = curve_fit(self.circle_equation, (X_data, Y_data), np.zeros_like(X_data), p0=initial_guess, bounds=(lower_bounds, upper_bounds))
+        return popt
 
-    nn = 100
-    delta_angle = 4
-    limit_med = 9.5
-    list_alfas = []
-    array_surfaces = []
-    array_popt = []
-    for y_axis_value in y_axis_list:
-        diff_cont = []
-        # Calculate interface positions and XZ coordinates
-        #print(f"gamma: {gamma}")
-        o_center_geom[1] = y_axis_value
-        list_rr, list_xz = multiple_line(o_coords, delta_angle, nn, max_dist, gamma=gamma, o_center_geom= o_center_geom)
-        surf = np.array(list_xz)
-        array_surfaces.append(surf)
-        list_rr = np.array(list_rr)
-        #save_array_as_txt(surf, f'allsurf_angle_{gamma}.txt')
-        listmed =[limit_med]
-
-            # Separate the surface data into two groups based on a threshold    
-        surf_line = surf[(surf[:, 1] > limit_med )]
-        #save_array_as_txt(surf_line, f'surf_line_angle_{gamma}.txt')
-            # Prepare data for fitting the circle
-        X_data = surf_line[:, 0]
-        Y_data = surf_line[:, 1]
-        mean_rr = np.mean(list_rr[:, 0])
-            # Initial guess for the circle parameters
-        initial_guess = [o_center_geom[0], o_center_geom[2], mean_rr]
-        #print('center geom init :')
-        #print(o_center_geom)
-        bound = [(-max_dist-o_center_geom[0], o_center_geom[0]+max_dist) , (-max_dist+o_center_geom[2],max_dist+o_center_geom[2]) , (0 ,10+ mean_rr,)]
-        #initial_guess = [0, 0, mean_rr, -9]
-        #print("boundadries : ", bound)
-        #bound = [(-max_dist, max_dist) , (-max_dist,max_dist) , (-max_dist - mean_rr ,max_dist + mean_rr), (-15 ,-8) ]
-
-        lower_bounds, upper_bounds = zip(*bound)
-        # Fit the circle equation to the data
-        popt, _ = curve_fit(circle_equation, (X_data, Y_data), np.zeros_like(X_data), p0=initial_guess,bounds=(lower_bounds, upper_bounds))
-        array_popt.append(popt)
+    def find_intersection(self, popt, y_line):
         Xs, Ys, R = popt
-        #print('pOpt:')
-        #print(popt) 
-            # Find the intersection points with y = 60
-        #print("limit med: " ,limit_med)
-        y_line = z_wall
         delta_y = y_line - Ys
         discriminant = R**2 - delta_y**2
         if discriminant < 0:
-            #print("No intersection points ")
-            diff_cont.append(None)
-                #raise ValueError("No intersection points found with y = 60")
-
-        else :# Calculate x-intersections
+            return None
+        else:
             x_intersections = Xs + np.array([-1, 1]) * np.sqrt(discriminant)
             x_intersection = x_intersections[0]
-
-            # Calculate the tangent line at the first intersection point
             dx = x_intersection - Xs
             dy = y_line - Ys
             tangent_slope = -dx / dy
             tangent_angle = np.arctan(tangent_slope)
-            diff_cont.append(np.degrees(tangent_angle))
+            return np.degrees(tangent_angle)
 
-            # Output the contact angle
-        #print(diff_cont)
-        if diff_cont[0] != None:
-            list_alfas.append(np.abs(diff_cont[0]))
-    return list_alfas, array_surfaces, array_popt
+    def circle_equation(self, params, xy):
+        x, y = xy
+        Xs, Ys, R = params
+        return (x - Xs)**2 + (y - Ys)**2 - R**2
+
+    def predict_contact_angle(self):
+        y_axis_list = self.calculate_y_axis_list()
+        limit_med = 9.5 if self.type == 'masspain' else 8
+        list_alfas = []
+        array_surfaces = []
+        array_popt = []
+
+        for gamma in y_axis_list:
+            if self.type == 'spherical':
+                self.o_center_geom[1] = gamma
+            else:
+                self.o_center_geom[1] = gamma
+
+            surf, list_rr = self.surface_definition(gamma)
+            array_surfaces.append(surf)
+            surf_line = self.separate_surface_data(surf, limit_med)
+            X_data = surf_line[:, 0]
+            Y_data = surf_line[:, 1]
+            mean_rr = np.mean(list_rr[:, 0])
+            initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
+            bound = [
+                (-self.max_dist - self.o_center_geom[0], self.o_center_geom[0] + self.max_dist),
+                (-self.max_dist + self.o_center_geom[2], self.max_dist + self.o_center_geom[2]),
+                (0, 10 + mean_rr)
+            ]
+            popt = self.fit_circle(X_data, Y_data, initial_guess, bound)
+            array_popt.append(popt)
+            angle = self.find_intersection(popt, self.z_wall)
+            if angle is not None:
+                list_alfas.append(np.abs(angle))
+
+        return list_alfas, array_surfaces, array_popt

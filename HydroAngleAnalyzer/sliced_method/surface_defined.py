@@ -92,7 +92,7 @@ class SurfaceDefinition:
             Lists of interface positions and XZ coordinates.
         """
         beta = np.linspace(0, 360, int(360 / delta_angle), endpoint=False)
-        list_rr = []
+        list_rbeta = []
         list_xz = []
         param_bounds = ([0, -10, -10], [max_dist, 10, 10])
 
@@ -109,15 +109,15 @@ class SurfaceDefinition:
             direction = np.array([x_dir, y_dir, z_dir])
             positions = np.linspace(self.center_geom, self.center_geom + max_dist * direction, nn)
             distances = np.linspace(0.0, max_dist, nn)
-            sigma = 3
+            sigma = 3  #value for the water system in liquid phase at RT
             density = self.density_conversion * self.density_contribution(positions, self.atom_coords, sigma=sigma)
             interface_re = self.fit_density_profile(distances, density, param_bounds)
-            list_rr.append([interface_re, beta[i]])
+            list_rbeta.append([interface_re, beta[i]])
             list_xz.append([cos_beta[i] * interface_re + self.center_geom[0],
                             sin_beta[i] * interface_re + self.center_geom[2]])
 
-        return list_rr, list_xz
+        return list_rbeta, list_xz
 
 # Example usage:
 # surface_def = SurfaceDefinition(atom_coords, center_geom)
-# list_rr, list_xz = surface_def.analyze_lines(delta_angle=10, nn=100, max_dist=50, gamma=30)
+# list_rbeta, list_xz = surface_def.analyze_lines(delta_angle=10, nn=100, max_dist=50, gamma=30)
