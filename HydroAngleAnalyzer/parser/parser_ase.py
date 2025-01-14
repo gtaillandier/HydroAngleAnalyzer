@@ -1,13 +1,8 @@
 #ase parser
-from ovito.io import import_file, export_file
-from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier)
+from ase.io.trajectory import Trajectory
 
-import numpy as np
-from ovito.io import import_file, export_file
-from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier)
-
-class DumpParser:
-    def __init__(self, in_path, particle_type_wall={2, 3}):
+class ase_Parser:
+    def __init__(self, in_path):
         self.in_path = in_path
         self.particle_type_wall = particle_type_wall
         self.pipeline = self.load_dump_ovito()
