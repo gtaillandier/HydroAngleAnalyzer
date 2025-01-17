@@ -1,0 +1,15 @@
+Metadata-Version: 2.2
+Name: HydroAngleAnalyzer
+Version: 0.1.1
+Summary: A simple Python library to parse MD trajectories from lammps and ASE and measure the contact through different methods
+Home-page: https://github.com/
+Author: Gabriel
+Author-email: Gabriel <gabriel.taillandier@matgenix.com>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python

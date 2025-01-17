@@ -1,12 +1,15 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import numpy as np
 
 class SurfaceDefinition:
-    def __init__(self, atom_coords, center_geom, density_conversion=1.0):
+    def __init__(self, atom_coords, delta_angle, max_dist, center_geom, gamma,density_conversion=1.0):
         self.atom_coords = atom_coords
         self.center_geom = center_geom
         self.density_conversion = density_conversion
+        self.gamma = gamma
+        self.delta_angle = delta_angle
+        self.max_dist = max_dist
 
     @staticmethod
     def density_contribution(positions, coords, sigma=2.0):
@@ -73,7 +76,7 @@ class SurfaceDefinition:
         zd, d, h = popt
         return zd
 
-    def analyze_lines(self, delta_angle, nn, max_dist, gamma):
+    def analyze_lines(self):
         """
         Calculate the density profile along multiple lines.
 
@@ -91,15 +94,17 @@ class SurfaceDefinition:
         tuple
             Lists of interface positions and XZ coordinates.
         """
-        beta = np.linspace(0, 360, int(360 / delta_angle), endpoint=False)
+        beta = np.linspace(0, 360, int(360 / self.delta_angle), endpoint=False)
         list_rbeta = []
         list_xz = []
-        param_bounds = ([0, -10, -10], [max_dist, 10, 10])
+        nn = self.max_dist/ 1 # one point per angstrom 
+
+        param_bounds = ([0, -10, -10], [self.max_dist, 10, 10])
 
         cos_beta = np.cos(np.deg2rad(beta))
         sin_beta = np.sin(np.deg2rad(beta))
-        cos_gamma = np.cos(np.deg2rad(gamma))
-        sin_gamma = np.sin(np.deg2rad(gamma))
+        cos_gamma = np.cos(np.deg2rad(self.gamma))
+        sin_gamma = np.sin(np.deg2rad(self.gamma))
 
         for i in range(len(beta)):
             x_dir = cos_beta[i] * cos_gamma
@@ -107,8 +112,8 @@ class SurfaceDefinition:
             z_dir = sin_beta[i]
 
             direction = np.array([x_dir, y_dir, z_dir])
-            positions = np.linspace(self.center_geom, self.center_geom + max_dist * direction, nn)
-            distances = np.linspace(0.0, max_dist, nn)
+            positions = np.linspace(self.center_geom, self.center_geom + self.max_dist * direction, int(nn))
+            distances = np.linspace(0.0, self.max_dist, int(nn))
             sigma = 3  #value for the water system in liquid phase at RT
             density = self.density_conversion * self.density_contribution(positions, self.atom_coords, sigma=sigma)
             interface_re = self.fit_density_profile(distances, density, param_bounds)

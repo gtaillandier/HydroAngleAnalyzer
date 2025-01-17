@@ -1,0 +1,2 @@
+[console_scripts]
+hydro_angle_analyzer = HydroAngleAnalyzer.module:main

@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="HydroAngleAnalyzer",
-    version="0.1.0",
+    name="hydro_angle_analyzer",
+    version="0.1.2",
     packages=find_packages(),
     install_requires=[
         # Add dependencies here, e.g., "numpy>=1.21.0"
@@ -17,5 +17,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.9"
 )

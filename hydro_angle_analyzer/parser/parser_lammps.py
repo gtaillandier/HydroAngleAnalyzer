@@ -26,11 +26,18 @@ class DumpParser:
         X_par = np.asarray(data.particles["Position"])
         return X_par
     
-    def box_size(self, num_frame):
+    def box_size_y(self, num_frame):
         data = self.pipeline.compute(num_frame)
         y_vector = data.cell.matrix[1, :3]
         y_width = np.linalg.norm(y_vector)
         return y_width
+    def box_lenght_max(self, num_frame):
+        data = self.pipeline.compute(num_frame)
+        y_vector = np.linalg.norm(data.cell.matrix[1, :3])
+        x_vector = np.linalg.norm(data.cell.matrix[0, :3])
+        z_vector = np.linalg.norm(data.cell.matrix[2, :3])
+        return np.max(np.array([y_vector,x_vector,z_vector]))
+
 
 # Example usage:
 # parser = DumpParser('path/to/dumpfile.dump')
