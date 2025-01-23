@@ -7,3 +7,5 @@ def load_dump_ovito(in_path):
 
 def save_array_as_txt(array, filename):
     np.savetxt(filename, array, fmt='%f')
+def geometric_center(list_xyz_point):
+    return np.mean(list_xyz_point, axis=0)
