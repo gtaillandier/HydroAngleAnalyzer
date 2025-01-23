@@ -1,12 +1,8 @@
-[
-build-system
-]
+[build-system]
 requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[
-project
-]
+[project]
 name = "HydroAngleAnalyzer"
 version = "0.1.1"
 description = "A simple Python library to parse MD trajectories from LAMMPS and ASE and measure the contact through different methods"
@@ -18,6 +14,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Visualization",
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -43,23 +42,17 @@ dependencies = [
     "tqdm>=4.62.0",
     "ovito>=3.10.6",
     "ase>=3.23.0b1",
-    "cupy-cuda11x",  # Replace '11x' with your CUDA version
+    "cupy-cuda11x",  # Replace '11x' with your specific CUDA version
     "anari_ovito>=0.8.1",
     "visrtx_ovito>=0.8.0",
     "ospray_ovito>=3.0.0"
 ]
 
-[
-project.scripts
-]
+[project.scripts]
 hydro_angle_analyzer = "HydroAngleAnalyzer.module:main"
 
-[
-tool.black
-]
+[tool.black]
 line-length = 88
 
-[
-tool.isort
-]
+[tool.isort]
 profile = "black"
