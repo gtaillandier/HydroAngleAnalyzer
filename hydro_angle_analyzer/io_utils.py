@@ -1,5 +1,5 @@
 from ovito.io import import_file
-
+import numpy as np
 def load_dump_ovito(in_path):
     pipeline = import_file(in_path)
     # Add necessary modifiers
