@@ -112,14 +112,9 @@ class ContactAnglePredictor:
         if discriminant < 0:
             return None
         else:
-            x_intersections = Xs + np.array([-1, 1]) * np.sqrt(discriminant)
-            x_intersection = x_intersections[0]
-            dx = x_intersection - Xs
-            dy = y_line - Ys
-            tangent_slope = -dx / dy
-            tangent_angle = np.arctan(tangent_slope)
-            return np.degrees(tangent_angle)
-
+            theta = np.arccos(delta_y / R)
+            contact_angle = np.degrees(theta)
+            return contact_angle
     def circle_equation(self, xy_data, x_center, z_center, radius):
         """
         Equation of a circle used for curve fitting.
@@ -161,15 +156,44 @@ class ContactAnglePredictor:
             Y_data = surf_line[:, 1]
             mean_rr = np.mean(list_rr[:, 0])
             initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
-            bound = [
-                (-self.max_dist - self.o_center_geom[0], self.o_center_geom[0] + self.max_dist),
-                (-self.max_dist + self.o_center_geom[2], self.max_dist + self.o_center_geom[2]),
-                (0, 10 + mean_rr)
-            ]
-            popt = self.fit_circle(X_data, Y_data, initial_guess, bound)
+            popt = self.fit_circle(X_data, Y_data, initial_guess)
             array_popt.append(popt)
             angle = self.find_intersection(popt, self.z_wall)
             if angle is not None:
-                list_alfas.append(np.abs(angle))
+                list_alfas.append(angle)
+
+        return list_alfas, array_surfaces, array_popt
+    
+    def predict_contact_angle_nobound(self):
+        """
+        Predict contact angles based on surface analysis.
+
+        Returns:
+            tuple: Lists of contact angles, surfaces, and circle parameters.
+        """
+        gammas = self.calculate_gammas_list()
+        y_axis_list = self.calculate_y_axis_list()
+        limit_med = 9.5 if self.type == 'masspain' else 8
+        list_alfas = []
+        array_surfaces = []
+        array_popt = []
+        counter = 0
+
+        for value_gamma in gammas:
+            self.o_center_geom[1] = y_axis_list[counter]
+            counter += 1
+            surf, list_rr = self.surface_definition(value_gamma)
+            array_surfaces.append(surf)
+            surf_line = self.separate_surface_data(surf, limit_med)
+            X_data = surf_line[:, 0]
+            Y_data = surf_line[:, 1]
+            mean_rr = np.mean(list_rr[:, 0])
+            initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
+            
+            popt = self.fit_circle(X_data, Y_data, initial_guess)
+            array_popt.append(popt)
+            angle = self.find_intersection(popt, self.z_wall)
+            if angle is not None:
+                list_alfas.append(angle)
 
         return list_alfas, array_surfaces, array_popt
