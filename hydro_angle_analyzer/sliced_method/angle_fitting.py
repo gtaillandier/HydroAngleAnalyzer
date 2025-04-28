@@ -78,7 +78,7 @@ class ContactAnglePredictor:
         """
         return surf[(surf[:, 1] > limit_med)]
 
-    def fit_circle(self, X_data, Y_data, initial_guess, bounds):
+    def fit_circle(self, X_data, Y_data, initial_guess):
         """
         Fit a circle to the surface data.
 
@@ -86,13 +86,11 @@ class ContactAnglePredictor:
             X_data (array): X-coordinate data.
             Y_data (array): Y-coordinate data.
             initial_guess (list): Initial guess for circle parameters.
-            bounds (list): Bounds for the parameters.
-
+            
         Returns:
             array: Optimal circle parameters.
         """
-        lower_bounds, upper_bounds = zip(*bounds)
-        popt, _ = curve_fit(self.circle_equation, (X_data, Y_data), np.zeros_like(X_data), p0=initial_guess, bounds=(lower_bounds, upper_bounds))
+        popt, _ = curve_fit(self.circle_equation, (X_data, Y_data), np.zeros_like(X_data), p0=initial_guess)
         return popt
 
     def find_intersection(self, popt, y_line):
