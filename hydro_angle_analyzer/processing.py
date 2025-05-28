@@ -82,6 +82,9 @@ class FrameProcessor:
         print("Saved all mean alphas to 'alfas_per_frame_combined.txt'")
         
         return results
+    #predict_contact_angle_with_truncated_circle
+    
+
 
 
 class GPUFrameProcessor(FrameProcessor):
