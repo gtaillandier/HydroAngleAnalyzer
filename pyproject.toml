@@ -1,16 +1,15 @@
 [project]
 name = "HydroAngleAnalyzer"
-version = "0.1.1"
+version = "0.1.2"
 description = "A simple Python library to parse MD trajectories from LAMMPS and ASE and measure the contact through different methods"
 authors = [
     { name = "Gabriel", email = "gabriel.taillandier@matgenix.com" }
 ]
-license = { text = "MIT" }
+license = "MIT"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Physics",
@@ -22,7 +21,6 @@ dependencies = [
     "ase>=3.23.0",
     "matplotlib>=3.9.0",
     "pandas>=2.2.0",
-    "pymatgen>=2024.0.0",
     "tqdm>=4.66.0",
 ]
 
@@ -56,12 +54,13 @@ viz = [
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["hydroangleanalyzer"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hydroangleanalyzer*"]
 
 [tool.black]
 line-length = 88
-target-version = ["py311"]
+target-version = ["py39"]
 include = '\.pyi?$'
 
 [tool.isort]
@@ -69,7 +68,7 @@ profile = "black"
 multi_line_output = 3
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -84,4 +83,4 @@ addopts = "--cov=hydroangleanalyzer"
 select = ["E", "F", "B", "I"]
 ignore = []
 line-length = 88
-target-version = "py311"
+target-version = "py39"
