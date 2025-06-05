@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from concurrent.futures import ProcessPoolExecutor
-from hydro_angle_analyzer import ContactAnglePredictor, DumpParser
+from hydroangleanalyzer import ContactAnglePredictor, DumpParser
 
 
 class FrameProcessor:
