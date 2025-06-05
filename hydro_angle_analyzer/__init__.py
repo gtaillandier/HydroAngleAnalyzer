@@ -5,5 +5,5 @@ from .sliced_method.surface_defined import SurfaceDefinition
 from .processing import GPUFrameProcessor, FrameProcessor
 from .binning_method.contact_angle_analyzer import ContactAngleAnalyzer
 from .binning_method.surface_definition import HyperbolicTangentModel
-
+from .graphs_analysis.graphs_circle_surfaces import SurfacePlotter
 #from binning_method.binning_spherical import postprocess_script

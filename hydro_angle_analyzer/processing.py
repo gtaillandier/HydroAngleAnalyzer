@@ -5,7 +5,7 @@ from hydro_angle_analyzer import ContactAnglePredictor, DumpParser
 
 
 class FrameProcessor:
-    def __init__(self, filename, output_repo, delta_gamma=5, max_dist=100, wall_max_z=4.8, delta_y_axis=1, type='spherical'):
+    def __init__(self, filename, output_repo, delta_gamma=5, max_dist=100, wall_max_z=4.8, delta_y_axis=1, type='spherical', particle_type_wall={2, 3}):
         self.filename = filename
         self.output_repo = output_repo
         self.delta_gamma = delta_gamma
@@ -13,11 +13,11 @@ class FrameProcessor:
         self.wall_max_z = wall_max_z
         self.delta_y_axis = delta_y_axis
         self.type = type
-        
+        self.particle_type_wall
         # Ensure output directory exists
         os.makedirs(self.output_repo, exist_ok=True)
 
-    def process_frame(self, frame_num):
+    def process_frame(self, frame_num ):
         """
         Process a single frame to calculate contact angles and save results.
         
@@ -27,7 +27,7 @@ class FrameProcessor:
         Returns:
             tuple: Frame number and mean contact angle.
         """
-        file = DumpParser(self.filename)
+        file = DumpParser(self.filename, particle_type_wall)
         parsed = file.parse(frame_num)
         mean_parsed = np.mean(parsed, axis=0)
         
