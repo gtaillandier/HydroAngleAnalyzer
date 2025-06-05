@@ -1,11 +1,14 @@
 README.md
 pyproject.toml
-setup.py
 HydroAngleAnalyzer.egg-info/PKG-INFO
 HydroAngleAnalyzer.egg-info/SOURCES.txt
 HydroAngleAnalyzer.egg-info/dependency_links.txt
-HydroAngleAnalyzer.egg-info/entry_points.txt
+HydroAngleAnalyzer.egg-info/requires.txt
 HydroAngleAnalyzer.egg-info/top_level.txt
 hydro_angle_analyzer/__init__.py
 hydro_angle_analyzer/io_utils.py
 hydro_angle_analyzer/processing.py
+tests/test_contact_angle_analyzer.py
+tests/test_dump_parser.py
+tests/test_hydro_angle_analyzer.py
+tests/test_integration.py
