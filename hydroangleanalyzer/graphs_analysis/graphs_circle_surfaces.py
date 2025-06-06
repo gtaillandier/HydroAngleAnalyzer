@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import glob
 import os
-
+matplotlib.use('Agg')
 class SurfacePlotter:
     def __init__(self, directory='.'):
         """
@@ -55,8 +56,7 @@ class SurfacePlotter:
 
         # Save and show the plot
         plt.savefig(output_filename, format='png')
-        plt.show()
-
+        
     def process_files(self):
         """
         Process all surface and popt files in the directory.

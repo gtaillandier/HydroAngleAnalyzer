@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from surface_definition import HyperbolicTangentModel
+from .surface_definition import HyperbolicTangentModel
 import copy
      
 class ContactAngleAnalyzer:

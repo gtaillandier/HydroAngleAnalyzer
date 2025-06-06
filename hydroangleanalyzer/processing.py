@@ -13,7 +13,8 @@ class FrameProcessor:
         self.wall_max_z = wall_max_z
         self.delta_y_axis = delta_y_axis
         self.type = type
-        self.particle_type_wall
+        self.particle_type_wall = particle_type_wall
+        self.file_parser = DumpParser(self.filename, self.particle_type_wall)
         # Ensure output directory exists
         os.makedirs(self.output_repo, exist_ok=True)
 
@@ -27,8 +28,7 @@ class FrameProcessor:
         Returns:
             tuple: Frame number and mean contact angle.
         """
-        file = DumpParser(self.filename, particle_type_wall)
-        parsed = file.parse(frame_num)
+        parsed = self.file_parser.parse(frame_num) 
         mean_parsed = np.mean(parsed, axis=0)
         
         classpredictor = ContactAnglePredictor(
@@ -44,7 +44,23 @@ class FrameProcessor:
         print(f"Frame {frame_num} - mean angle: {mean_alpha}")
         
         return frame_num, mean_alpha
-
+    def process_frames_batch(self, frame_numbers, batch_size=100):
+        """Process frames in batches to manage memory"""
+        results = []
+        
+        for i in range(0, len(frame_numbers), batch_size):
+            batch = frame_numbers[i:i+batch_size]
+            print(f"Processing batch {i//batch_size + 1}: frames {batch[0]}-{batch[-1]}")
+            
+            for frame_num in batch:
+                result = self.process_frame(frame_num)
+                results.append(result)
+            
+            # Force garbage collection between batches
+            import gc
+            gc.collect()
+        
+        return results
     def parallel_process_frames(self, frames, max_workers=None):
         """
         Process multiple frames in parallel using ProcessPoolExecutor.
@@ -88,7 +104,7 @@ class FrameProcessor:
 
 
 class GPUFrameProcessor(FrameProcessor):
-    def process_frame(self, frame_num):
+    def process_frame(self, frame_num, ):
         """
         Process a single frame using GPU acceleration to calculate contact angles and save results.
         
@@ -104,7 +120,7 @@ class GPUFrameProcessor(FrameProcessor):
             print("CuPy not found. Falling back to CPU processing.")
             return super().process_frame(frame_num)
             
-        file = DumpParser(self.filename)
+        file = DumpParser(self.filename,  self.particle_type_wall)
         parsed = file.parse(frame_num)
         
         # Transfer data to GPU

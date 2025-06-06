@@ -229,7 +229,7 @@ class ContactAnglePredictor:
         """
         gammas = self.calculate_gammas_list()
         y_axis_list = self.calculate_y_axis_list()
-        limit_med = 9.5 if self.type == 'masspain' else 8
+        limit_med = 9.5 if self.type == 'masspain' else 14
         list_alfas = []
         array_surfaces = []
         array_popt = []
