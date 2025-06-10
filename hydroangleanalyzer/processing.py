@@ -1,23 +1,25 @@
 import numpy as np
 import os
 from concurrent.futures import ProcessPoolExecutor
-from hydroangleanalyzer import ContactAnglePredictor, DumpParser
-
+from hydroangleanalyzer import ContactAnglePredictor, DumpParser, DumpParse_wall
+from typing import List, Tuple, Dict, Optional, Union
 
 class FrameProcessor:
-    def __init__(self, filename, output_repo, delta_gamma=5, max_dist=100, wall_max_z=4.8, delta_y_axis=1, type='spherical', particle_type_wall={2, 3}):
+    def __init__(self, filename, output_repo, delta_gamma=5, max_dist=100, wall_max_z=4.8, delta_y_axis=1, type='spherical', particle_type_wall={2, 3},particule_liquid_type={1,2}, value_dist_marge_wall_liquide=5):
         self.filename = filename
         self.output_repo = output_repo
         self.delta_gamma = delta_gamma
+        self.particule_liquid_type =particule_liquid_type
         self.max_dist = max_dist
         self.wall_max_z = wall_max_z
         self.delta_y_axis = delta_y_axis
+        self.value_dist_marge_wall_liquide  = value_dist_marge_wall_liquide 
         self.type = type
         self.particle_type_wall = particle_type_wall
         self.file_parser = DumpParser(self.filename, self.particle_type_wall)
+        self.parsed_wall = DumpParse_wall(self.filename, self.particule_liquid_type)
         # Ensure output directory exists
         os.makedirs(self.output_repo, exist_ok=True)
-
     def process_frame(self, frame_num ):
         """
         Process a single frame to calculate contact angles and save results.
@@ -28,11 +30,12 @@ class FrameProcessor:
         Returns:
             tuple: Frame number and mean contact angle.
         """
-        parsed = self.file_parser.parse(frame_num) 
-        mean_parsed = np.mean(parsed, axis=0)
+        parsed_xyz = self.file_parser.parse(frame_num)
+        highest__part_wall = self.parsed_wall.find_highest_wall_part(frame_num)
+        mean_parsed = np.mean(parsed_xyz, axis=0)
         
         classpredictor = ContactAnglePredictor(
-            parsed, self.delta_gamma, self.max_dist, mean_parsed, self.wall_max_z, 10, self.delta_y_axis, type=self.type
+            parsed_xyz, self.delta_gamma, self.max_dist, mean_parsed, self.wall_max_z, 10, self.delta_y_axis,  limit_dist_wall= highest__part_wall + self.value_dist_marge_wall_liquide , type=self.type
         )
         
         list_1, list_2, list_3 = classpredictor.predict_contact_angle()
@@ -98,7 +101,7 @@ class FrameProcessor:
         print("Saved all mean alphas to 'alfas_per_frame_combined.txt'")
         
         return results
-    #predict_contact_angle_with_truncated_circle
+
     
 
 

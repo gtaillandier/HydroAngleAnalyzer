@@ -3,7 +3,7 @@ from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
 class ContactAnglePredictor:
-    def __init__(self, o_coords, delta_gamma, max_dist, o_center_geom, z_wall, y_width, delta_y_axis, type='masspain'):
+    def __init__(self, o_coords, delta_gamma, max_dist, o_center_geom, z_wall, y_width, delta_y_axis,  limit_dist_wall, type='masspain'):
         """
         Initialize the ContactAnglePredictor.
 
@@ -24,6 +24,7 @@ class ContactAnglePredictor:
         self.z_wall = z_wall
         self.y_width = y_width
         self.delta_y_axis = delta_y_axis
+        self.limit_dist_wall =  limit_dist_wall
         self.type = type
 
     def calculate_y_axis_list(self):
@@ -196,7 +197,7 @@ class ContactAnglePredictor:
         """
         gammas = self.calculate_gammas_list()
         y_axis_list = self.calculate_y_axis_list()
-        limit_med = 9.5 if self.type == 'masspain' else 8
+        #limit_med = 9.5 if self.type == 'masspain' else 8
         list_alfas = []
         array_surfaces = []
         array_popt = []
@@ -207,7 +208,7 @@ class ContactAnglePredictor:
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
             array_surfaces.append(surf)
-            surf_line = self.separate_surface_data(surf, limit_med)
+            surf_line = self.separate_surface_data(surf, self.limit_dist_wall)
             X_data = surf_line[:, 0]
             Y_data = surf_line[:, 1]
             mean_rr = np.mean(list_rr[:, 0])
