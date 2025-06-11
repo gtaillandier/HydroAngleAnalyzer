@@ -196,6 +196,7 @@ class ContactAnglePredictor:
             tuple: Lists of contact angles, surfaces, and circle parameters.
         """
         gammas = self.calculate_gammas_list()
+
         y_axis_list = self.calculate_y_axis_list()
         #limit_med = 9.5 if self.type == 'masspain' else 8
         list_alfas = []
@@ -208,14 +209,15 @@ class ContactAnglePredictor:
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
             array_surfaces.append(surf)
-            surf_line = self.separate_surface_data(surf, self.limit_dist_wall)
+            min_drop = np.min(surf[:,1])
+            surf_line = self.separate_surface_data(surf, min_drop+2)#self.limit_dist_wall)
             X_data = surf_line[:, 0]
             Y_data = surf_line[:, 1]
             mean_rr = np.mean(list_rr[:, 0])
             initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
             popt = self.fit_circle(X_data, Y_data, initial_guess)
             array_popt.append(popt)
-            angle = self.find_intersection(popt, self.z_wall)
+            angle = self.find_intersection(popt,min_drop+2) # self.z_wall)
             if angle is not None:
                 list_alfas.append(angle)
 
