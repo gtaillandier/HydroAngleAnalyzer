@@ -5,7 +5,7 @@ from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, Compute
 
 import numpy as np
 from ovito.io import import_file, export_file
-from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier)
+from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier,CoordinationAnalysisModifier )
 
 class DumpParser:
     def __init__(self, in_path, particle_type_wall):
@@ -126,6 +126,216 @@ class DumpParse_wall:
         return np.max(np.array([y_vector,x_vector,z_vector]))
     def frame_tot(self):
         return self.pipeline.source.num_frames
+class WaterOxygenDumpParser:
+    def __init__(self, in_path, particle_type_wall, oxygen_type=3, hydrogen_type=2, oh_cutoff=1.2):
+        self.in_path = in_path
+        self.particle_type_wall = particle_type_wall
+        self.oxygen_type = oxygen_type
+        self.hydrogen_type = hydrogen_type
+        self.oh_cutoff = oh_cutoff
+        self.pipeline = self.load_dump_ovito()
+
+    def load_dump_ovito(self):
+        # Load the file using OVITO
+        pipeline = import_file(self.in_path)
+
+        # First remove wall particles
+        pipeline.modifiers.append(SelectTypeModifier(
+            property='Particle Type',
+            types=self.particle_type_wall
+        ))
+        pipeline.modifiers.append(DeleteSelectedModifier())
+
+        # Then add coordination analysis modifier
+        coord_modifier = CoordinationAnalysisModifier(
+            cutoff=self.oh_cutoff,
+            number_of_bins=200
+        )
+        pipeline.modifiers.append(coord_modifier)
+
+        # Add a compute property modifier to identify water oxygens
+        water_oxygen_expr = f"""
+        (ParticleType == {self.oxygen_type}) &&
+        (Coordination == 2)
+        """
+
+        pipeline.modifiers.append(ComputePropertyModifier(
+            expressions=[water_oxygen_expr],
+            output_property='IsWaterOxygen'
+        ))
+
+        return pipeline
+
+    def parse(self, num_frame):
+        """Parse frame and return positions with water oxygen identification"""
+        data = self.pipeline.compute(num_frame)
+
+        positions = np.asarray(data.particles["Position"])
+        particle_types = np.asarray(data.particles["Particle Type"])
+
+        # Get water oxygen mask if the property exists
+        water_oxygen_mask = None
+        if "IsWaterOxygen" in data.particles:
+            water_oxygen_mask = np.array(data.particles["IsWaterOxygen"].array) == 1
+            
+        return {
+            'positions': positions,
+            'types': particle_types,
+            'water_oxygen_mask': water_oxygen_mask
+        }
+
+    def get_water_oxygen_indices(self, num_frame):
+        """Get indices of water oxygen atoms"""
+        data = self.parse(num_frame)
+        if data['water_oxygen_mask'] is not None:
+            return np.where(data['water_oxygen_mask'])[0]
+        else:
+            # Fallback to manual identification
+            return self._manual_water_identification(data)
+    def get_water_oxygen_positions(self, num_frame):
+        """
+        Returns the array of XYZ coordinates of oxygen atoms in water molecules.
+
+        Args:
+            num_frame (int): The frame number to analyze
+
+        Returns:
+            numpy.ndarray: Array of shape (N, 3) containing XYZ coordinates of water oxygen atoms
+        """
+        # Get the indices of water oxygen atoms
+        water_oxygen_indices = self.get_water_oxygen_indices(num_frame)
+
+        if len(water_oxygen_indices) == 0:
+            return np.empty((0, 3))  # Return empty array if no water oxygens found
+
+        # Get all positions and select only the water oxygen positions
+        data = self.parse(num_frame)
+        all_positions = data['positions']
+
+        return all_positions[water_oxygen_indices]
+        
+    def _manual_water_identification(self, data):
+        """Manual identification if OVITO modifiers don't work"""
+        positions = data['positions']
+        types = data['types']
+
+        oxygen_indices = np.where(types == self.oxygen_type)[0]
+        hydrogen_indices = np.where(types == self.hydrogen_type)[0]
+
+        water_oxygens = []
+
+        for o_idx in oxygen_indices:
+            o_pos = positions[o_idx]
+            h_count = 0
+
+            # Count hydrogens within cutoff distance
+            for h_idx in hydrogen_indices:
+                h_pos = positions[h_idx]
+                distance = np.linalg.norm(o_pos - h_pos)
+                if distance <= self.oh_cutoff:
+                    h_count += 1
+
+            # Water oxygens should have exactly 2 hydrogens
+            if h_count == 2:
+                water_oxygens.append(o_idx)
+
+        return np.array(water_oxygens)
+
+class WaterOxygenDumpParser_old:
+    def __init__(self, in_path, particle_type_wall, oxygen_type=1, hydrogen_type=3, oh_cutoff=1.2):
+        self.in_path = in_path
+        self.particle_type_wall = particle_type_wall
+        self.oxygen_type = oxygen_type
+        self.hydrogen_type = hydrogen_type
+        self.oh_cutoff = oh_cutoff
+        self.pipeline = self.load_dump_ovito()
+        
+    def load_dump_ovito(self):
+        # Load the file using OVITO
+        pipeline = import_file(self.in_path)
+        
+        # Add coordination analysis modifier to identify water oxygens
+        coord_modifier = CoordinationAnalysisModifier(
+            cutoff=self.oh_cutoff,
+            number_of_bins=200
+        )
+        pipeline.modifiers.append(coord_modifier)
+        
+        # Add a compute property modifier to identify water oxygens
+        # This will create a property that marks water oxygens
+        water_oxygen_expr = f"""
+        (ParticleType == {self.oxygen_type}) && 
+        (Coordination == 2) && 
+        (CoordinationNumber.{self.hydrogen_type} == 2)
+        """
+        
+        pipeline.modifiers.append(ComputePropertyModifier(
+            expressions=[water_oxygen_expr],
+            output_property='IsWaterOxygen'
+        ))
+        
+        # Remove wall particles
+        pipeline.modifiers.append(SelectTypeModifier(
+            property='Particle Type', 
+            types=self.particle_type_wall
+        ))
+        pipeline.modifiers.append(DeleteSelectedModifier())
+        
+        return pipeline
+    
+    def parse(self, num_frame):
+        """Parse frame and return positions with water oxygen identification"""
+        data = self.pipeline.compute(num_frame)
+        
+        positions = np.asarray(data.particles["Position"])
+        particle_types = np.asarray(data.particles["Particle Type"])
+        
+        # Get water oxygen mask if the property exists
+        water_oxygen_mask = None
+        if "IsWaterOxygen" in data.particles:
+            water_oxygen_mask = np.asarray(data.particles["IsWaterOxygen"], dtype=bool)
+        
+        return {
+            'positions': positions,
+            'types': particle_types,
+            'water_oxygen_mask': water_oxygen_mask
+        }
+    
+    def get_water_oxygen_indices(self, num_frame):
+        """Get indices of water oxygen atoms"""
+        data = self.parse(num_frame)
+        if data['water_oxygen_mask'] is not None:
+            return np.where(data['water_oxygen_mask'])[0]
+        else:
+            # Fallback to manual identification
+            return self._manual_water_identification(data)
+    
+    def _manual_water_identification(self, data):
+        """Manual identification if OVITO modifiers don't work"""
+        positions = data['positions']
+        types = data['types']
+        
+        oxygen_indices = np.where(types == self.oxygen_type)[0]
+        hydrogen_indices = np.where(types == self.hydrogen_type)[0]
+        
+        water_oxygens = []
+        
+        for o_idx in oxygen_indices:
+            o_pos = positions[o_idx]
+            h_count = 0
+            
+            # Count hydrogens within cutoff distance
+            for h_idx in hydrogen_indices:
+                h_pos = positions[h_idx]
+                distance = np.linalg.norm(o_pos - h_pos)
+                if distance <= self.oh_cutoff:
+                    h_count += 1
+            
+            # Water oxygens should have exactly 2 hydrogens
+            if h_count == 2:
+                water_oxygens.append(o_idx)
+        
+        return np.array(water_oxygens)
 
 
 # Example usage:
