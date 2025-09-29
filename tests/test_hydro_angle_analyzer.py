@@ -3,7 +3,7 @@ import pytest
 import tempfile
 from unittest.mock import patch, MagicMock
 import numpy as np
-from hydro_angle_analyzer import FrameProcessor, DumpParser, ContactAngleAnalyzer
+from hydroangleanalyzer import FrameProcessor, DumpParser, ContactAngleAnalyzer
 
 # Path to test trajectory files - update these to point to your actual files
 TEST_TRAJ_FILE = 'traj_10_3_330w_nve_4k_reajust.lammpstrj'

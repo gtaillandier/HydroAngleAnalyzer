@@ -1,5 +1,3 @@
-#parser lammps traj
-#ase parser
 from ovito.io import import_file, export_file
 from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier)
 

@@ -6,7 +6,7 @@ These tests verify that the package works correctly with actual trajectory files
 import os
 import pytest
 import numpy as np
-from hydro_angle_analyzer import FrameProcessor
+from hydroangleanalyzer import FrameProcessor
 
 # Mark all tests in this file as integration tests
 pytestmark = pytest.mark.integration
