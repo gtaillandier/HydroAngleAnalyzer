@@ -5,26 +5,36 @@ import numpy as np
 from ase.neighborlist import NeighborList, natural_cutoffs
 
 class Ase_Parser:
-    def __init__(self, in_path, particle_type_wall):
+    def __init__(self, in_path, particle_type_wall, particle_type_liquid):
+    
         self.in_path = in_path
         self.particle_type_wall = particle_type_wall
-        self.particle_liquid_type = particle_type_liquid
+        self.particle_type_liquid = particle_type_liquid
         self.trajectory = read(self.in_path, index=':')
 
-    def parse(self, num_frame):
-        """Return positions of particles for a specific frame, excluding oxygen atoms."""
+    def parse(self, num_frame, indices=None):
+        """Return positions of particles for a specific frame, based on atoms indices"""
         frame = self.trajectory[num_frame]
-        # Filter out oxygen atoms (assuming 'O' is stored in the 'symbols' array)
-        mask = frame.symbols != 'O'
-        X_par = frame.positions[mask]
+        if indices is not None:
+            # Ensure indices is a numpy array for consistent handling
+            indices = np.array(indices)
+            # Extract positions of particles based on the provided indices
+            X_par = frame.positions[indices]
+        else:
+            # If no indices are provided, return all particle positions
+            X_par = frame.positions
+
         return X_par
     
     def parse_liquid(self, num_frame):
         """Return positions of liquid particles for a specific frame, excluding wall particles."""
         frame = self.trajectory[num_frame]
-        # Filter out wall particles
-        mask = ~np.isin(frame.symbols, self.particle_type_wall)
+        # Create a boolean mask to include only liquid particles
+        mask = np.isin(frame.symbols, self.particle_type_liquid)
+
+        # Extract positions of liquid particles
         X_par = frame.positions[mask]
+
         return X_par
 
     def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
