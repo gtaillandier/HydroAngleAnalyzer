@@ -1,5 +1,7 @@
 #from .processing import parallel_process_frames
 from .parser.parser_lammps import DumpParser, DumpParse_wall, WaterOxygenDumpParser
+from .parser.parser_ase import Ase_Parser , Ase_WaterOxygenParser, Ase_wallParser
+from .parser.parser_xyz import XYZ_Parser, XYZ_WaterOxygenParser, XYZ_wallParser
 from .sliced_method.angle_fitting import ContactAnglePredictor
 from .sliced_method.surface_defined import SurfaceDefinition
 from .processing import GPUFrameProcessor, FrameProcessor, BatchFrameProcessor
@@ -8,4 +10,3 @@ from .binning_method.surface_definition import HyperbolicTangentModel
 from .angles_frames_analysis.graphs_circle_surfaces import SurfacePlotter
 from .angles_frames_analysis.angles_analysis import  frames_angle_PostProcessor
 from .new_processing import HighPerformanceFrameProcessor
-#from binning_method.binning_spherical import postprocess_script

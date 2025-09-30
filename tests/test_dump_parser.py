@@ -7,7 +7,7 @@ from hydroangleanalyzer import DumpParser
 @pytest.fixture
 def dump_parser():
     """Fixture to create a DumpParser instance with the test trajectory file."""
-    return DumpParser('traj_10_3_330w_nve_4k_reajust.lammpstrj')
+    return DumpParser('traj_10_3_330w_nve_4k_reajust.lammpstrj', particle_type_wall={3})
 
 needs_traj_file = pytest.mark.skipif(
     not os.path.exists('traj_10_3_330w_nve_4k_reajust.lammpstrj'),

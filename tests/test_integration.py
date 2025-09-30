@@ -23,24 +23,25 @@ def test_full_processing_flow(temp_output_dir):
     Test the complete processing flow with a real trajectory file.
     This test processes multiple frames and checks the results.
     """
-    # Use a small range of frames for testing
     frames_to_process = list(range(5))
-    
+
     proc = FrameProcessor(
         filename='traj_10_3_330w_nve_4k_reajust.lammpstrj',
         output_repo=temp_output_dir,
-        type='masspain'
+        type='masspain',
+        particle_type_wall={3},
+        particule_liquid_type={1, 2}
     )
-    
-    # Process the frames
+
     results = proc.parallel_process_frames(frames_to_process)
-    
-    # Verify results (adapt these assertions to match your expected output)
+
     assert results is not None
-    
-    # Check output files
+
     output_files = os.listdir(temp_output_dir)
     assert len(output_files) > 0
+
+    txt_files = [f for f in output_files if f.endswith('.txt')]
+    assert len(txt_files) > 0
     
     # If your processor creates specific output files, check for those
     # For example, if it creates CSV files:
