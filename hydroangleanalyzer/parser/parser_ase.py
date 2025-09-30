@@ -140,6 +140,73 @@ class Ase_WaterOxygenParser:
                 water_oxygens.append(o_idx)
 
         return np.array(water_oxygens)
+class Ase_wallParser:
+    
+    def __init__(self, in_path, particule_liquid_type):
+        self.in_path = in_path
+        self.particule_liquid_type = particule_liquid_type  # List of particle types to exclude (liquid particles)
+        self.trajectory = read(self.in_path, index=':')
+
+    def parse(self, num_frame):
+        """Parse frame and return positions of wall particles."""
+        frame = self.trajectory[num_frame]
+
+        # Filter out liquid particles
+        mask = ~np.isin(frame.get_chemical_symbols(), self.particule_liquid_type)
+        X_par = frame.positions[mask]
+
+        return X_par
+
+    def find_highest_wall_part(self, num_frame):
+        """Find the highest z-coordinate of wall particles."""
+        X_wall = self.parse(num_frame)
+        return np.max(X_wall[:, 2])
+
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
+        """Convert Cartesian coordinates to cylindrical coordinates for the given frames."""
+        xi_par = np.array([])
+        zi_par = np.array([])
+
+        for frame in frame_list:
+            X_par = self.parse(frame)
+            dim = X_par.shape[1]
+            X_cm = np.mean(X_par, axis=0)
+
+            X_0 = X_par - X_cm
+            X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
+
+            if type_model == "masspain":
+                xi_par_frame = np.abs(X_0[:, 0] + 0.01)
+            elif type_model == "spherical":
+                xi_par_frame = np.sqrt(X_0[:, 0]**2 + X_0[:, 1]**2)
+
+            zi_par_frame = X_0[:, 2]
+
+            xi_par = np.concatenate((xi_par, xi_par_frame))
+            zi_par = np.concatenate((zi_par, zi_par_frame))
+
+            if frame % 10 == 0:
+                print(f"frame: {frame}")
+                print(f"Center of Mass: {X_cm}")
+
+        print("\nxi range:\t({},{})".format(np.min(xi_par), np.max(xi_par)))
+        print("zi range:\t({},{})".format(np.min(zi_par), np.max(zi_par)))
+
+        return xi_par, zi_par, len(frame_list)
+
+    def box_size_y(self, num_frame):
+        """Return the y-dimension of the simulation box for a specific frame."""
+        frame = self.trajectory[num_frame]
+        return frame.cell[1, 1]
+
+    def box_lenght_max(self, num_frame):
+        """Return the maximum dimension of the simulation box for a specific frame."""
+        frame = self.trajectory[num_frame]
+        return max(frame.cell.lengths())
+
+    def frame_tot(self):
+        """Return the total number of frames in the trajectory."""
+        return len(self.trajectory)
 # Example usage:
 # parser = DumpParser('path/to/dumpfile.dump')
 # positions = parser.parse(num_frame=10
