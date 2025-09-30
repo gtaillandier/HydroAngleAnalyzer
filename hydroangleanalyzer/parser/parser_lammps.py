@@ -124,6 +124,7 @@ class DumpParse_wall:
         return np.max(np.array([y_vector,x_vector,z_vector]))
     def frame_tot(self):
         return self.pipeline.source.num_frames
+        
 class WaterOxygenDumpParser:
     def __init__(self, in_path, particle_type_wall, oxygen_type=3, hydrogen_type=2, oh_cutoff=1.2):
         self.in_path = in_path
