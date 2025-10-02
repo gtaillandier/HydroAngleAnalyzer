@@ -1,5 +1,7 @@
 import numpy as np
-class XYZ_Parser:
+from .base_parser import BaseParser
+
+class XYZ_Parser(BaseParser):
     def __init__(self, in_path, particle_type_wall):
         self.in_path = in_path
         self.particle_type_wall = particle_type_wall  # List of particle types to exclude
@@ -55,9 +57,12 @@ class XYZ_Parser:
         else:
             X_par = frame['positions']
         return X_par
+    def frame_tot(self):
+        """Return the total number of frames in the trajectory."""
+        return len(self.frames)
         
 
-class XYZ_WaterOxygenParser:
+class XYZ_WaterOxygenParser(BaseParser):
     def __init__(self, in_path, particle_type_wall, oxygen_type='O', hydrogen_type='H', oh_cutoff=1.2):
         self.in_path = in_path
         self.particle_type_wall = particle_type_wall  # List of particle types to exclude

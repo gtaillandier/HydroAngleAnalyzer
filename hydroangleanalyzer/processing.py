@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-from hydroangleanalyzer import ContactAnglePredictor, DumpParser, DumpParse_wall, WaterOxygenDumpParser
+from hydroangleanalyzer import ContactAnglePredictor, DumpParser, DumpParse_wall
 from typing import List, Tuple, Dict, Optional, Union
 
 
@@ -134,8 +134,7 @@ class BatchFrameProcessor:
                  max_dist: float = 100, wall_max_z: float = 4.8, 
                  delta_y_axis: float = 1, type: str = 'spherical', 
                  particle_type_wall: set = {1}, 
-                 particule_liquid_type: set = {1, 2}, 
-                 value_dist_marge_wall_liquide: float = 5,
+                 particule_liquid_type: set = {1, 2},
                  oxygen_type: float = 3,
                  hydrogen_type: float = 2):
         """
@@ -162,7 +161,6 @@ class BatchFrameProcessor:
         self.max_dist = max_dist
         self.wall_max_z = wall_max_z
         self.delta_y_axis = delta_y_axis
-        self.value_dist_marge_wall_liquide = value_dist_marge_wall_liquide
         self.type = type
         self.particle_type_wall = particle_type_wall
         self.oxygen_type = oxygen_type
@@ -341,9 +339,7 @@ class BatchFrameProcessor:
         water_parser.parse(num_frame=frame_num)
         # Get water oxygen positions using the specialized method
         parsed_xyz = water_parser.get_water_oxygen_positions(frame_num)
-        # Get wall information
-        highest_part_wall = wall_parser.find_highest_wall_part(frame_num)
-        
+
         # Calculate mean position
         mean_parsed = np.mean(parsed_xyz, axis=0)
         
@@ -353,10 +349,8 @@ class BatchFrameProcessor:
             self.delta_gamma, 
             self.max_dist, 
             mean_parsed, 
-            highest_part_wall, 
             10, 
             self.delta_y_axis,
-            limit_dist_wall=highest_part_wall + self.value_dist_marge_wall_liquide,
             type=self.type
         )
         

@@ -3,7 +3,7 @@ from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
 class ContactAnglePredictor:
-    def __init__(self, o_coords, delta_gamma, max_dist, o_center_geom, z_wall, y_width, delta_y_axis,  limit_dist_wall, type='masspain'):
+    def __init__(self, o_coords, delta_gamma, max_dist, o_center_geom, y_width, delta_y_axis, type='masspain'):
         """
         Initialize the ContactAnglePredictor.
 
@@ -12,7 +12,6 @@ class ContactAnglePredictor:
             delta_gamma (float): Angular step size for spherical calculations.
             max_dist (float): Maximum distance for surface analysis.
             o_center_geom (array): Geometric center of the system.
-            z_wall (float): Z-coordinate of the wall.
             y_width (float): Width of the Y-axis range.
             delta_y_axis (float): Step size for Y-axis calculations.
             type (str): Type of analysis ('masspain' or 'spherical').
@@ -21,10 +20,8 @@ class ContactAnglePredictor:
         self.delta_gamma = delta_gamma
         self.max_dist = max_dist
         self.o_center_geom = o_center_geom
-        self.z_wall = z_wall
         self.y_width = y_width
-        self.delta_y_axis = delta_y_axis
-        self.limit_dist_wall =  limit_dist_wall
+        self.delta_y_axis = delta_y_axis 
         self.type = type
 
     def calculate_y_axis_list(self):
@@ -94,42 +91,6 @@ class ContactAnglePredictor:
         popt, _ = curve_fit(self.circle_equation, (X_data, Y_data), np.zeros_like(X_data), p0=initial_guess)
         return popt
     
-    def fit_circle_with_baseline_cutoff(self, X_data, Y_data, initial_guess):
-        """
-        Fit a circle to the surface data with a baseline cutoff constraint.
-        This creates a model of a circle that's cut by a horizontal line at z_wall.
-        
-        Args:
-            X_data (array): X-coordinate data.
-            Y_data (array): Y-coordinate data.
-            initial_guess (list): Initial guess for circle parameters [x_center, z_center, radius].
-            
-        Returns:
-            array: Optimal circle parameters [x_center, z_center, radius].
-        """
-        # Define a model for a circle cut by a horizontal line
-        def truncated_circle_model(params, x):
-            x_center, z_center, radius = params
-            
-            # Calculate the y-coordinate on the circle for each x value
-            # For a circle: (x-x_center)² + (y-z_center)² = radius²
-            # Therefore, y = z_center ± sqrt(radius² - (x-x_center)²)
-            # We want the upper part of the circle, so use the + solution
-            
-            # Handle points outside the circle's x-range
-            inside_circle = np.abs(x - x_center) <= radius
-            y_values = np.full_like(x, np.nan)
-            
-            # Only calculate for valid x-positions
-            valid_x = x[inside_circle]
-            y_valid = z_center + np.sqrt(radius**2 - (valid_x - x_center)**2)
-            
-            # Apply the truncation at z_wall (only keep points above z_wall)
-            y_valid = np.maximum(y_valid, self.z_wall)
-            y_values[inside_circle] = y_valid
-            
-            return y_values
-        
         # Define error function for optimization
         def error_function(params, x_data, y_data):
             predicted_y = truncated_circle_model(params, x_data)
@@ -205,6 +166,7 @@ class ContactAnglePredictor:
         counter = 0
 
         for value_gamma in gammas:
+            print(f"Processing gamma: {value_gamma}")
             self.o_center_geom[1] = y_axis_list[counter]
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
@@ -217,79 +179,7 @@ class ContactAnglePredictor:
             initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
             popt = self.fit_circle(X_data, Y_data, initial_guess)
             array_popt.append(popt)
-            angle = self.find_intersection(popt,min_drop+2) # self.z_wall)
-            if angle is not None:
-                list_alfas.append(angle)
-
-        return list_alfas, array_surfaces, array_popt
-    
-    def predict_contact_angle_nobound(self):
-        """
-        Predict contact angles based on surface analysis.
-
-        Returns:
-            tuple: Lists of contact angles, surfaces, and circle parameters.
-        """
-        gammas = self.calculate_gammas_list()
-        y_axis_list = self.calculate_y_axis_list()
-        limit_med = 9.5 if self.type == 'masspain' else 14
-        list_alfas = []
-        array_surfaces = []
-        array_popt = []
-        counter = 0
-
-        for value_gamma in gammas:
-            self.o_center_geom[1] = y_axis_list[counter]
-            counter += 1
-            surf, list_rr = self.surface_definition(value_gamma)
-            array_surfaces.append(surf)
-            surf_line = self.separate_surface_data(surf, limit_med)
-            X_data = surf_line[:, 0]
-            Y_data = surf_line[:, 1]
-            mean_rr = np.mean(list_rr[:, 0])
-            initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
-            
-            popt = self.fit_circle(X_data, Y_data, initial_guess)
-            array_popt.append(popt)
-            angle = self.find_intersection(popt, self.z_wall)
-            if angle is not None:
-                list_alfas.append(angle)
-
-        return list_alfas, array_surfaces, array_popt
-    def predict_contact_angle_with_truncated_circle(self):
-        """
-        Predict contact angles using a truncated circle model that accounts for the baseline.
-        
-        Returns:
-            tuple: Lists of contact angles, surfaces, and circle parameters.
-        """
-        gammas = self.calculate_gammas_list()
-        y_axis_list = self.calculate_y_axis_list()
-        limit_med = 9.5 if self.type == 'masspain' else 8
-        list_alfas = []
-        array_surfaces = []
-        array_popt = []
-        counter = 0
-
-        for value_gamma in gammas:
-            self.o_center_geom[1] = y_axis_list[counter]
-            counter += 1
-            surf, list_rr = self.surface_definition(value_gamma)
-            array_surfaces.append(surf)
-            
-            # Initial filtering to remove obvious outliers
-            surf_line = self.separate_surface_data(surf, limit_med)
-            X_data = surf_line[:, 0]
-            Y_data = surf_line[:, 1]
-            mean_rr = np.mean(list_rr[:, 0])
-            initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
-            
-            # Use the new truncated circle fitting function
-            popt = self.fit_circle_with_baseline_cutoff(X_data, Y_data, initial_guess)
-            array_popt.append(popt)
-            
-            # Calculate the contact angle at the intersection with z_wall
-            angle = self.find_intersection(popt, self.z_wall)
+            angle = self.find_intersection(popt,min_drop+2)
             if angle is not None:
                 list_alfas.append(angle)
 

@@ -4,25 +4,56 @@ from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, Compute
 import numpy as np
 from ovito.io import import_file, export_file
 from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier,CoordinationAnalysisModifier )
+from .base_parser import BaseParser
+from typing import Union, List, Set, Optional, Any
 
-class DumpParser:
-    def __init__(self, in_path, particle_type_wall):
+class DumpParser(BaseParser):
+    def __init__(
+        self,
+        in_path: str,
+        particle_type_wall: Union[List[str], Set[str]]
+    ) -> None:
+        """
+        Initialize the DumpParser.
+
+        Args:
+            in_path (str): Path to the input file.
+            particle_type_wall (Union[List[str], Set[str]]): List or set of particle types (symbols or IDs) for wall particles.
+        """
         self.in_path = in_path
-        self.particle_type_wall = particle_type_wall
+        self.particle_type_wall = {int(particle) for particle in particle_type_wall}
         self.pipeline = self.load_dump_ovito()
 
     def load_dump_ovito(self):
         # Load the file using OVITO
         pipeline = import_file(self.in_path)
-        pipeline.modifiers.append(SelectTypeModifier(property='Particle Type', types=self.particle_type_wall))
-        pipeline.modifiers.append(DeleteSelectedModifier())
+        #pipeline.modifiers.append(SelectTypeModifier(property='Particle Type', types=self.particle_type_wall))
+        #pipeline.modifiers.append(DeleteSelectedModifier())
         pipeline.modifiers.append(ComputePropertyModifier(expressions=['1'], output_property='Unity'))
         return pipeline
 
-    def parse(self, num_frame):
+    def parse(self, num_frame: int, indices: np.ndarray = None) -> np.ndarray:
+        """
+        Return positions of particles for a specific frame, based on atom indices.
+
+        Args:
+            num_frame (int): The frame number to parse.
+            indices (np.ndarray, optional): Array of particle indices to extract. If None, all particles are returned.
+
+        Returns:
+            np.ndarray: Positions of particles for the specified frame and indices.
+        """
         data = self.pipeline.compute(num_frame)
         X_par = np.asarray(data.particles["Position"])
+
+        if indices is not None:
+            # Ensure indices is a numpy array for consistent handling
+            indices = np.array(indices)
+            # Extract positions of particles based on the provided indices
+            X_par = X_par[indices]
+
         return X_par
+
 
     # Convert Cartesian coordinates to cylindrical coordinates
     def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
@@ -62,6 +93,7 @@ class DumpParser:
         return np.max(np.array([y_vector,x_vector,z_vector]))
     def frame_tot(self):
         return self.pipeline.source.num_frames
+
 class DumpParse_wall:
     def __init__(self, in_path,particule_liquid_type):
         self.in_path = in_path
@@ -116,6 +148,7 @@ class DumpParse_wall:
         y_vector = data.cell.matrix[1, :3]
         y_width = np.linalg.norm(y_vector)
         return y_width
+
     def box_lenght_max(self, num_frame):
         data = self.pipeline.compute(num_frame)
         y_vector = np.linalg.norm(data.cell.matrix[1, :3])
@@ -124,117 +157,87 @@ class DumpParse_wall:
         return np.max(np.array([y_vector,x_vector,z_vector]))
     def frame_tot(self):
         return self.pipeline.source.num_frames
-        
-class WaterOxygenDumpParser:
-    def __init__(self, in_path, particle_type_wall, oxygen_type=3, hydrogen_type=2, oh_cutoff=1.2):
+
+class Dump_WaterMoleculeFinder:
+    """Identify water oxygen atoms in a parsed LAMMPS trajectory."""
+
+    def __init__(
+        self,
+        in_path: str,
+        particle_type_wall: set,
+        oxygen_type: int = 3,
+        hydrogen_type: int = 2,
+        oh_cutoff: float = 1.2,
+    ):
+        """
+        Initialize the water molecule finder.
+
+        Args:
+            in_path: Path to the input file.
+            particle_type_wall: Set of particle types for wall particles.
+            oxygen_type: Atom type ID of oxygen.
+            hydrogen_type: Atom type ID of hydrogen.
+            oh_cutoff: O–H distance cutoff for identifying water molecules.
+        """
         self.in_path = in_path
         self.particle_type_wall = particle_type_wall
         self.oxygen_type = oxygen_type
         self.hydrogen_type = hydrogen_type
         self.oh_cutoff = oh_cutoff
-        self.pipeline = self.load_dump_ovito()
 
-    def load_dump_ovito(self):
-        # Load the file using OVITO
+        # Load the file and set up the OVITO pipeline
+        self.pipeline = self._setup_pipeline()
+
+    def _setup_pipeline(self):
+        """Set up the OVITO pipeline with water molecule detection."""
         pipeline = import_file(self.in_path)
 
-        # First remove wall particles
-        pipeline.modifiers.append(SelectTypeModifier(
-            property='Particle Type',
-            types=self.particle_type_wall
-        ))
-        pipeline.modifiers.append(DeleteSelectedModifier())
-
-        # Then add coordination analysis modifier
-        coord_modifier = CoordinationAnalysisModifier(
-            cutoff=self.oh_cutoff,
-            number_of_bins=200
+        # Add coordination analysis modifier
+        pipeline.modifiers.append(
+            CoordinationAnalysisModifier(cutoff=self.oh_cutoff, number_of_bins=200)
         )
-        pipeline.modifiers.append(coord_modifier)
 
-        # Add a compute property modifier to identify water oxygens
-        water_oxygen_expr = f"""
-        (ParticleType == {self.oxygen_type}) &&
-        (Coordination == 2)
-        """
-
-        pipeline.modifiers.append(ComputePropertyModifier(
-            expressions=[water_oxygen_expr],
-            output_property='IsWaterOxygen'
-        ))
+        # Add compute property modifier to identify water oxygens
+        expr = f"(ParticleType == {self.oxygen_type}) && (Coordination == 2)"
+        pipeline.modifiers.append(
+            ComputePropertyModifier(
+                expressions=[expr],
+                output_property='IsWaterOxygen'
+            )
+        )
 
         return pipeline
 
-    def parse(self, num_frame):
-        """Parse frame and return positions with water oxygen identification"""
+    def get_water_oxygen_indices(self, num_frame: int) -> np.ndarray:
+        """Return the indices of oxygen atoms belonging to water molecules."""
         data = self.pipeline.compute(num_frame)
-
-        positions = np.asarray(data.particles["Position"])
-        particle_types = np.asarray(data.particles["Particle Type"])
-
-        # Get water oxygen mask if the property exists
-        water_oxygen_mask = None
         if "IsWaterOxygen" in data.particles:
-            water_oxygen_mask = np.array(data.particles["IsWaterOxygen"].array) == 1
-            
-        return {
-            'positions': positions,
-            'types': particle_types,
-            'water_oxygen_mask': water_oxygen_mask
-        }
-
-    def get_water_oxygen_indices(self, num_frame):
-        """Get indices of water oxygen atoms"""
-        data = self.parse(num_frame)
-        if data['water_oxygen_mask'] is not None:
-            return np.where(data['water_oxygen_mask'])[0]
+            mask = np.array(data.particles["IsWaterOxygen"].array) == 1
+            return np.where(mask)[0]
         else:
-            # Fallback to manual identification
-            return self._manual_water_identification(data)
-    def get_water_oxygen_positions(self, num_frame):
-        """
-        Returns the array of XYZ coordinates of oxygen atoms in water molecules.
+            return self._manual_identification(data)
 
-        Args:
-            num_frame (int): The frame number to analyze
+    def get_water_oxygen_positions(self, num_frame: int) -> np.ndarray:
+        """Return XYZ coordinates of the oxygen atoms in water molecules."""
+        indices = self.get_water_oxygen_indices(num_frame)
+        data = self.pipeline.compute(num_frame)
+        positions = np.asarray(data.particles["Position"])
+        return positions[indices]
 
-        Returns:
-            numpy.ndarray: Array of shape (N, 3) containing XYZ coordinates of water oxygen atoms
-        """
-        # Get the indices of water oxygen atoms
-        water_oxygen_indices = self.get_water_oxygen_indices(num_frame)
-
-        if len(water_oxygen_indices) == 0:
-            return np.empty((0, 3))  # Return empty array if no water oxygens found
-
-        # Get all positions and select only the water oxygen positions
-        data = self.parse(num_frame)
-        all_positions = data['positions']
-
-        return all_positions[water_oxygen_indices]
-        
-    def _manual_water_identification(self, data):
-        """Manual identification if OVITO modifiers don't work"""
-        positions = data['positions']
-        types = data['types']
-
+    def _manual_identification(self, data) -> np.ndarray:
+        """Fallback to manual detection if OVITO fails."""
+        positions = np.asarray(data.particles["Position"])
+        types = np.asarray(data.particles["Particle Type"])
         oxygen_indices = np.where(types == self.oxygen_type)[0]
         hydrogen_indices = np.where(types == self.hydrogen_type)[0]
-
         water_oxygens = []
 
         for o_idx in oxygen_indices:
             o_pos = positions[o_idx]
             h_count = 0
-
-            # Count hydrogens within cutoff distance
             for h_idx in hydrogen_indices:
-                h_pos = positions[h_idx]
-                distance = np.linalg.norm(o_pos - h_pos)
-                if distance <= self.oh_cutoff:
+                if np.linalg.norm(o_pos - positions[h_idx]) <= self.oh_cutoff:
                     h_count += 1
-
-            # Water oxygens should have exactly 2 hydrogens
             if h_count == 2:
                 water_oxygens.append(o_idx)
 
@@ -242,6 +245,36 @@ class WaterOxygenDumpParser:
 
 
 # Example usage:
+# Example usage of WaterMoleculeFinder and DumpParser
+
+# # Step 1: Initialize WaterMoleculeFinder to identify water oxygen atoms
+# water_finder = WaterMoleculeFinder(
+#     in_path='traj_10_3_330w_nve_4k_reajust.lammpstrj',
+#     particle_type_wall={3},
+#     oxygen_type=1,
+#     hydrogen_type=2
+# )
+
+# # Step 2: Get indices of water oxygen atoms for a specific frame
+# num_frame = 0
+# oxygen_indices = water_finder.get_water_oxygen_indices(num_frame=num_frame)
+# print(f"Indices of water oxygen atoms in frame {num_frame}: {oxygen_indices}")
+
+# # Step 3: Initialize DumpParser to parse the trajectory file
+# parser = DumpParser(
+#     in_path='traj_10_3_330w_nve_4k_reajust.lammpstrj',
+#     particle_type_wall={3}
+# )
+
+# # Step 4: Parse the positions of water oxygen atoms for a specific frame
+# frame_to_parse = 2
+# oxygen_positions = parser.parse(num_frame=frame_to_parse, indices=oxygen_indices)
+# print(f"Positions of water oxygen atoms in frame {frame_to_parse}:\n{oxygen_positions}")
+
+# # Step 5: Print the number of water oxygen atoms
+# num_water_oxygens = len(oxygen_positions)
+# print(f"Number of water oxygen atoms in frame {frame_to_parse}: {num_water_oxygens}")
+
 # parser = DumpParser('path/to/dumpfile.dump')
 # positions = parser.parse(num_frame=10
 # box_dimensions = parser.box_size(num_frame=10)
