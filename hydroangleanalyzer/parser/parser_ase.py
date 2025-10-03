@@ -45,21 +45,21 @@ class Ase_Parser(BaseParser):
         X_par = frame.positions[mask]
 
         return X_par
-
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
-        """Convert Cartesian coordinates to cylindrical coordinates for the given frames."""
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain", liquid_indices=None):
+        """Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices."""
         xi_par = np.array([])
         zi_par = np.array([])
 
         for frame_idx in frame_list:
             frame = self.trajectory[frame_idx]
-            # Filter out oxygen atoms
-            mask = frame.symbols != ['O']
-            X_par = frame.positions[mask]
+            X_par = frame.positions
 
-            dim = X_par.shape[1]
+            # Filter particles based on liquid_indices if provided
+            if liquid_indices is not None:
+                liquid_indices = np.array(liquid_indices)
+                X_par = X_par[liquid_indices]
+
             X_cm = np.mean(X_par, axis=0)
-
             X_0 = X_par - X_cm
             X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
 
@@ -81,7 +81,7 @@ class Ase_Parser(BaseParser):
         print("zi range:\t({},{})".format(np.min(zi_par), np.max(zi_par)))
 
         return xi_par, zi_par, len(frame_list)
-
+   
     def box_size_y(self, num_frame):
         """Return the y-dimension of the simulation box for a specific frame."""
         frame = self.trajectory[num_frame]

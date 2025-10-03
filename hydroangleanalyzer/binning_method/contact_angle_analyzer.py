@@ -8,7 +8,7 @@ import copy
 class ContactAngleAnalyzer:
     """Class for analyzing contact angles in molecular dynamics simulations."""
 
-    def __init__(self, parser, wall_height, type_model="spherical", width_masspain=21,
+    def __init__(self, parser, liquid_indices, wall_height, type_model="spherical", width_masspain=21,
                  binning_params=None, output_dir="output_analysis/"):
         """
         Initialize the contact angle analyzer.
@@ -22,6 +22,7 @@ class ContactAngleAnalyzer:
         output_dir: directory for output files
         """
         self.parser = parser
+        self.liquid_indices = liquid_indices
         self.wall_height = wall_height
         self.type_model = type_model
         self.width_masspain = width_masspain
@@ -213,8 +214,7 @@ class ContactAngleAnalyzer:
         # Get particle coordinates
         xi_par, zi_par, len_frames = self.parser.return_cylindrical_coord_pars(
             frame_list,
-            type_model=self.type_model
-        )
+            type_model=self.type_model, liquid_indices=self.liquid_indices)
 
         # Calculate average number of particles
         particles_number = len(xi_par) / len_frames
@@ -324,8 +324,8 @@ class ContactAngleAnalyzer:
 #         parser=parser,
 #         wall_height=wall_height,
 #         type_model=type_model,
-#         width_masspain=width_masspain,
-#         binning_params=binning_params,
+#         width_masspain=''width_masspain,
+#         binning_params=, binning_params,
 #         output_dir=out_dir
 #     )
 

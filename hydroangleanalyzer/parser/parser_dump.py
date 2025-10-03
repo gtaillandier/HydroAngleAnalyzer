@@ -57,28 +57,41 @@ class DumpParser(BaseParser):
 
 
     # Convert Cartesian coordinates to cylindrical coordinates
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
-        """Convert Cartesian coordinates to cylindrical coordinates for the given frames."""
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain", liquid_indices=None):
+        """Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices."""
         xi_par = np.array([])
         zi_par = np.array([])
+
         for frame in frame_list:
             data = self.pipeline.compute(frame)
             X_par = np.asarray(data.particles["Position"])
+
+            # Filter particles based on liquid_indices if provided
+            if liquid_indices is not None:
+                liquid_indices = np.array(liquid_indices)
+                X_par = X_par[liquid_indices]
+
             dim = len(X_par[0, :])
             X_cm = [(X_par[:, i]).sum() / len(X_par[:, i]) for i in range(dim)]
             X_0 = [X_par[:, i] - X_cm[i] * (i < 2) for i in range(dim)]
+
             if type_model == "masspain":
-                xi_par_frame = np.abs(X_0[0]+ 0.01)
+                xi_par_frame = np.abs(X_0[0] + 0.01)
             elif type_model == "spherical":
                 xi_par_frame = np.sqrt(X_0[0]**2 + X_0[1]**2)
+
             zi_par_frame = X_0[2]
+
             xi_par = np.concatenate((xi_par, xi_par_frame))
             zi_par = np.concatenate((zi_par, zi_par_frame))
+
             if frame % 10 == 0:
                 print(f"frame: {frame}")
                 print(X_cm)
+
         print("\nxi range:\t({},{})".format(np.min(xi_par), np.max(xi_par)))
         print("zi range:\t({},{})".format(np.min(zi_par), np.max(zi_par)))
+
         return xi_par, zi_par, len(frame_list)
 
     def box_size_y(self, num_frame):
