@@ -3,26 +3,35 @@ from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
 class ContactAnglePredictor:
-    def __init__(self, o_coords, delta_gamma, max_dist, o_center_geom, y_width, delta_y_axis, type='masspain'):
+    def __init__(self, o_coords, max_dist, o_center_geom, type='masspain_y',delta_gamma=None, width_masspain=None, delta_masspain=None):
         """
         Initialize the ContactAnglePredictor.
-
         Args:
             o_coords (array): Coordinates of oxygen atoms.
             delta_gamma (float): Angular step size for spherical calculations.
             max_dist (float): Maximum distance for surface analysis.
             o_center_geom (array): Geometric center of the system.
-            y_width (float): Width of the Y-axis range.
-            delta_y_axis (float): Step size for Y-axis calculations.
-            type (str): Type of analysis ('masspain' or 'spherical').
+            type (str): Type of analysis ('masspain_y', 'masspain_x' or 'spherical').
+            width_masspain (float, optional): Width of the masspain range.
+            delta_masspain (float, optional): Step size for masspain calculations.
         """
         self.o_coords = o_coords
-        self.delta_gamma = delta_gamma
+        
         self.max_dist = max_dist
         self.o_center_geom = o_center_geom
-        self.y_width = y_width
-        self.delta_y_axis = delta_y_axis 
         self.type = type
+        
+        self.delta_gamma = delta_gamma
+        self.width_masspain = width_masspain
+        self.delta_masspain = delta_masspain
+        # Validate that masspain parameters are provided when needed
+        if self.type in ['masspain_y', 'masspain_x']:
+            if width_masspain is None or delta_masspain is None:
+                print(f"Warning: width_masspain and delta_masspain are recommended for {self.type} analysis")
+        if self.type == 'spherical':
+            if delta_gamma is None:
+                raise ValueError("delta_gamma must be provided for spherical analysis")
+        
 
     def calculate_y_axis_list(self):
         """
@@ -31,8 +40,8 @@ class ContactAnglePredictor:
         Returns:
             list: Y-axis positions.
         """
-        if self.type == 'masspain':
-            return np.arange(0, self.y_width, self.delta_y_axis)
+        if self.type == 'masspain_y'or 'masspain_x':
+            return np.arange(0, self.width_masspain, self.delta_masspain)
         elif self.type == 'spherical':
             return [self.o_center_geom[1]] * int(180 / self.delta_gamma)
 
@@ -43,8 +52,8 @@ class ContactAnglePredictor:
         Returns:
             list: Gamma values.
         """
-        if self.type == 'masspain':
-            return [0] * len(np.arange(0, self.y_width, self.delta_y_axis))
+        if self.type == 'masspain_y' or 'masspain_x':
+            return [0] * len(np.arange(0, self.width_masspain, self.delta_masspain))
         elif self.type == 'spherical':
             return np.linspace(0, 180, int(180 / self.delta_gamma))
 
@@ -58,7 +67,7 @@ class ContactAnglePredictor:
         Returns:
             tuple: Arrays of XZ surface and radial distances.
         """
-        delta_angle = 4 if self.type == 'masspain' else 5
+        delta_angle = 10    # angle step for lines
         surface_def = SurfaceDefinition(self.o_coords, delta_angle, self.max_dist, self.o_center_geom, v_gamma)
         list_rr, list_xz = surface_def.analyze_lines()
         return np.array(list_xz), np.array(list_rr)
@@ -159,20 +168,18 @@ class ContactAnglePredictor:
         gammas = self.calculate_gammas_list()
 
         y_axis_list = self.calculate_y_axis_list()
-        #limit_med = 9.5 if self.type == 'masspain' else 8
         list_alfas = []
         array_surfaces = []
         array_popt = []
         counter = 0
 
         for value_gamma in gammas:
-            print(f"Processing gamma: {value_gamma}")
             self.o_center_geom[1] = y_axis_list[counter]
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
             array_surfaces.append(surf)
             min_drop = np.min(surf[:,1])
-            surf_line = self.separate_surface_data(surf, min_drop+2)#self.limit_dist_wall)
+            surf_line = self.separate_surface_data(surf, min_drop+5)#self.limit_dist_wall)
             X_data = surf_line[:, 0]
             Y_data = surf_line[:, 1]
             mean_rr = np.mean(list_rr[:, 0])

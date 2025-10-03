@@ -45,6 +45,7 @@ class DumpParser(BaseParser):
         """
         data = self.pipeline.compute(num_frame)
         X_par = np.asarray(data.particles["Position"])
+        print("parsing_started")
 
         if indices is not None:
             # Ensure indices is a numpy array for consistent handling
@@ -85,6 +86,10 @@ class DumpParser(BaseParser):
         y_vector = data.cell.matrix[1, :3]
         y_width = np.linalg.norm(y_vector)
         return y_width
+    def box_size_x(self, num_frame):
+        x_vector = data.cell.matrix[0, :3]  # Extract the x-vector from the cell matrix
+        x_width = np.linalg.norm(x_vector)  # Calculate the magnitude of the x-vector
+        return x_width
     def box_lenght_max(self, num_frame):
         data = self.pipeline.compute(num_frame)
         y_vector = np.linalg.norm(data.cell.matrix[1, :3])

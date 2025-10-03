@@ -8,8 +8,7 @@ class Ase_Parser(BaseParser):
     def __init__(
         self,
         in_path: str,
-        particle_type_wall: Union[List[str], Set[str]],
-        particle_type_liquid: Union[List[str], Set[str]]
+        particle_type_wall: Union[List[str], Set[str]]
     ) -> None:
         """
         Initialize the Ase_Parser.
@@ -17,11 +16,9 @@ class Ase_Parser(BaseParser):
         Args:
             in_path (str): Path to input trajectory (any ASE-readable format)
             particle_type_wall (Union[List[str], Set[str]]): List or set of particle types (symbols) for wall particles
-            particle_type_liquid (Union[List[str], Set[str]]): List or set of particle types (symbols) for liquid particles
         """
         self.in_path: str = in_path
         self.particle_type_wall: Union[List[str], Set[str]] = particle_type_wall
-        self.particle_type_liquid: Union[List[str], Set[str]] = particle_type_liquid
         self.trajectory = read(self.in_path, index=':')
 
     def parse(self, num_frame, indices=None):
@@ -38,11 +35,11 @@ class Ase_Parser(BaseParser):
 
         return X_par
     
-    def parse_liquid(self, num_frame):
+    def parse_liquid(self, particle_type_liquid, num_frame):
         """Return positions of liquid particles for a specific frame, excluding wall particles."""
         frame = self.trajectory[num_frame]
         # Create a boolean mask to include only liquid particles
-        mask = np.isin(frame.symbols, self.particle_type_liquid)
+        mask = np.isin(frame.symbols, particle_type_liquid)
 
         # Extract positions of liquid particles
         X_par = frame.positions[mask]
@@ -89,6 +86,12 @@ class Ase_Parser(BaseParser):
         """Return the y-dimension of the simulation box for a specific frame."""
         frame = self.trajectory[num_frame]
         return frame.cell[1, 1]
+
+    def box_size_x(self, num_frame):
+        """Return the x-dimension of the simulation box for a specific frame."""
+        frame = self.trajectory[num_frame]
+        print(frame.cell)
+        return frame.cell[0, 0]
 
     def box_lenght_max(self, num_frame):
         """Return the maximum dimension of the simulation box for a specific frame."""
