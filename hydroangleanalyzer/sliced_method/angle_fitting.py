@@ -174,12 +174,14 @@ class ContactAnglePredictor:
         counter = 0
 
         for value_gamma in gammas:
+            print(f"Analyzing gamma: {value_gamma}")
             self.o_center_geom[1] = y_axis_list[counter]
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
             array_surfaces.append(surf)
             min_drop = np.min(surf[:,1])
-            surf_line = self.separate_surface_data(surf, min_drop+5)#self.limit_dist_wall)
+            surf_line = self.separate_surface_data(surf, min_drop+2)#self.limit_dist_wall)
+            print(f"Gamma: {value_gamma} - Points on surface line: {len(surf_line)}")
             X_data = surf_line[:, 0]
             Y_data = surf_line[:, 1]
             mean_rr = np.mean(list_rr[:, 0])

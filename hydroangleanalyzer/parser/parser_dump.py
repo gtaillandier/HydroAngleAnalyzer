@@ -7,52 +7,35 @@ from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, Compute
 from .base_parser import BaseParser
 from typing import Union, List, Set, Optional, Any
 
-class DumpParser(BaseParser):
-    def __init__(
-        self,
-        in_path: str,
-        particle_type_wall: Union[List[str], Set[str]]
-    ) -> None:
-        """
-        Initialize the DumpParser.
+import logging
 
-        Args:
-            in_path (str): Path to the input file.
-            particle_type_wall (Union[List[str], Set[str]]): List or set of particle types (symbols or IDs) for wall particles.
+logger = logging.getLogger(__name__)
+
+class DumpParser(BaseParser):
+    def __init__(self, in_path: str, particle_type_wall):
+        """
+        Initialize the parser for a LAMMPS dump file.
+        This version does NOT preload all frames into memory.
         """
         self.in_path = in_path
         self.particle_type_wall = {int(particle) for particle in particle_type_wall}
-        self.pipeline = self.load_dump_ovito()
-
-    def load_dump_ovito(self):
-        # Load the file using OVITO
-        pipeline = import_file(self.in_path)
-        #pipeline.modifiers.append(SelectTypeModifier(property='Particle Type', types=self.particle_type_wall))
-        #pipeline.modifiers.append(DeleteSelectedModifier())
-        pipeline.modifiers.append(ComputePropertyModifier(expressions=['1'], output_property='Unity'))
-        return pipeline
+        
+        logger.info(f"[DumpParser] Importing file: {self.in_path}")
+        self.pipeline = import_file(self.in_path)
+        self.pipeline.modifiers.append(ComputePropertyModifier(expressions=['1'], output_property='Unity'))
+        
+        self.num_frames = self.pipeline.source.num_frames
+        logger.info(f"[DumpParser] Initialized with {self.num_frames} frames.")
 
     def parse(self, num_frame: int, indices: np.ndarray = None) -> np.ndarray:
         """
-        Return positions of particles for a specific frame, based on atom indices.
-
-        Args:
-            num_frame (int): The frame number to parse.
-            indices (np.ndarray, optional): Array of particle indices to extract. If None, all particles are returned.
-
-        Returns:
-            np.ndarray: Positions of particles for the specified frame and indices.
+        Compute and return particle positions for a single frame.
         """
+        logger.info(f"[DumpParser] Computing frame {num_frame}")
         data = self.pipeline.compute(num_frame)
         X_par = np.asarray(data.particles["Position"])
-        print("parsing_started")
-
         if indices is not None:
-            # Ensure indices is a numpy array for consistent handling
-            indices = np.array(indices)
-            # Extract positions of particles based on the provided indices
             X_par = X_par[indices]
-
         return X_par
 
 

@@ -736,9 +736,12 @@ from typing import Dict, List, Optional, Any, Tuple, Type
 import numpy as np
 import logging
 from hydroangleanalyzer import ContactAnglePredictor, DumpParser, Ase_Parser, XYZ_Parser, BaseParser, detect_parser_type
+import multiprocessing
+multiprocessing.set_start_method('spawn', force=True)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='debug_parallel.log', level=logging.INFO, format='%(asctime)s %(process)d %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 
 class ParallelFrameProcessor_allparser:
@@ -875,7 +878,7 @@ class ParallelFrameProcessor_allparser:
         try:
             # Determine the parser class to use based on file extension
             parser_type = detect_parser_type(self.filename)
-            print(f"Detected parser type: {parser_type}")
+            logger.info(f"Detected parser type: {parser_type}")
             parser_class: Type[BaseParser]
             if parser_type == 'dump':
                 parser_class = DumpParser
@@ -921,11 +924,15 @@ class ParallelFrameProcessor_allparser:
         Returns:
             Frame number and mean contact angle.
         """
+        logger.info(f"START processing frame {frame_num}")
         try:
             # Parse positions of liquid particles
             liquid_positions = parser.parse(num_frame=frame_num, indices=liquid_indices)
+            logger.info(f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid particles")
             if self.type == 'masspain_x':
-                liquid_positions = liquid_positions[:, [1, 0, 2]] 
+                liquid_positions = liquid_positions[:, [1, 0, 2]]
+            else:
+                liquid_positions = liquid_positions
             # Get box dimensions for the frame
             if self.type == 'masspain_x':
                 box_dimensions = parser.box_size_x(num_frame=frame_num)
@@ -1282,9 +1289,9 @@ class ParallelFrameProcessor_waterdump:
 
                 o_center_geom = mean_oxygen_position,
 
-                y_width = box_dimensions,
+                width_masspain = box_dimensions,
 
-                delta_y_axis = self.delta_y_axis,
+                delta_masspain = self.delta_y_axis,
 
                 type=self.type,
 
