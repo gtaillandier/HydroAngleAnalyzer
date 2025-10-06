@@ -13,3 +13,6 @@ from .angles_frames_analysis.graphs_circle_surfaces import SurfacePlotter
 from .angles_frames_analysis.angles_analysis import  frames_angle_PostProcessor
 from .new_processing import HighPerformanceFrameProcessor
 from .multi_processing import BatchFrameProcessor, BatchFrameProcessor_old,  ParallelFrameProcessor_allparser, ParallelFrameProcessor_waterdump
+from .angles_frames_analysis.plotter import AngleAnalyzerPlotter
+from hydroangleanalyzer.angles_frames_analysis.graphs_circle_surfaces import SurfacePlotter
+from hydroangleanalyzer.angles_frames_analysis.graphs_circle_slice import GraphsCircleSurfaces

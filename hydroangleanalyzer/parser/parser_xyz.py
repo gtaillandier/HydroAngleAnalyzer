@@ -8,31 +8,59 @@ class XYZ_Parser(BaseParser):
         self.frames = self.load_xyz_file()
 
     def load_xyz_file(self):
+
         """Load and parse the XYZ file."""
+
         frames = []
+
         with open(self.in_path, 'r') as file:
+
             lines = file.readlines()
 
         frame_start = 0
+
         while frame_start < len(lines):
+
             # Read the number of atoms
+
             num_atoms = int(lines[frame_start].strip())
+
             frame_start += 1
 
-            # Skip the comment line
+            # Parse the comment line for lattice information
+
+            comment_line = lines[frame_start].strip()
+
+            lattice_info = comment_line.split('Lattice="')[1].split('"')[0]
+
+            lattice_vectors = np.array(lattice_info.split(), dtype=float)
+
+            lattice_matrix = lattice_vectors.reshape(3, 3)
+
             frame_start += 1
 
             # Read atom data
+
             symbols = []
+
             positions = []
+
             for i in range(num_atoms):
+
                 parts = lines[frame_start + i].strip().split()
+
                 symbols.append(parts[0])
+
                 positions.append([float(coord) for coord in parts[1:4]])
 
             frames.append({
+
                 'symbols': np.array(symbols),
-                'positions': np.array(positions)
+
+                'positions': np.array(positions),
+
+                'lattice_matrix': lattice_matrix
+
             })
 
             frame_start += num_atoms
@@ -57,6 +85,28 @@ class XYZ_Parser(BaseParser):
         else:
             X_par = frame['positions']
         return X_par
+    def box_size_x(self, num_frame):
+        """
+        Return the box size in the x direction for a specific frame.
+        Args:
+            num_frame (int): The index of the frame.
+        Returns:
+            float: The box size in the x direction.
+        """
+        lattice_matrix = self.frames[num_frame]['lattice_matrix']
+        return lattice_matrix[0, 0]
+
+    def box_size_y(self, num_frame):
+        """
+        Return the box size in the y direction for a specific frame.
+        Args:
+            num_frame (int): The index of the frame.
+        Returns:
+            float: The box size in the y direction.
+        """
+        lattice_matrix = self.frames[num_frame]['lattice_matrix']
+        return lattice_matrix[1, 1]
+
     def frame_tot(self):
         """Return the total number of frames in the trajectory."""
         return len(self.frames)
