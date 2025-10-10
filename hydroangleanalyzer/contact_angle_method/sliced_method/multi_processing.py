@@ -4,7 +4,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Optional, Any, Tuple, Type
 import numpy as np
 import logging
-from hydroangleanalyzer import ContactAnglePredictor, DumpParser, Ase_Parser, XYZ_Parser, BaseParser, detect_parser_type
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAnglePredictor
+from hydroangleanalyzer.parser import DumpParser, Ase_Parser, XYZ_Parser, BaseParser
+from hydroangleanalyzer.io_utils import detect_parser_type
 import multiprocessing
 multiprocessing.set_start_method('spawn', force=True)
 

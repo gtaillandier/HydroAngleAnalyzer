@@ -5,7 +5,7 @@ import matplotlib
 from .surface_definition import HyperbolicTangentModel
 import copy
      
-class ContactAngleAnalyzer:
+class ContactAngleAnalyzer_lammps:
     """Class for analyzing contact angles in molecular dynamics simulations."""
 
     def __init__(self, parser, liquid_indices, wall_height, type_model="spherical", width_masspain=21,
