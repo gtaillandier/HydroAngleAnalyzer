@@ -34,7 +34,7 @@ class Ase_Parser(BaseParser):
             X_par = frame.positions
 
         return X_par
-    
+
     def parse_liquid(self, particle_type_liquid, num_frame):
         """Return positions of liquid particles for a specific frame, excluding wall particles."""
         frame = self.trajectory[num_frame]
@@ -43,9 +43,9 @@ class Ase_Parser(BaseParser):
 
         # Extract positions of liquid particles
         X_par = frame.positions[mask]
-
         return X_par
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain", liquid_indices=None):
+        
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain_y", liquid_indices=None):
         """Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices."""
         xi_par = np.array([])
         zi_par = np.array([])
@@ -63,8 +63,10 @@ class Ase_Parser(BaseParser):
             X_0 = X_par - X_cm
             X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
 
-            if type_model == "masspain":
+            if type_model == "masspain_y":
                 xi_par_frame = np.abs(X_0[:, 0] + 0.01)
+            elif type_model == "masspain_x":
+                xi_par_frame = np.abs(X_0[:, 1] + 0.01)
             elif type_model == "spherical":
                 xi_par_frame = np.sqrt(X_0[:, 0]**2 + X_0[:, 1]**2)
 

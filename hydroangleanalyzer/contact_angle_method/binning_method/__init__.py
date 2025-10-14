@@ -1,3 +1,2 @@
-from .contact_angle_analyzer_lammps import ContactAngleAnalyzer_lammps
-from .angle_fitting_processing import ContactAngleAnalyzer
+from .angle_fitting_binning import ContactAngle_binning
 from .surface_definition import HyperbolicTangentModel

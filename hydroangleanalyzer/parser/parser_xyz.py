@@ -66,15 +66,12 @@ class XYZ_Parser(BaseParser):
             frame_start += num_atoms
 
         return frames
-
     def parse(self, num_frame, indices=None):
         """
         Return positions of particles for a specific frame, based on atom indices.
-
         Args:
             num_frame (int): The index of the frame to parse.
             indices (list or numpy.ndarray, optional): List of indices to extract. If None, all particle positions are returned.
-
         Returns:
             numpy.ndarray: Coordinates of the specified particles.
         """
@@ -85,6 +82,72 @@ class XYZ_Parser(BaseParser):
         else:
             X_par = frame['positions']
         return X_par
+    def parse_liquid(self, particle_type_liquid, num_frame):
+        """
+        Return positions of liquid particles for a specific frame, excluding wall particles.
+        Args:
+            particle_type_liquid (list or set): List or set of particle types (symbols) for liquid particles.
+            num_frame (int): The index of the frame to parse.
+        Returns:
+            numpy.ndarray: Coordinates of the liquid particles.
+        """
+        frame = self.frames[num_frame]
+        # Create a boolean mask to include only liquid particles
+        mask = np.isin(frame['symbols'], particle_type_liquid)
+        # Extract positions of liquid particles
+        X_par = frame['positions'][mask]
+        return X_par
+
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain", liquid_indices=None):
+        """
+        Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices.
+        Args:
+            frame_list (list): List of frame indices to process.
+            type_model (str): Type of model for cylindrical coordinates. Default is "masspain".
+            liquid_indices (list or numpy.ndarray, optional): List of indices to extract. If None, all particle positions are used.
+        Returns:
+            tuple: (xi_par, zi_par, num_frames)
+        """
+        xi_par = np.array([])
+        zi_par = np.array([])
+        for frame_idx in frame_list:
+            frame = self.frames[frame_idx]
+            X_par = frame['positions']
+            # Filter particles based on liquid_indices if provided
+            if liquid_indices is not None:
+                liquid_indices = np.array(liquid_indices)
+                X_par = X_par[liquid_indices]
+            X_cm = np.mean(X_par, axis=0)
+            X_0 = X_par - X_cm
+            X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
+            if type_model == "masspain_y":
+                xi_par_frame = np.abs(X_0[:, 0] + 0.01)
+            elif type_model == "masspain_x":
+                xi_par_frame = np.abs(X_0[:, 1] + 0.01)
+            elif type_model == "spherical":
+                xi_par_frame = np.sqrt(X_0[:, 0]**2 + X_0[:, 1]**2)
+            zi_par_frame = X_0[:, 2]
+            xi_par = np.concatenate((xi_par, xi_par_frame))
+            zi_par = np.concatenate((zi_par, zi_par_frame))
+            if frame_idx % 10 == 0:
+                print(f"Frame: {frame_idx}")
+                print(f"Center of Mass: {X_cm}")
+        print("\nxi range:\t({},{})".format(np.min(xi_par), np.max(xi_par)))
+        print("zi range:\t({},{})".format(np.min(zi_par), np.max(zi_par)))
+        return xi_par, zi_par, len(frame_list)
+
+    def box_lenght_max(self, num_frame):
+        """
+        Return the maximum dimension of the simulation box for a specific frame.
+        Args:
+            num_frame (int): The index of the frame.
+        Returns:
+            float: The maximum dimension of the simulation box.
+        """
+        lattice_matrix = self.frames[num_frame]['lattice_matrix']
+        lengths = np.linalg.norm(lattice_matrix, axis=1)
+        return max(lengths)
+    
     def box_size_x(self, num_frame):
         """
         Return the box size in the x direction for a specific frame.
@@ -153,19 +216,71 @@ class XYZ_WaterOxygenParser(BaseParser):
 
         return frames
 
-    def parse(self, num_frame):
-        """Parse frame and return positions with water oxygen identification."""
+    def parse(self, particle_type_liquid, num_frame):
+        """
+        Return positions of liquid particles for a specific frame, excluding wall particles.
+        Args:
+            particle_type_liquid (list or set): List or set of particle types (symbols) for liquid particles.
+            num_frame (int): The index of the frame to parse.
+        Returns:
+            numpy.ndarray: Coordinates of the liquid particles.
+        """
         frame = self.frames[num_frame]
+        # Create a boolean mask to include only liquid particles
+        mask = np.isin(frame['symbols'], particle_type_liquid)
+        # Extract positions of liquid particles
+        X_par = frame['positions'][mask]
+        return X_par
 
-        # Filter out wall particles
-        mask = ~np.isin(frame['symbols'], self.particle_type_wall)
-        positions = frame['positions'][mask]
-        symbols = frame['symbols'][mask]
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain_y", liquid_indices=None):
+        """
+        Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices.
+        Args:
+            frame_list (list): List of frame indices to process.
+            type_model (str): Type of model for cylindrical coordinates. Default is "masspain".
+            liquid_indices (list or numpy.ndarray, optional): List of indices to extract. If None, all particle positions are used.
+        Returns:
+            tuple: (xi_par, zi_par, num_frames)
+        """
+        xi_par = np.array([])
+        zi_par = np.array([])
+        for frame_idx in frame_list:
+            frame = self.frames[frame_idx]
+            X_par = frame['positions']
+            # Filter particles based on liquid_indices if provided
+            if liquid_indices is not None:
+                liquid_indices = np.array(liquid_indices)
+                X_par = X_par[liquid_indices]
+            X_cm = np.mean(X_par, axis=0)
+            X_0 = X_par - X_cm
+            X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
+            if type_model == "masspain_y":
+                xi_par_frame = np.abs(X_0[:, 0] + 0.01)
+            elif type_model == "masspain_x":
+                xi_par_frame = np.abs(X_0[:, 1] + 0.01)
+            elif type_model == "spherical":
+                xi_par_frame = np.sqrt(X_0[:, 0]**2 + X_0[:, 1]**2)
+            zi_par_frame = X_0[:, 2]
+            xi_par = np.concatenate((xi_par, xi_par_frame))
+            zi_par = np.concatenate((zi_par, zi_par_frame))
+            if frame_idx % 10 == 0:
+                print(f"Frame: {frame_idx}")
+                print(f"Center of Mass: {X_cm}")
+        print("\nxi range:\t({},{})".format(np.min(xi_par), np.max(xi_par)))
+        print("zi range:\t({},{})".format(np.min(zi_par), np.max(zi_par)))
+        return xi_par, zi_par, len(frame_list)
 
-        return {
-            'positions': positions,
-            'symbols': symbols,
-        }
+    def box_lenght_max(self, num_frame):
+        """
+        Return the maximum dimension of the simulation box for a specific frame.
+        Args:
+            num_frame (int): The index of the frame.
+        Returns:
+            float: The maximum dimension of the simulation box.
+        """
+        lattice_matrix = self.frames[num_frame]['lattice_matrix']
+        lengths = np.linalg.norm(lattice_matrix, axis=1)
+        return max(lengths)
 
     def get_water_oxygen_indices(self, num_frame):
         """Get indices of water oxygen atoms."""

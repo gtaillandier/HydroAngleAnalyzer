@@ -2,7 +2,7 @@ import numpy as np
 from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
-class ContactAnglePredictor:
+class ContactAngle_sliced:
     def __init__(self, o_coords, max_dist, o_center_geom, type='masspain_y',delta_gamma=None, width_masspain=None, delta_masspain=None):
         """
         Initialize the ContactAnglePredictor.

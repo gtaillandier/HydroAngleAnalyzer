@@ -1,3 +1,3 @@
-from .angle_fitting import ContactAnglePredictor
+from .angle_fitting_sliced import ContactAngle_sliced
 from .surface_defined import SurfaceDefinition
-from .multi_processing import ParallelFrameProcessor_allparser
+from .multi_processing import ContactAngle_sliced_parallel

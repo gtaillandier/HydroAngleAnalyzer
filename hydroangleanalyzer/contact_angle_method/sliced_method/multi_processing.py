@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Optional, Any, Tuple, Type
 import numpy as np
 import logging
-from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAnglePredictor
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
 from hydroangleanalyzer.parser import DumpParser, Ase_Parser, XYZ_Parser, BaseParser
 from hydroangleanalyzer.io_utils import detect_parser_type
 import multiprocessing
@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logging.basicConfig(filename='debug_parallel.log', level=logging.INFO, format='%(asctime)s %(process)d %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 
-class ParallelFrameProcessor_allparser:
+class ContactAngle_sliced_parallel():
     """
     A parallel frame processor that uses batch processing to avoid OVITO pickle issues.
     """
@@ -141,7 +141,7 @@ class ParallelFrameProcessor_allparser:
             Results for each frame in the batch.
         """
         try:
-            from hydroangleanalyzer import Dump_WaterMoleculeFinder, DumpParser, Ase_Parser, XYZ_Parser, ContactAnglePredictor, BaseParser, detect_parser_type
+            from hydroangleanalyzer import Dump_WaterMoleculeFinder, DumpParser, Ase_Parser, XYZ_Parser, ContactAngle_sliced, BaseParser, detect_parser_type
         except ImportError as e:
             logger.error(f"Failed to import required classes: {e}")
             return [(frame, None) for frame in batch_frames]
@@ -214,7 +214,7 @@ class ParallelFrameProcessor_allparser:
             # Calculate mean position of liquid particles (NOT from indices!)
             mean_liquid_position = np.mean(liquid_positions, axis=0)
             # Predict contact angle
-            predictor = ContactAnglePredictor(
+            predictor = ContactAngle_sliced(
                 o_coords=liquid_positions,
                 max_dist=self.max_dist,
                 o_center_geom=mean_liquid_position,

@@ -5,7 +5,7 @@ import matplotlib
 from .surface_definition import HyperbolicTangentModel
 import copy
      
-class ContactAngleAnalyzer_lammps:
+class ContactAngle_binning:
     """Class for analyzing contact angles in molecular dynamics simulations."""
 
     def __init__(self, parser, liquid_indices, wall_height, type_model="spherical", width_masspain=21,
@@ -16,7 +16,7 @@ class ContactAngleAnalyzer_lammps:
         Parameters:
         parser: DumpParser object for reading trajectory data
         wall_height: height of the wall surface
-        type_model: type of model for volume calculation ("spherical" or "masspain")
+        type_model: type of model for volume calculation ("spherical" or "masspain_x or masspain_y")
         width_masspain: width parameter for masspain model
         binning_params: dict with binning parameters (optional)
         output_dir: directory for output files
@@ -100,12 +100,12 @@ class ContactAngleAnalyzer_lammps:
                 print(f"Advancement: {100 * i / (len(self.xi_cc) - 1):.2f}%")
 
             # Calculate volume element
-            if type_model == "masspain":
+            if type_model == "masspain_x" or type_model == "masspain_y":
                 dV = 2 * width_masspain * self.dxi * self.dzi
             elif type_model == "spherical":
                 dV = 2 * np.pi * (self.xi_cc[i]) * self.dxi * self.dzi
             else:
-                raise ValueError(f"Unknown model type: {type_model}. Use 'masspain' or 'spherical'.")
+                raise ValueError(f"Unknown model type: {type_model}. Use 'masspain_x', 'masspain_y' or 'spherical'.")
 
             for j in range(len(self.zi_cc)):
                 # Find particles in this bin
@@ -177,7 +177,7 @@ class ContactAngleAnalyzer_lammps:
             f.write("Simulation parameters:\n")
             f.write(f"reduced_particles_number:{particles_number}\n")
             f.write(f"model_type:{self.type_model}\n")
-            if self.type_model == "masspain":
+            if self.type_model == "masspain_x" or self.type_model == "masspain_y":
                 f.write(f"width_masspain:{self.width_masspain}\n")
             f.write("Fitted parameters:\n")
             for param in param_strings:
