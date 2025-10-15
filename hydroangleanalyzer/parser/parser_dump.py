@@ -1,9 +1,5 @@
-from ovito.io import import_file, export_file
-from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier)
 
 import numpy as np
-from ovito.io import import_file, export_file
-from ovito.modifiers import (SelectTypeModifier, DeleteSelectedModifier, ComputePropertyModifier,CoordinationAnalysisModifier )
 from .base_parser import BaseParser
 from typing import Union, List, Set, Optional, Any
 
@@ -14,13 +10,25 @@ logger = logging.getLogger(__name__)
 class DumpParser(BaseParser):
     def __init__(self, in_path: str, particle_type_wall: set):
         """
-        Initialize the parser for a LAMMPS dump file.
-        This version does NOT preload all frames into memory.
+        Initialize the parser for a LAMMPS dump file using OVITO.
+        Raises an ImportError if OVITO is not installed.
         """
+        try:
+            from ovito.io import import_file
+            from ovito.modifiers import ComputePropertyModifier
+        except ImportError:
+            raise ImportError(
+                "The 'ovito' package is required for DumpParser. "
+                "Install it with: pip install HydroAngleAnalyzer[ovito]"
+            )
+
         self.in_path = in_path
         self.particle_type_wall = {int(particle) for particle in particle_type_wall}
+
         self.pipeline = import_file(self.in_path)
-        self.pipeline.modifiers.append(ComputePropertyModifier(expressions=['1'], output_property='Unity'))
+        self.pipeline.modifiers.append(
+            ComputePropertyModifier(expressions=['1'], output_property='Unity')
+        )
         self.num_frames = self.pipeline.source.num_frames
 
     def parse(self, num_frame: int, indices: np.ndarray = None) -> np.ndarray:
@@ -105,7 +113,19 @@ class DumpParse_wall:
         self.pipeline = self.load_dump_ovito()
 
     def load_dump_ovito(self):
-        # Load the file using OVITO
+        try:
+            from ovito.io import import_file
+            from ovito.modifiers import (
+                SelectTypeModifier,
+                DeleteSelectedModifier,
+                ComputePropertyModifier,
+            )
+        except ImportError:
+            raise ImportError(
+                "The 'ovito' package is required for this feature. "
+                "Install it with: pip install HydroAngleAnalyzer[ovito]"
+            )
+
         pipeline = import_file(self.in_path)
         pipeline.modifiers.append(SelectTypeModifier(property='Particle Type', types=self.particule_liquid_type))
         pipeline.modifiers.append(DeleteSelectedModifier())
@@ -190,17 +210,22 @@ class Dump_WaterMoleculeFinder:
         self.pipeline = self._setup_pipeline()
 
     def _setup_pipeline(self):
-        """Set up the OVITO pipeline with water molecule detection."""
+        try:
+            from ovito.io import import_file
+            from ovito.modifiers import CoordinationAnalysisModifier, ComputePropertyModifier
+        except ImportError:
+            raise ImportError(
+                "The 'ovito' package is required for water molecule detection. "
+                "Install it with: pip install HydroAngleAnalyzer[ovito]"
+            )
+
         pipeline = import_file(self.in_path)
         pipeline.modifiers.append(
             CoordinationAnalysisModifier(cutoff=self.oh_cutoff, number_of_bins=200)
         )
         expr = f"(ParticleType == {self.oxygen_type}) && (Coordination == 2)"
         pipeline.modifiers.append(
-            ComputePropertyModifier(
-                expressions=[expr],
-                output_property="IsWaterOxygen"
-            )
+            ComputePropertyModifier(expressions=[expr], output_property="IsWaterOxygen")
         )
         return pipeline
 
