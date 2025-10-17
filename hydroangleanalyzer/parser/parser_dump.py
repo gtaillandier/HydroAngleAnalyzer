@@ -49,13 +49,13 @@ class DumpParser(BaseParser):
 
         return X_par
 
-    def return_cylindrical_coord_pars(self, frame_list: list, type_model: str = "masspain_x", liquid_ids: np.ndarray = None) -> tuple:
+    def return_cylindrical_coord_pars(self, frame_list: list, type_model: str = "masspain_x", liquid_indices= None):
         """Convert Cartesian coordinates to cylindrical coordinates for the given frames and IDs."""
         xi_par = np.array([])
         zi_par = np.array([])
 
         for frame in frame_list:
-            X_par, particle_ids = self.parse(frame, liquid_ids)
+            X_par = self.parse(frame, liquid_indices)
             dim = len(X_par[0, :])
             X_cm = [(X_par[:, i]).sum() / len(X_par[:, i]) for i in range(dim)]
             X_0 = [X_par[:, i] - X_cm[i] * (i < 2) for i in range(dim)]

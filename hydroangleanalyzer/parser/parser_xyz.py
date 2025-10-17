@@ -98,7 +98,7 @@ class XYZ_Parser(BaseParser):
         X_par = frame['positions'][mask]
         return X_par
 
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain", liquid_indices=None):
+    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain_x", liquid_indices=None):
         """
         Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices.
         Args:

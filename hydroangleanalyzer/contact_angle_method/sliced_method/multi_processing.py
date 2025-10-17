@@ -26,7 +26,7 @@ class ContactAngle_sliced_parallel():
                 output_repo: str,
                 max_dist: float = 100,
                 wall_max_z: float = 4.8,
-                type: str = 'spherical',
+                type_model: str = 'spherical',
                 particle_type_wall: set = {1},
                 liquid_indices: np.ndarray = np.array([]),
                 delta_gamma: float = None,
@@ -42,7 +42,7 @@ class ContactAngle_sliced_parallel():
             max_dist: Maximum distance for analysis.
             wall_max_z: Maximum Z coordinate for wall.
             delta_masspain: Y-axis delta parameter.
-            type: Type of analysis ('spherical' or other).
+            type_model: Type of analysis ('spherical' or other).
             particle_type_wall: Set of particle types for wall.
             liquid_indices: array of indices.
         """
@@ -52,7 +52,7 @@ class ContactAngle_sliced_parallel():
         self.max_dist = max_dist
         self.wall_max_z = wall_max_z
         self.delta_masspain = delta_masspain
-        self.type = type
+        self.type_model = type_model
         self.particle_type_wall = particle_type_wall
         self.liquid_indices = liquid_indices
         # Removed undefined variable: self.particule_liquid_type
@@ -141,7 +141,13 @@ class ContactAngle_sliced_parallel():
             Results for each frame in the batch.
         """
         try:
-            from hydroangleanalyzer import Dump_WaterMoleculeFinder, DumpParser, Ase_Parser, XYZ_Parser, ContactAngle_sliced, BaseParser, detect_parser_type
+            from hydroangleanalyzer.parser.parser_dump import Dump_WaterMoleculeFinder, DumpParser
+            from hydroangleanalyzer.parser.parser_ase import Ase_Parser
+            from hydroangleanalyzer.parser.parser_xyz import XYZ_Parser
+            from hydroangleanalyzer.parser.base_parser import BaseParser
+            from hydroangleanalyzer.contact_angle_method.sliced_method.angle_fitting_sliced import ContactAngle_sliced
+            from hydroangleanalyzer.io_utils import detect_parser_type
+                
         except ImportError as e:
             logger.error(f"Failed to import required classes: {e}")
             return [(frame, None) for frame in batch_frames]
@@ -200,14 +206,14 @@ class ContactAngle_sliced_parallel():
             # Parse positions of liquid particles
             liquid_positions = parser.parse(num_frame=frame_num, indices=liquid_indices)
             logger.info(f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid particles")
-            if self.type == 'masspain_x':
+            if self.type_model == 'masspain_x':
                 liquid_positions = liquid_positions[:, [1, 0, 2]]
             else:
                 liquid_positions = liquid_positions
             # Get box dimensions for the frame
-            if self.type == 'masspain_x':
+            if self.type_model == 'masspain_x':
                 box_dimensions = parser.box_size_x(num_frame=frame_num)
-            elif self.type == 'masspain_y':
+            elif self.type_model == 'masspain_y':
                 box_dimensions = parser.box_size_y(num_frame=frame_num)
             else:
                 box_dimensions = None
@@ -218,7 +224,7 @@ class ContactAngle_sliced_parallel():
                 o_coords=liquid_positions,
                 max_dist=self.max_dist,
                 o_center_geom=mean_liquid_position,
-                type=self.type,
+                type=self.type_model,
                 delta_gamma=self.delta_gamma,
                 width_masspain=box_dimensions,
                 delta_masspain=self.delta_masspain

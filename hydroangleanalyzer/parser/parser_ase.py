@@ -93,7 +93,6 @@ class Ase_Parser(BaseParser):
     def box_size_x(self, num_frame):
         """Return the x-dimension of the simulation box for a specific frame."""
         frame = self.trajectory[num_frame]
-        print(frame.cell)
         return frame.cell[0, 0]
 
     def box_lenght_max(self, num_frame):

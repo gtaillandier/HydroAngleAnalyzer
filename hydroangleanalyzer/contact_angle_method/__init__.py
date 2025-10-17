@@ -5,6 +5,7 @@ from .contact_angle_analyzer import (
 )
 from .factory import create_contact_angle_analyzer
 from .sliced_method.multi_processing import ContactAngle_sliced_parallel
+from .sliced_method.angle_fitting_sliced import ContactAngle_sliced
 from .binning_method.angle_fitting_binning import ContactAngle_binning
 
 __all__ = [
