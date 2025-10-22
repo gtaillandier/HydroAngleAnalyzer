@@ -6,7 +6,7 @@ import shutil
 @pytest.fixture
 def trajectory_file_path():
     """Return the path to the test trajectory file."""
-    return 'traj_10_3_330w_nve_4k_reajust.lammpstrj'
+    return 'trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj'
 
 @pytest.fixture
 def temp_output_dir():

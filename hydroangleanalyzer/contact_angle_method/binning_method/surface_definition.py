@@ -25,14 +25,6 @@ class SurfaceModel:
                 out_fitted[i, j] = self.evaluate((xi_grid[i], zi_grid[j]))
         return out_fitted
 
-    def compute_isoline(self):
-        """Compute the iso-surface line for the density field."""
-        raise NotImplementedError("Subclasses must implement this method")
-
-    def compute_contact_angle(self, wall_height):
-        """Calculate the contact angle from the fitted parameters."""
-        raise NotImplementedError("Subclasses must implement this method")
-
 class HyperbolicTangentModel(SurfaceModel):
     """Model based on hyperbolic tangent function for liquid-vapor interface."""
 
@@ -149,7 +141,7 @@ class HyperbolicTangentModel(SurfaceModel):
 
         return circle_xi, circle_zi, wall_line_xi, wall_line_zi
 
-    def compute_contact_angle(self, wall_height):
+    def compute_contact_angle(self):
         """
         Calculate the contact angle from the fitted parameters.
         

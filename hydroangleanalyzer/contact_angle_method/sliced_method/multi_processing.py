@@ -12,7 +12,6 @@ multiprocessing.set_start_method('spawn', force=True)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logging.basicConfig(filename='debug_parallel.log', level=logging.INFO, format='%(asctime)s %(process)d %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 
 class ContactAngle_sliced_parallel():
@@ -205,7 +204,9 @@ class ContactAngle_sliced_parallel():
         try:
             # Parse positions of liquid particles
             liquid_positions = parser.parse(num_frame=frame_num, indices=liquid_indices)
-            logger.info(f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid particles")
+
+            max_dist = int(np.max(np.array([parser.box_size_y(num_frame=frame_num), parser.box_size_x(num_frame=frame_num)])) / 2)
+            logger.info(f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid particles with max_dist {max_dist}")
             if self.type_model == 'masspain_x':
                 liquid_positions = liquid_positions[:, [1, 0, 2]]
             else:
@@ -222,9 +223,9 @@ class ContactAngle_sliced_parallel():
             # Predict contact angle
             predictor = ContactAngle_sliced(
                 o_coords=liquid_positions,
-                max_dist=self.max_dist,
+                max_dist=max_dist,
                 o_center_geom=mean_liquid_position,
-                type=self.type_model,
+                type_model=self.type_model,
                 delta_gamma=self.delta_gamma,
                 width_masspain=box_dimensions,
                 delta_masspain=self.delta_masspain

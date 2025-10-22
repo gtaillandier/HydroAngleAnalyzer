@@ -8,14 +8,13 @@ import copy
 class ContactAngle_binning:
     """Class for analyzing contact angles in molecular dynamics simulations."""
 
-    def __init__(self, parser, liquid_indices, wall_height, type_model="spherical", width_masspain=21,
-                 binning_params=None, output_dir="output_analysis/"):
+    def __init__(self, parser, liquid_indices, type_model="spherical", width_masspain=21,
+                 binning_params=None, output_dir="output_analysis/", plot_graphs=True):
         """
         Initialize the contact angle analyzer.
         
         Parameters:
-        parser: DumpParser object for reading trajectory data
-        wall_height: height of the wall surface
+        parser: Parse object for reading trajectory data
         type_model: type of model for volume calculation ("spherical" or "masspain_x or masspain_y")
         width_masspain: width parameter for masspain model
         binning_params: dict with binning parameters (optional)
@@ -23,11 +22,9 @@ class ContactAngle_binning:
         """
         self.parser = parser
         self.liquid_indices = liquid_indices
-        self.wall_height = wall_height
         self.type_model = type_model
         self.width_masspain = width_masspain
         self.output_dir = output_dir
-
         # Set default binning parameters if not provided
         if binning_params is None:
             self.binning_params = {
@@ -242,18 +239,20 @@ class ContactAngle_binning:
         print("\nFitted parameters for batch{}:".format(f" {batch_index}" if batch_index is not None else ""))
         print("".join(param_strings))
 
-        contact_angle = model.compute_contact_angle(self.wall_height)
+        contact_angle = model.compute_contact_angle()
         print(f"Contact angle for batch{' ' + str(batch_index) if batch_index is not None else ''}:\t{contact_angle}")
 
         # Compute iso-surface
         circle_xi, circle_zi, wall_line_xi, wall_line_zi = model.compute_isoline()
 
-        # Plot and save results
-        self.plot_density_with_isoline(
-            self.xi_cc, self.zi_cc, rho_cc,
-            circle_xi, circle_zi, wall_line_xi, wall_line_zi,
-            batch_index
-        )
+        # Plot and save results only if plot_graphs is True
+        if getattr(self, 'plot_graphs', False):
+            self.plot_density_with_isoline(
+                self.xi_cc, self.zi_cc, rho_cc,
+                circle_xi, circle_zi, wall_line_xi, wall_line_zi,
+                batch_index
+            )
+
 
         self.save_logfile(
             particles_number, param_strings, contact_angle,
@@ -313,7 +312,6 @@ class ContactAngle_binning:
 #     }
 
 #     # Wall height and batch size
-#     wall_height = 4.89
 #     batch_size = 100
 #     type_model = "masspain"  # or "spherical"
 #     width_masspain = 21  # only used for masspain model
@@ -322,7 +320,6 @@ class ContactAngle_binning:
 #     parser = DumpParser(in_path)
 #     analyzer = ContactAngleAnalyzer(
 #         parser=parser,
-#         wall_height=wall_height,
 #         type_model=type_model,
 #         width_masspain=''width_masspain,
 #         binning_params=, binning_params,

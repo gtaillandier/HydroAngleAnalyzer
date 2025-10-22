@@ -3,7 +3,7 @@ from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
 class ContactAngle_sliced:
-    def __init__(self, o_coords, max_dist, o_center_geom, type='masspain_y',delta_gamma=None, width_masspain=None, delta_masspain=None):
+    def __init__(self, o_coords, max_dist, o_center_geom, type_model='masspain_y',delta_gamma=None, width_masspain=None, delta_masspain=None):
         """
         Initialize the ContactAnglePredictor.
         Args:
@@ -19,16 +19,16 @@ class ContactAngle_sliced:
         
         self.max_dist = max_dist
         self.o_center_geom = o_center_geom
-        self.type = type
+        self.type_model = type_model
         
         self.delta_gamma = delta_gamma
         self.width_masspain = width_masspain
         self.delta_masspain = delta_masspain
         # Validate that masspain parameters are provided when needed
-        if self.type in ['masspain_y', 'masspain_x']:
+        if self.type_model in ['masspain_y', 'masspain_x']:
             if width_masspain is None or delta_masspain is None:
-                print(f"Warning: width_masspain and delta_masspain are recommended for {self.type} analysis")
-        if self.type == 'spherical':
+                print(f"Warning: width_masspain and delta_masspain are recommended for {self.type_model} analysis")
+        if self.type_model == 'spherical':
             if delta_gamma is None:
                 raise ValueError("delta_gamma must be provided for spherical analysis")
         
@@ -40,9 +40,9 @@ class ContactAngle_sliced:
         Returns:
             list: Y-axis positions.
         """
-        if self.type == 'masspain_y'or 'masspain_x':
+        if self.type_model in ('masspain_y', 'masspain_x'):
             return np.arange(0, self.width_masspain, self.delta_masspain)
-        elif self.type == 'spherical':
+        elif self.type_model == 'spherical':
             return [self.o_center_geom[1]] * int(180 / self.delta_gamma)
 
     def calculate_gammas_list(self):
@@ -52,9 +52,9 @@ class ContactAngle_sliced:
         Returns:
             list: Gamma values.
         """
-        if self.type == 'masspain_y' or 'masspain_x':
+        if self.type_model in ('masspain_y', 'masspain_x'):
             return [0] * len(np.arange(0, self.width_masspain, self.delta_masspain))
-        elif self.type == 'spherical':
+        elif self.type_model == 'spherical':
             return np.linspace(0, 180, int(180 / self.delta_gamma))
 
     def surface_definition(self, v_gamma):
@@ -67,7 +67,7 @@ class ContactAngle_sliced:
         Returns:
             tuple: Arrays of XZ surface and radial distances.
         """
-        delta_angle = 10    # angle step for lines
+        delta_angle = 8    # angle step for lines
         surface_def = SurfaceDefinition(self.o_coords, delta_angle, self.max_dist, self.o_center_geom, v_gamma)
         list_rr, list_xz = surface_def.analyze_lines()
         return np.array(list_xz), np.array(list_rr)
@@ -122,6 +122,7 @@ class ContactAngle_sliced:
             method='trf'     # Trust Region Reflective algorithm works well for this
         )
         return result.x
+
     def find_intersection(self, popt, y_line):
         """
         Find the intersection of the circle with a horizontal line.
@@ -172,7 +173,6 @@ class ContactAngle_sliced:
         array_surfaces = []
         array_popt = []
         counter = 0
-
         for value_gamma in gammas:
             self.o_center_geom[1] = y_axis_list[counter]
             counter += 1
@@ -185,8 +185,8 @@ class ContactAngle_sliced:
             mean_rr = np.mean(list_rr[:, 0])
             initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
             popt = self.fit_circle(X_data, Y_data, initial_guess)
-            array_popt.append(popt)
             angle = self.find_intersection(popt,min_drop+2)
+            array_popt.append(np.append(popt, min_drop+2))
             if angle is not None:
                 list_alfas.append(angle)
 
