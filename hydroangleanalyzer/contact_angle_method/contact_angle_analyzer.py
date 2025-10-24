@@ -68,23 +68,44 @@ class BinnedContactAngleAnalyzer(BaseContactAngleAnalyzer):
             parser=parser, output_dir=output_dir, **kwargs
         )
 
-    def analyze(self, frame_range: Optional[List[int]] = None, batch_size: int = 100) -> Dict[str, Any]:
+    def analyze(
+        self,
+        frame_range: Optional[List[int]] = None,
+        split_factor: Optional[int] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Run the analysis and return statistics.
+
+        Parameters:
+            frame_range: List of frame indices to analyze. If None, all frames are used.
+            split_factor: If provided, frames are split into trajectories of this size.
+                          If None, all frames are processed as a single batch.
+        """
         if frame_range is None:
             frame_range = list(range(self.parser.frame_tot()))
 
-        angles = []
-        for start in range(0, len(frame_range), batch_size):
-            end = min(start + batch_size, len(frame_range))
-            angle, _ = self._analyzer.process_batch(frame_range[start:end])
-            angles.append(angle)
+        if split_factor is None:
+            # Full batch: process all frames at once
+            angle, _ = self._analyzer.process_batch(frame_range)
+            angles = np.array([angle])
+            method_metadata = {"frames_per_angle": len(frame_range)}
+        else:
+            # Split into trajectories
+            angles = []
+            for start in range(0, len(frame_range), split_factor):
+                end = min(start + split_factor, len(frame_range))
+                angle, _ = self._analyzer.process_batch(frame_range[start:end])
+                angles.append(angle)
+            angles = np.array(angles)
+            method_metadata = {"frames_per_trajectory": split_factor}
 
-        angles = np.array(angles)
         return {
             "mean_angle": np.mean(angles),
             "std_angle": np.std(angles),
             "angles": angles,
             "frames_analyzed": frame_range,
-            "method_metadata": {"frames_per_angle": batch_size}
+            "method_metadata": method_metadata
         }
 
     def get_method_name(self) -> str:

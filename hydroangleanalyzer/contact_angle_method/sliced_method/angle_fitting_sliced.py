@@ -185,7 +185,7 @@ class ContactAngle_sliced:
             mean_rr = np.mean(list_rr[:, 0])
             initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
             popt = self.fit_circle(X_data, Y_data, initial_guess)
-            angle = self.find_intersection(popt,min_drop+2)
+            angle = self.find_intersection(popt,min_drop)
             array_popt.append(np.append(popt, min_drop+2))
             if angle is not None:
                 list_alfas.append(angle)

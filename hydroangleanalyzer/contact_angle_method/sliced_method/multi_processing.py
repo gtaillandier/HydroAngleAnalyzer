@@ -23,10 +23,7 @@ class ContactAngle_sliced_parallel():
                 self,
                 filename: str,
                 output_repo: str,
-                max_dist: float = 100,
-                wall_max_z: float = 4.8,
                 type_model: str = 'spherical',
-                particle_type_wall: set = {1},
                 liquid_indices: np.ndarray = np.array([]),
                 delta_gamma: float = None,
                 delta_masspain: float = None,
@@ -37,22 +34,15 @@ class ContactAngle_sliced_parallel():
         Args:
             filename: Path to the dump file.
             output_repo: Output directory for results.
-            delta_gamma: Gamma parameter for contact angle calculation.
-            max_dist: Maximum distance for analysis.
-            wall_max_z: Maximum Z coordinate for wall.
             delta_masspain: Y-axis delta parameter.
             type_model: Type of analysis ('spherical' or other).
-            particle_type_wall: Set of particle types for wall.
             liquid_indices: array of indices.
         """
         self.filename = filename
         self.output_repo = output_repo
         self.delta_gamma = delta_gamma
-        self.max_dist = max_dist
-        self.wall_max_z = wall_max_z
         self.delta_masspain = delta_masspain
         self.type_model = type_model
-        self.particle_type_wall = particle_type_wall
         self.liquid_indices = liquid_indices
         # Removed undefined variable: self.particule_liquid_type
 
@@ -168,7 +158,6 @@ class ContactAngle_sliced_parallel():
             # Initialize the parser once per batch
             parser = parser_class(
                 in_path=self.filename,
-                particle_type_wall=self.particle_type_wall,
             )
 
         except Exception as e:

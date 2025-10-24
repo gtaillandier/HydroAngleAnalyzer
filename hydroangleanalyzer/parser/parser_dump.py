@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DumpParser(BaseParser):
-    def __init__(self, in_path: str, particle_type_wall: set):
+    def __init__(self, in_path: str):
         """
         Initialize the parser for a LAMMPS dump file using OVITO.
         Raises an ImportError if OVITO is not installed.
@@ -23,7 +23,6 @@ class DumpParser(BaseParser):
             )
 
         self.in_path = in_path
-        self.particle_type_wall = {int(particle) for particle in particle_type_wall}
 
         self.pipeline = import_file(self.in_path)
         self.pipeline.modifiers.append(
@@ -247,7 +246,6 @@ class Dump_WaterMoleculeFinder:
 # # Step 1: Initialize WaterMoleculeFinder to identify water oxygen atoms
 # water_finder = WaterMoleculeFinder(
 #     in_path='traj_10_3_330w_nve_4k_reajust.lammpstrj',
-#     particle_type_wall={3},
 #     oxygen_type=1,
 #     hydrogen_type=2
 # )
@@ -260,7 +258,6 @@ class Dump_WaterMoleculeFinder:
 # # Step 3: Initialize DumpParser to parse the trajectory file
 # parser = DumpParser(
 #     in_path='traj_10_3_330w_nve_4k_reajust.lammpstrj',
-#     particle_type_wall={3}
 # )
 
 # # Step 4: Parse the positions of water oxygen atoms for a specific frame

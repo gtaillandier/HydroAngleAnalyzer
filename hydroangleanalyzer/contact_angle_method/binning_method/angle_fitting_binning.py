@@ -25,11 +25,16 @@ class ContactAngle_binning:
         self.type_model = type_model
         self.width_masspain = width_masspain
         self.output_dir = output_dir
+        self.plot_graphs = plot_graphs
         # Set default binning parameters if not provided
+        
         if binning_params is None:
+
+            max_dist = int(np.max(np.array([parser.box_size_y(num_frame=1), parser.box_size_x(num_frame=1)])) / 3)
+
             self.binning_params = {
-                'xi_0': 0, 'xi_f': 100.0, 'nbins_xi': 50,
-                'zi_0': 0.0, 'zi_f': 100.0, 'nbins_zi': 50
+                'xi_0': 0, 'xi_f': max_dist, 'nbins_xi': 50,
+                'zi_0': 0.0, 'zi_f': max_dist, 'nbins_zi': 50
             }
         else:
             self.binning_params = binning_params
@@ -246,12 +251,11 @@ class ContactAngle_binning:
         circle_xi, circle_zi, wall_line_xi, wall_line_zi = model.compute_isoline()
 
         # Plot and save results only if plot_graphs is True
-        if getattr(self, 'plot_graphs', False):
+        if self.plot_graphs:
             self.plot_density_with_isoline(
                 self.xi_cc, self.zi_cc, rho_cc,
                 circle_xi, circle_zi, wall_line_xi, wall_line_zi,
-                batch_index
-            )
+                batch_index)
 
 
         self.save_logfile(

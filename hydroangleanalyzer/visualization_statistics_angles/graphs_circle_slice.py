@@ -7,16 +7,7 @@ plt.style.use('seaborn-v0_8-whitegrid')
 
 class Droplet_sliced_Plotter:
     """
-    Class for plotting droplet surfaces and fitted contact angles.
-
-    Parameters
-    ----------
-    center : bool, optional
-        Whether to recenter z-coordinates around the mean wall height. Default is True.
-    show_wall : bool, optional
-        Whether to plot wall particles. Default is True.
-    molecule_view : bool, optional
-        Whether to plot water as molecules (O + 2 H atoms). If False, plots only oxygen points. Default is True.
+    Class for plotting droplet surfaces, fitted contact angles, and tangent lines.
     """
 
     def __init__(self, center: bool = True, show_wall: bool = True, molecule_view: bool = True):
@@ -30,11 +21,17 @@ class Droplet_sliced_Plotter:
         self.surface_color = 'black'
         self.circle_color = '#0A9396'
         self.wall_color = 'black'
+        self.tangent_color = '#bb3e03'
 
     def plot_surface_points(self, oxygen_position, surface_data, popt, wall_coords,
-                            output_filename, y_com=None, pbc_y=None):
+                            output_filename, y_com=None, pbc_y=None, alpha=None):
         """
-        Plot the droplet surface, fitted circle, and optionally wall atoms and water molecules.
+        Plot the droplet surface, fitted circle, and optionally the tangent line.
+
+        Parameters
+        ----------
+        alpha : float, optional
+            Contact angle in degrees. If provided, the tangent line will be drawn.
         """
 
         if y_com is None:
@@ -108,6 +105,95 @@ class Droplet_sliced_Plotter:
         circle = plt.Circle((Xc, Zc), R, color=self.circle_color,
                             fill=False, ls='--', lw=2.5, zorder=4)
         ax.add_artist(circle)
+        # --- Tangent line (based on circle–surface intersection) ---
+        if alpha is not None:
+            alpha_rad = np.radians(alpha)
+
+            # --- Determine the contact point from the surface bottom ---
+            z_line = min([np.min(surf[:, 1]) for surf in surface_data])
+            Xc, Zc, R, _ = popt
+
+            delta_z = z_line - Zc
+            discriminant = R**2 - delta_z**2
+            if discriminant <= 0:
+                return
+
+            dx = np.sqrt(discriminant)
+
+            # Choose correct side (right if α > 90°, left if α < 90°)
+            if alpha > 90:
+                x_contact = Xc + dx
+                sign = 1
+            else:
+                x_contact = Xc - dx
+                sign = -1
+            z_contact = z_line
+
+            # --- Tangent slope at the intersection point ---
+            m_tangent = -(x_contact - Xc) / (z_contact - Zc)
+
+            # --- Extend tangent line upwards to top of circle ---
+            z_top = Zc + R * 1.1  # extend slightly above for visibility
+            if abs(m_tangent) > 1e-6:
+                x_top = x_contact + (z_top - z_contact) / m_tangent
+            else:
+                x_top = x_contact
+            x_line = np.linspace(x_contact, x_top, 100)
+            z_line = m_tangent * (x_line - x_contact) + z_contact
+
+            # Draw tangent line
+            ax.plot(
+                x_line, z_line,
+                color=self.tangent_color, lw=2.0, ls='-',
+                label=f"Tangent (α={alpha:.1f}°)", zorder=5
+            )
+
+            # --- Parameters from the circle fit ---
+            Xc, Zc, R = popt[:3]
+
+            # --- Determine intersection (right side only) ---
+            z_line = min([np.min(surf[:, 1]) for surf in surface_data])
+            delta_z = z_line - Zc
+            discriminant = R**2 - delta_z**2
+            if discriminant <= 0:
+                return
+
+            x_contact = Xc + np.sqrt(discriminant)  # right-side intersection
+            z_contact = z_line
+
+            # --- Tangent slope at contact point ---
+            m_tangent = -(x_contact - Xc) / (z_contact - Zc)
+
+            # --- Draw tangent line up to top of circle ---
+            z_top = Zc + R * 1.1
+            x_top = x_contact + (z_top - z_contact) / m_tangent
+            x_line = np.linspace(x_contact, x_top, 100)
+            z_line_tan = m_tangent * (x_line - x_contact) + z_contact
+
+            ax.plot(
+                x_line, z_line_tan,
+                color='tab:orange', lw=2.0, label=f"Tangent (α={alpha:.1f}°)", zorder=5
+            )
+
+            # --- Draw arc centered at contact point (right side) ---
+            alpha_rad = np.radians(alpha)
+            arc_radius = R * 0.25
+            theta = np.linspace(0, alpha_rad, 100)  # from horizontal (0) to tangent (α)
+            arc_x = x_contact + arc_radius * np.cos(theta)
+            arc_z = z_contact + arc_radius * np.sin(theta)
+            ax.plot(arc_x, arc_z, color='gray', lw=1.5, zorder=6)
+
+            # --- Label α value near the middle of the arc ---
+            mid_theta = alpha_rad / 2
+            text_x = x_contact + 1.2 * arc_radius * np.cos(mid_theta)
+            text_z = z_contact + 1.2 * arc_radius * np.sin(mid_theta)
+            ax.text(
+                text_x, text_z,
+                f"{alpha:.1f}°",
+                fontsize=9, color='black', ha='center', va='center', zorder=7
+            )
+
+
 
         # --- Axes ---
         ax.set_xlabel("x (Å)", fontsize=9)
@@ -123,7 +209,8 @@ class Droplet_sliced_Plotter:
         ax.legend(
             handles=[
                 plt.Line2D([], [], color=self.surface_color, lw=1.5, label='Surface contour'),
-                plt.Line2D([], [], color=self.circle_color, ls='--', lw=1.5, label='Fitted circle')
+                plt.Line2D([], [], color=self.circle_color, ls='--', lw=1.5, label='Fitted circle'),
+                plt.Line2D([], [], color=self.tangent_color, lw=1.5, label='Tangent line')
             ],
             loc='upper left',
             frameon=False,
@@ -133,3 +220,153 @@ class Droplet_sliced_Plotter:
         plt.tight_layout(pad=0.1)
         plt.savefig(output_filename, dpi=300, bbox_inches='tight')
         plt.close()
+import numpy as np
+import plotly.graph_objects as go
+
+class Droplet_sliced_Plotter_plotly:
+    """
+    Interactive droplet visualization using Plotly.
+    Toggle visibility for each element (water, surface, circle, tangent, wall).
+    """
+
+    def __init__(self, center: bool = True):
+        self.center = center
+        # Colors
+        self.oxygen_color = '#d62828'
+        self.hydrogen_color = '#FFFFFF'
+        self.surface_color = '#000000'
+        self.circle_color = '#0A9396'
+        self.wall_color = '#000000'
+        self.tangent_color = '#bb3e03'
+
+    def plot_surface_points(
+        self,
+        oxygen_position,
+        surface_data,
+        popt,
+        wall_coords,
+        alpha=None,
+        y_com=None,
+        pbc_y=None,
+        show_water=True,
+        show_surface=True,
+        show_circle=True,
+        show_tangent=True,
+        show_wall=True,
+    ):
+        if y_com is None:
+            y_com = np.mean(oxygen_position[:, 1])
+        # Select slice in y-direction
+        if pbc_y is not None:
+            dy = np.abs(oxygen_position[:, 1] - y_com)
+            dy = np.minimum(dy, pbc_y - dy)
+            mask = dy <= 3
+        else:
+            mask = np.abs(oxygen_position[:, 1] - y_com) <= 3
+        oxygen_selected = oxygen_position[mask]
+        # Recenter if needed
+        if self.center:
+            z_shift = np.mean(wall_coords[:, 2])
+            oxygen_selected[:, 2] -= z_shift
+            wall_coords[:, 2] -= z_shift
+            surface_data = [np.column_stack([surf[:, 0], surf[:, 1] - z_shift]) for surf in surface_data]
+            Xc, Zc, R, _ = popt
+            Zc -= z_shift
+        else:
+            Xc, Zc, R, _ = popt
+        fig = go.Figure()
+        # --- Wall ---
+        if show_wall:
+            fig.add_trace(go.Scatter(
+                x=wall_coords[:, 0], y=wall_coords[:, 2],
+                mode='markers', name='Wall',
+                marker=dict(color=self.wall_color, size=3),
+                opacity=0.7, visible=True, showlegend=True
+            ))
+        # --- Water molecules ---
+        if show_water:
+            fig.add_trace(go.Scatter(
+                x=oxygen_selected[:, 0], y=oxygen_selected[:, 2],
+                mode='markers', name='Water',
+                marker=dict(color=self.oxygen_color, size=5),
+                opacity=0.8, visible=True, showlegend=True
+            ))
+        # --- Surface contour ---
+        if show_surface:
+            for surf in surface_data:
+                # Append the first point to the end to close the contour
+                closed_surf = np.vstack([surf, surf[0]])
+                fig.add_trace(go.Scatter(
+                    x=closed_surf[:, 0], y=closed_surf[:, 1],
+                    mode='lines', name='Surface contour',
+                    line=dict(color=self.surface_color, width=3),  # Thicker line
+                    visible=True, showlegend=True
+                ))
+        # --- Fitted circle ---
+        if show_circle:
+            theta = np.linspace(0, 2 * np.pi, 200)
+            circle_x = Xc + R * np.cos(theta)
+            circle_z = Zc + R * np.sin(theta)
+            fig.add_trace(go.Scatter(
+                x=circle_x, y=circle_z,
+                mode='lines', name='Fitted Circle',
+                line=dict(color=self.circle_color, width=3, dash='dash'),  # Thicker line
+                visible=True, showlegend=True
+            ))
+        # --- Tangent + α arc ---
+        if show_tangent and alpha is not None:
+            z_line = min([np.min(surf[:, 1]) for surf in surface_data])
+            delta_z = z_line - Zc
+            discriminant = R**2 - delta_z**2
+            if discriminant > 0:
+                x_contact = Xc + np.sqrt(discriminant)  # Right side
+                z_contact = z_line
+                m_tangent = -(x_contact - Xc) / (z_contact - Zc)
+                # Tangent line
+                z_top = Zc + R * 1.1
+                x_top = x_contact + (z_top - z_contact) / m_tangent
+                x_line = np.linspace(x_contact, x_top, 100)
+                z_line_tan = m_tangent * (x_line - x_contact) + z_contact
+                fig.add_trace(go.Scatter(
+                    x=x_line, y=z_line_tan,
+                    mode='lines', name=f'{alpha:.1f}°',  # Only show angle value
+                    line=dict(color=self.tangent_color, width=3),  # Thicker line
+                    visible=True, showlegend=True
+                ))
+                # α arc (left side)
+                alpha_rad = np.radians(alpha)
+                arc_radius = R * 0.25
+                theta_arc = np.linspace(np.pi - alpha_rad, np.pi, 100)
+                arc_x = x_contact + arc_radius * np.cos(theta_arc)
+                arc_z = z_contact + arc_radius * np.sin(theta_arc)
+                fig.add_trace(go.Scatter(
+                    x=arc_x, y=arc_z,
+                    mode='lines', name=f'{alpha:.1f}° Arc',  # Only show angle value
+                    line=dict(color='gray', width=2),
+                    visible=True, showlegend=True
+                ))
+                # Label α near mid-arc
+                mid_theta = alpha_rad / 2
+                text_x = x_contact + 1.2 * arc_radius * np.cos(mid_theta)
+                text_z = z_contact + 1.2 * arc_radius * np.sin(mid_theta)
+                fig.add_annotation(
+                    x=text_x, y=text_z, text=f"{alpha:.1f}°",
+                    showarrow=False, font=dict(size=12, color='black')
+                )
+        # --- Layout ---
+        fig.update_layout(
+            width=600, height=450,
+            xaxis_title="x (Å)", yaxis_title="z (Å)",
+            template="plotly_white",
+            showlegend=True,
+            legend=dict(
+            x=1.05, y=1,  # Position legend outside the plot
+            bgcolor="rgba(255, 255, 255, 0.8)",
+            bordercolor="gray",
+            borderwidth=1,
+            itemsizing='constant',  # Ensures checkboxes are clearly visible
+            font=dict(size=10)  # ✅ Correct property
+        ),
+            yaxis=dict(scaleanchor="x", scaleratio=1)
+        )
+        return fig

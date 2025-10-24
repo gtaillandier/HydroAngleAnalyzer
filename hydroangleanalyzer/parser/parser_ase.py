@@ -2,13 +2,12 @@ import numpy as np
 from .base_parser import BaseParser
 from typing import Union, List, Set, Optional, Any
 class Ase_Parser(BaseParser):
-    def __init__(self, in_path: str, particle_type_wall: Union[List[str], Set[str]]) -> None:
+    def __init__(self, in_path: str) -> None:
         """
         Initialize the Ase_Parser.
 
         Args:
             in_path (str): Path to input trajectory (any ASE-readable format)
-            particle_type_wall (Union[List[str], Set[str]]): List or set of particle types (symbols) for wall particles
         """
         try:
             from ase.io import read
@@ -19,7 +18,6 @@ class Ase_Parser(BaseParser):
             ) from e
 
         self.in_path = in_path
-        self.particle_type_wall = particle_type_wall
         self.trajectory = read(self.in_path, index=':')
 
     def parse(self, num_frame, indices=None):

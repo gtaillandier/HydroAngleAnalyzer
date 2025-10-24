@@ -2,9 +2,8 @@ import numpy as np
 from .base_parser import BaseParser
 
 class XYZ_Parser(BaseParser):
-    def __init__(self, in_path, particle_type_wall):
-        self.in_path = in_path
-        self.particle_type_wall = particle_type_wall  # List of particle types to exclude
+    def __init__(self, in_path):
+        self.in_path = in_path 
         self.frames = self.load_xyz_file()
 
     def load_xyz_file(self):
