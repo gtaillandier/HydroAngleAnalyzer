@@ -331,8 +331,7 @@ class Droplet_sliced_Plotter_plotly:
                     x=x_line, y=z_line_tan,
                     mode='lines', name=f'{alpha:.1f}°',  # Only show angle value
                     line=dict(color=self.tangent_color, width=3),  # Thicker line
-                    visible=True, showlegend=True
-                ))
+                    visible=True, showlegend=True))
                 # α arc (left side)
                 alpha_rad = np.radians(alpha)
                 arc_radius = R * 0.25
@@ -343,8 +342,8 @@ class Droplet_sliced_Plotter_plotly:
                     x=arc_x, y=arc_z,
                     mode='lines', name=f'{alpha:.1f}° Arc',  # Only show angle value
                     line=dict(color='gray', width=2),
-                    visible=True, showlegend=True
-                ))
+                    visible=True, showlegend=False))
+
                 # Label α near mid-arc
                 mid_theta = alpha_rad / 2
                 text_x = x_contact + 1.2 * arc_radius * np.cos(mid_theta)
@@ -365,8 +364,347 @@ class Droplet_sliced_Plotter_plotly:
             bordercolor="gray",
             borderwidth=1,
             itemsizing='constant',  # Ensures checkboxes are clearly visible
-            font=dict(size=10)  # ✅ Correct property
-        ),
-            yaxis=dict(scaleanchor="x", scaleratio=1)
-        )
+            font=dict(size=10)),
+            yaxis=dict(scaleanchor="x", scaleratio=1 ))
+
         return fig
+
+class Droplet_sliced_Plotter_plotly_animated:
+    """
+    Class for interactive droplet visualization using Plotly.
+    Creates a time-evolving animation of droplet contact angles.
+    """
+
+    def __init__(self, center: bool = True):
+        self.center = center
+        self.oxygen_color = '#d62828'
+        self.surface_color = '#000000'
+        self.circle_color = '#0A9396'
+        self.wall_color = '#000000'
+        self.tangent_color = '#bb3e03'
+
+    def _single_frame(self, oxygen_position, surface_data, popt, wall_coords, alpha=None, y_com=None, pbc_y=None):
+        """Generate the Plotly traces for a single frame."""
+        if y_com is None:
+            y_com = np.mean(oxygen_position[:, 1])
+
+        # Select atoms near y center (±3 Å)
+        if pbc_y is not None:
+            dy = np.abs(oxygen_position[:, 1] - y_com)
+            dy = np.minimum(dy, pbc_y - dy)
+            mask = dy <= 3
+        else:
+            mask = np.abs(oxygen_position[:, 1] - y_com) <= 3
+        oxygen_selected = oxygen_position[mask]
+
+        # Optional recentering
+        if self.center:
+            z_shift = np.mean(wall_coords[:, 2])
+            oxygen_selected[:, 2] -= z_shift
+            wall_coords[:, 2] -= z_shift
+            surface_data = [np.column_stack([surf[:, 0], surf[:, 1] - z_shift]) for surf in surface_data]
+            Xc, Zc, R, _ = popt
+            Zc -= z_shift
+        else:
+            Xc, Zc, R, _ = popt
+
+        traces = []
+
+        # Wall
+        traces.append(go.Scatter(
+            x=wall_coords[:, 0], y=wall_coords[:, 2],
+            mode='markers', name='Wall',
+            marker=dict(color=self.wall_color, size=3),
+            opacity=0.7
+        ))
+
+        # Water
+        traces.append(go.Scatter(
+            x=oxygen_selected[:, 0], y=oxygen_selected[:, 2],
+            mode='markers', name='Water',
+            marker=dict(color=self.oxygen_color, size=5),
+            opacity=0.8
+        ))
+
+        # Surface contour
+        for surf in surface_data:
+            closed = np.vstack([surf, surf[0]])
+            traces.append(go.Scatter(
+                x=closed[:, 0], y=closed[:, 1],
+                mode='lines', name='Surface contour',
+                line=dict(color=self.surface_color, width=3)
+            ))
+
+        # Fitted circle
+        theta = np.linspace(0, 2 * np.pi, 200)
+        circle_x = Xc + R * np.cos(theta)
+        circle_z = Zc + R * np.sin(theta)
+        traces.append(go.Scatter(
+            x=circle_x, y=circle_z,
+            mode='lines', name='Fitted Circle',
+            line=dict(color=self.circle_color, width=2.5, dash='dash')
+        ))
+
+        # Tangent line (if α is provided)
+        if alpha is not None:
+            z_line = min([np.min(surf[:, 1]) for surf in surface_data])
+            delta_z = z_line - Zc
+            disc = R**2 - delta_z**2
+            if disc > 0:
+                x_contact = Xc + np.sqrt(disc)
+                z_contact = z_line
+                m_tan = -(x_contact - Xc) / (z_contact - Zc)
+                z_top = Zc + R * 1.1
+                x_top = x_contact + (z_top - z_contact) / m_tan
+                x_line = np.linspace(x_contact, x_top, 100)
+                z_line_tan = m_tan * (x_line - x_contact) + z_contact
+
+                traces.append(go.Scatter(
+                    x=x_line, y=z_line_tan,
+                    mode='lines', name=f"{alpha:.1f}°",
+                    line=dict(color=self.tangent_color, width=3)
+                ))
+
+        return traces
+
+    def animate(self, frames_data, output_filename="droplet_animation.html"):
+        """
+        Create an interactive animation from frame data.
+
+        Parameters
+        ----------
+        frames_data : list of dict
+            Each dict should contain:
+              - 'oxygen_position': np.ndarray (N,3)
+              - 'surface_data': list of np.ndarray
+              - 'popt': tuple or array-like (Xc, Zc, R, _)
+              - 'wall_coords': np.ndarray (M,3)
+              - 'alpha': float
+        """
+        frames_list = []
+        for i, frame in enumerate(frames_data):
+            traces = self._single_frame(**frame)
+            layout = go.Layout(title_text=f"Frame {i} | Median contact angle = {frame['alpha']:.2f}°")
+            frames_list.append(go.Frame(data=traces, name=f"Frame {i}", layout=layout))
+
+        # Initialize figure with first frame
+        fig = go.Figure(data=frames_list[0].data, frames=frames_list)
+
+        # Layout: clean and professional
+        fig.update_layout(
+            title="Interactive Contact Angle Evolution (Median Slice per Frame)",
+            width=800, height=600,
+            margin=dict(l=80, r=200, t=80, b=100),
+            xaxis_title="x (Å)", yaxis_title="z (Å)",
+            template="simple_white",
+            showlegend=True,
+            legend=dict(
+                x=1.05, y=0.95, bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="lightgray", borderwidth=1, font=dict(size=11)
+            ),
+            xaxis=dict(
+                mirror=True, showline=True, linecolor='black',
+                ticks='outside', showgrid=True, gridcolor='lightgray', zeroline=False
+            ),
+            yaxis=dict(
+                mirror=True, showline=True, linecolor='black',
+                ticks='outside', showgrid=True, gridcolor='lightgray', zeroline=False,
+                scaleanchor="x", scaleratio=1
+            ),
+            updatemenus=[{
+                "buttons": [
+                    {"args": [None, {"frame": {"duration": 500, "redraw": True}, "mode": "immediate"}],
+                     "label": "Play", "method": "animate"},
+                    {"args": [[None], {"frame": {"duration": 0, "redraw": True}, "mode": "immediate"}],
+                     "label": "Pause", "method": "animate"}
+                ],
+                "direction": "left", "pad": {"r": 10, "t": 80},
+                "showactive": False, "type": "buttons",
+                "x": 0.1, "xanchor": "right", "y": -0.15, "yanchor": "top"
+            }],
+            sliders=[{
+                "active": 0,
+                "pad": {"b": 60, "t": 40},
+                "x": 0.2, "len": 0.6, "y": -0.1, "yanchor": "top",
+                "steps": [
+                    {"args": [[f"Frame {k}"], {"frame": {"duration": 0, "redraw": True}, "mode": "immediate"}],
+                     "label": f"{k}", "method": "animate"} for k in range(len(frames_list))
+                ]
+            }]
+        )
+
+        fig.write_html(output_filename)
+        print(f" Interactive HTML saved: {output_filename}")
+        return fig
+import numpy as np
+import plotly.graph_objects as go
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
+from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder, DumpParse_wall
+
+class ContactAngleAnimator:
+    def __init__(
+        self,
+        filename: str,
+        particle_type_wall: set,
+        oxygen_type: int,
+        hydrogen_type: int,
+        particule_liquid_type: set,
+        n_frames: int = 10,
+        type_model: str = "masspain_y",
+        delta_masspain: int = 5,
+        max_dist: int = 100,
+        width_masspain: int = 21,
+    ):
+        self.filename = filename
+        self.particle_type_wall = particle_type_wall
+        self.oxygen_type = oxygen_type
+        self.hydrogen_type = hydrogen_type
+        self.particule_liquid_type = particule_liquid_type
+        self.n_frames = n_frames
+        self.type_model = type_model
+        self.delta_masspain = delta_masspain
+        self.max_dist = max_dist
+        self.width_masspain = width_masspain
+
+        # Initialize objects
+        self.wat_find = Dump_WaterMoleculeFinder(
+            self.filename,
+            particle_type_wall=self.particle_type_wall,
+            oxygen_type=self.oxygen_type,
+            hydrogen_type=self.hydrogen_type,
+        )
+        self.oxygen_indices = self.wat_find.get_water_oxygen_ids(num_frame=0)
+        self.coord_wall = DumpParse_wall(self.filename, particule_liquid_type=self.particule_liquid_type)
+        self.wall_coords = self.coord_wall.parse(num_frame=1)
+        self.parser = DumpParser(in_path=self.filename)
+        self.plotter = Droplet_sliced_Plotter_plotly(center=True)
+
+    def generate_animation(self, output_filename: str = "ContactAngle_Median_PerFrame_Slider.html"):
+        fig = go.Figure()
+        frames_list = []
+        frame_labels = []
+        median_angles = []
+
+        for frame_idx in range(self.n_frames):
+            oxygen_position = self.parser.parse(num_frame=frame_idx, indices=self.oxygen_indices)
+            processor = ContactAngle_sliced(
+                o_coords=oxygen_position,
+                o_center_geom=np.mean(oxygen_position, axis=0),
+                type_model=self.type_model,
+                delta_masspain=self.delta_masspain,
+                max_dist=self.max_dist,
+                width_masspain=self.width_masspain,
+            )
+            list_alfas, array_surfaces, array_popt = processor.predict_contact_angle()
+            median_idx = np.argsort(list_alfas)[len(list_alfas) // 2]
+            alpha = list_alfas[median_idx]
+            popt = array_popt[median_idx]
+            surface = np.array([array_surfaces[median_idx]])
+            median_angles.append(alpha)
+
+            fig_frame = self.plotter.plot_surface_points(
+                oxygen_position=oxygen_position,
+                surface_data=surface,
+                popt=popt,
+                wall_coords=self.wall_coords.copy(),
+                y_com=np.mean(oxygen_position[:, 1]),
+                pbc_y=None,
+                alpha=alpha,
+                show_water=True,
+                show_surface=True,
+                show_circle=True,
+                show_tangent=True,
+                show_wall=True,
+            )
+
+            frame = go.Frame(
+                data=fig_frame.data,
+                name=f"Frame {frame_idx}",
+                layout=go.Layout(title_text=f"Frame {frame_idx} | Median contact angle = {alpha:.2f}°"),
+            )
+            frames_list.append(frame)
+            frame_labels.append(f"Frame {frame_idx}")
+
+        fig.frames = frames_list
+        fig.add_traces(frames_list[0].data)
+        fig.update_layout(
+            title="Interactive Contact Angle Evolution (Median Slice per Frame)",
+            width=800,
+            height=600,
+            margin=dict(l=80, r=200, t=80, b=100),
+            xaxis_title="x (σ)",
+            yaxis_title="z (σ)",
+            template="simple_white",
+            showlegend=True,
+            legend=dict(x=1.05, y=0.95, bgcolor="rgba(255,255,255,0.8)", bordercolor="lightgray", borderwidth=1, font=dict(size=11)),
+            xaxis=dict(mirror=True, showline=True, linecolor="black", ticks="outside", showgrid=True, gridcolor="lightgray", zeroline=False),
+            yaxis=dict(mirror=True, showline=True, linecolor="black", ticks="outside", showgrid=True, gridcolor="lightgray", zeroline=False, scaleanchor="x", scaleratio=1),
+            updatemenus=[
+                {
+                    "buttons": [
+                        {
+                            "args": [
+                                None,
+                                {"frame": {"duration": 500, "redraw": True}, "mode": "immediate"},
+                            ],
+                            "label": "Play",
+                            "method": "animate",
+                        },
+                        {
+                            "args": [
+                                [None],
+                                {"frame": {"duration": 0, "redraw": True}, "mode": "immediate"},
+                            ],
+                            "label": "Pause",
+                            "method": "animate",
+                        },
+                    ],
+                    "direction": "left",
+                    "pad": {"r": 10, "t": 80},
+                    "showactive": False,
+                    "type": "buttons",
+                    "x": 0.1,
+                    "xanchor": "right",
+                    "y": -0.15,
+                    "yanchor": "top",
+                }
+            ],
+            sliders=[
+                {
+                    "active": 0,
+                    "pad": {"b": 60, "t": 40},
+                    "x": 0.2,
+                    "len": 0.6,
+                    "y": -0.1,
+                    "yanchor": "top",
+                    "steps": [
+                        {
+                            "args": [
+                                [f"Frame {k}"],
+                                {
+                                    "frame": {"duration": 0, "redraw": True},
+                                    "mode": "immediate",
+                                },
+                            ],
+                            "label": f"{k}",
+                            "method": "animate",
+                        }
+                        for k in range(len(frames_list))
+                    ],
+                }
+            ],
+        )
+        fig.write_html(output_filename)
+        print(f"Interactive HTML saved: {output_filename}")
+
+# Example usage
+# if __name__ == "__main__":
+#    animator = ContactAngleAnimator(
+#        filename="../HydroAngleAnalyzer/tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj",
+#        particle_type_wall={3},
+#        oxygen_type=1,
+#        hydrogen_type=2,
+#        particule_liquid_type={2, 1},
+#        n_frames=10,
+#    )
+#    animator.generate_animation()
