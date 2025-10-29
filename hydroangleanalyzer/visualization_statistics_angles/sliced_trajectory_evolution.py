@@ -117,6 +117,7 @@ class Sliced_Trajectory_Analyzer:
         plt.grid(False)
         plt.savefig(save_path, dpi=400, bbox_inches="tight")  # Save instead of show
         plt.close()  # Close the figure to free memory
+
     def plot_comparison_median_alfas(self, save_path):
         """
         Plot a comparison of the median angle (Alfas) with standard deviation for all directories.
@@ -133,8 +134,7 @@ class Sliced_Trajectory_Analyzer:
                 frame_numbers,
                 np.array(median_alfas) - np.array(std_alfas),
                 np.array(median_alfas) + np.array(std_alfas),
-                alpha=0.2,
-                label=f'±1 Std Dev ({directory})',
+                alpha=0.2
             )
 
         plt.title("Comparison of Median Angle (Alfas) with Standard Deviation")
@@ -144,4 +144,90 @@ class Sliced_Trajectory_Analyzer:
         plt.grid(False)
         plt.savefig(save_path, dpi=400, bbox_inches="tight")
         plt.close()
+    def plot_mean_angle_vs_surface(self, labels=None, colors=None, markers=None, save_path=None):
+        """
+        Generate a professional academic plot comparing mean angle vs surface area scaling.
 
+        Parameters
+        ----------
+        labels : list of str, optional
+            Labels for each dataset (for the legend). If None, directory names are used.
+        colors : list of str, optional
+            Custom colors for each dataset. Default uses Matplotlib's color cycle.
+        markers : list of str, optional
+            Custom marker styles for each dataset.
+        save_path : str, optional
+            If provided, saves the figure to this path (e.g. "angle_vs_surface.png").
+        """
+        # --- Initialize plotting setup ---
+        plt.rcParams.update({
+            "font.family": "serif",
+            "font.size": 13,
+            "axes.labelsize": 14,
+            "axes.titlesize": 15,
+            "legend.fontsize": 12,
+            "xtick.direction": "in",
+            "ytick.direction": "in",
+            "axes.linewidth": 1.0,
+            "errorbar.capsize": 3
+        })
+        fig, ax = plt.subplots(figsize=(7, 4.5))
+
+        # --- Defaults for styling ---
+        if labels is None:
+            labels = [d.replace("_reduce_sliced", "").replace("result_dump_", "") for d in self.directories]
+        if colors is None:
+            colors = plt.cm.viridis(np.linspace(0.15, 0.85, len(self.directories)))
+        if markers is None:
+            markers = ["o", "s", "^", "D", "v", "p", "h", "X"][:len(self.directories)]
+
+        # --- Collect and plot data ---
+        xvals, yvals = [], []
+        for d, label, color, marker in zip(self.directories, labels, colors, markers):
+            mean_surface_areas = self.data[d]["mean_surface_areas"]
+            median_alfas = self.data[d]["median_alfas"]
+            std_alfas = self.data[d]["std_alfas"]
+
+            x = 1 / np.sqrt(np.mean(mean_surface_areas))
+            y = np.mean(median_alfas)
+            yerr = np.std(median_alfas) / np.sqrt(len(median_alfas))  # SEM estimate
+
+            ax.errorbar(
+            x, y, yerr=yerr, fmt=marker, color=color,
+            markersize=6, capsize=3, lw=1.2
+            )
+            ax.annotate(
+                label,
+                xy=(x, y),
+                xytext=(5, 5),
+                textcoords="offset points",
+                ha="left",
+                va="center",
+                fontsize=6,
+                color="black"
+                )
+            xvals.append(x)
+            yvals.append(y)
+
+        # --- Fit and plot linear regression ---
+        xvals, yvals = np.array(xvals), np.array(yvals)
+        coeffs = np.polyfit(xvals, yvals, 1)
+        fit_line = np.poly1d(coeffs)
+        x_fit = np.linspace(0, max(xvals) * 1.1, 100)
+        ax.plot(x_fit, fit_line(x_fit), "--", color="gray", lw=1.5, label=f"Linear Fit (y = {fit_line(0):.2f}°)")
+
+        # --- Axis labels and title ---
+        ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area of Water Molecules}}$")
+        ax.set_ylabel("Mean Angle (°)")
+        ax.set_title("Cylindrical Fit Convergence with Surface Area", pad=10)
+
+        # --- Legend, grid, limits ---
+        ax.legend(frameon=False, loc="upper left")
+        ax.grid(False)
+        ax.set_xlim(left=-0.001)
+        ax.set_ylim(bottom=min(yvals) - 2, top=max(yvals) + 2)
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=400, bbox_inches="tight")
+        plt.close()

@@ -178,7 +178,7 @@ class Droplet_sliced_Plotter:
             # --- Draw arc centered at contact point (right side) ---
             alpha_rad = np.radians(alpha)
             arc_radius = R * 0.25
-            theta = np.linspace(0, alpha_rad, 100)  # from horizontal (0) to tangent (α)
+            theta = np.linspace(np.pi - alpha_rad, np.pi, 100)  # from horizontal (0) to tangent (α)
             arc_x = x_contact + arc_radius * np.cos(theta)
             arc_z = z_contact + arc_radius * np.sin(theta)
             ax.plot(arc_x, arc_z, color='gray', lw=1.5, zorder=6)

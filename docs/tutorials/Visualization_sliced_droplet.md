@@ -1,0 +1,108 @@
+# Visualization Tutorial — Droplet Surface and Contact Angle
+
+This tutorial demonstrates how to visualize a droplet and compute its contact angle using the **HydroAngleAnalyzer** package. We'll use the `sliced` contact angle method and visualize the resulting droplet with the `Droplet_sliced_Plotter` class.
+
+---
+
+## 1. Overview
+
+The visualization workflow involves the following steps:
+
+1. Parse atomic positions from a trajectory file.
+2. Identify water molecules (oxygen and hydrogen atoms).
+3. Compute the droplet surface and contact angle using the *sliced method*.
+4. Visualize the droplet, fitted circle, tangent, and wall.
+
+---
+
+## 2. Import Required Modules
+```python
+import numpy as np
+from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder, DumpParse_wall
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
+from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
+```
+
+---
+
+## 3. Define the Input Trajectory
+```python
+filename = "../HydroAngleAnalyzer/tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
+```
+
+---
+
+## 4. Identify Water Molecules
+```python
+wat_find = Dump_WaterMoleculeFinder(
+    filename,
+    particle_type_wall={3},
+    oxygen_type=1,
+    hydrogen_type=2
+)
+
+oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
+print("Number of water molecules detected:", len(oxygen_indices))
+```
+
+---
+
+## 5. Parse Atomic Coordinates
+```python
+parser = DumpParser(in_path=filename)
+oxygen_position = parser.parse(num_frame=10, indices=oxygen_indices)
+
+coord_wall = DumpParse_wall(filename, particule_liquid_type={1, 2})
+wall_coords = coord_wall.parse(num_frame=1)
+```
+
+---
+
+## 6. Compute Contact Angles
+```python
+processor = ContactAngle_sliced(
+    o_coords=oxygen_position,
+    o_center_geom=np.mean(oxygen_position, axis=0),
+    type_model='masspain_y',
+    delta_masspain=5,
+    max_dist=100,
+    width_masspain=21
+)
+
+list_alfas, array_surfaces, array_popt = processor.predict_contact_angle()
+print("Mean contact angles (°):", list_alfas)
+```
+
+---
+
+## 7. Visualize the Droplet
+```python
+plotter = Droplet_sliced_Plotter(
+    center=True,
+    show_wall=True,
+    molecule_view=True
+)
+
+plotter.plot_surface_points(
+    oxygen_position=oxygen_position,
+    surface_data=array_surfaces,
+    popt=array_popt[0],
+    wall_coords=wall_coords,
+    output_filename="droplet_plot.png",
+    alpha=list_alfas[0]
+)
+
+print("✅ Plot saved as 'droplet_plot.png'")
+```
+
+---
+
+## Summary
+
+This tutorial covered:
+- Loading trajectory data from LAMMPS dump files
+- Identifying water molecules by atom type
+- Computing droplet contact angles using the sliced method
+- Visualizing the droplet surface with fitted geometry and contact angle
+
+For more information, refer to the **HydroAngleAnalyzer** documentation.
