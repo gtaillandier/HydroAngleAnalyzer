@@ -47,7 +47,7 @@ oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
 print("Number of water molecules:", len(oxygen_indices))
 
 # --- Step 4: Initialize the parser ---
-parser = DumpParser(filename, particle_type_wall={3})
+parser = DumpParser(filename)
 
 # --- Step 5: Create the contact angle analyzer ---
 # Using the 'sliced' method with a spherical model

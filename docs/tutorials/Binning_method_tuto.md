@@ -67,7 +67,7 @@ binning_params = {
 }
 
 # --- Step 5: Initialize the parser ---
-parser = DumpParser(filename, particle_type_wall={3})
+parser = DumpParser(filename)
 
 # --- Step 6: Create the contact angle analyzer ---
 analyzer = create_contact_angle_analyzer(
