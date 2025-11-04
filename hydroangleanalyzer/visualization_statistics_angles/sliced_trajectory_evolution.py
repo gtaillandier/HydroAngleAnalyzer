@@ -209,9 +209,9 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         time_unit : str, optional
             Time unit for the x-axis (e.g., "ps", "ns", "fs").
         """
-        super().__init__(directories, time_unit=time_unit)
-        self.time_unit = time_unit
         self.time_steps = time_steps if time_steps else {d: 1.0 for d in directories}
+        self.time_unit = time_unit
+        super().__init__(directories, time_unit=time_unit)
 
     def _initialize_data_structure(self):
         """Initialize data structure for sliced analysis."""
@@ -227,7 +227,6 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 "time_step": self.time_steps.get(directory, 1.0),
             }
 
-    
     def get_method_name(self):
         """Return method name."""
         return "Sliced Analysis"

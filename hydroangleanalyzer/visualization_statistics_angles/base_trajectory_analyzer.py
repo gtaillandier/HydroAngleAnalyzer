@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 class BaseTrajectoryAnalyzer(ABC):
-    def __init__(self, directories, time_step=1.0, time_unit="ps"):
+    def __init__(self, directories, time_unit="ps"):
         """
         Initialize the analyzer with a list of directory paths.
 
@@ -13,16 +13,14 @@ class BaseTrajectoryAnalyzer(ABC):
         ----------
         directories : list of str
             List of directory paths containing analysis results.
-        time_step : float, optional
-            Time step between frames, in the specified time unit.
         time_unit : str, optional
             Time unit for the x-axis (e.g., "ps", "ns", "fs").
         """
         self.directories = directories
         self.data = {}
-        self.time_step = time_step
         self.time_unit = time_unit
         self._initialize_data_structure()
+
     
     @abstractmethod
     def _initialize_data_structure(self):
