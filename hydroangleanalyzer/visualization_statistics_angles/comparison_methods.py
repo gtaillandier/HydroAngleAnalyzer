@@ -2,16 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
-
 class MethodComparison:
-    """
-    Compare different trajectory analysis methods.
-    """
-    
     def __init__(self, analyzers, method_names=None):
         """
         Initialize comparison with multiple analyzers.
-        
+
         Parameters
         ----------
         analyzers : list of BaseTrajectoryAnalyzer
@@ -21,11 +16,12 @@ class MethodComparison:
         """
         self.analyzers = analyzers
         self.method_names = method_names or [a.get_method_name() for a in analyzers]
-        
+
         # Ensure all analyzers have read data
         for analyzer in self.analyzers:
             if not hasattr(analyzer, 'data') or not analyzer.data:
                 analyzer.read_data()
+
     
     def plot_side_by_side_comparison(self, save_path=None, figsize=(14, 5)):
         """
@@ -64,25 +60,24 @@ class MethodComparison:
             zip(self.analyzers, axes, self.method_names, colors_list)
         ):
             xvals, yvals = [], []
-            
             for i, directory in enumerate(analyzer.directories):
                 x, y, yerr = analyzer.compute_statistics(directory)
+                # Convert frame numbers to time using the analyzer's time_step
+                x_time = np.arange(len(x)) * analyzer.time_step
                 label = analyzer.get_clean_label(directory)
                 marker = markers[i % len(markers)]
-                
+
                 ax.errorbar(
-                    x, y, yerr=yerr, fmt=marker, color=colors[i],
+                    x_time, y, yerr=yerr, fmt=marker, color=colors[i],
                     markersize=6, capsize=3, lw=1.2
                 )
-                ax.annotate(
-                    label, xy=(x, y), xytext=(5, 5), textcoords="offset points",
-                    ha="left", va="center", fontsize=6, color="black"
-                )
-                xvals.append(x)
+                # ... (rest of the plotting code)
+                xvals.append(x_time)
                 yvals.append(y)
-            
-            # Linear fit
-            xvals_arr, yvals_arr = np.array(xvals), np.array(yvals)
+
+            # Linear fit using time
+            xvals_arr = np.concatenate(xvals)
+            yvals_arr = np.concatenate(yvals)
             coeffs = np.polyfit(xvals_arr, yvals_arr, 1)
             fit_line = np.poly1d(coeffs)
             x_fit = np.linspace(0, max(xvals_arr) * 1.1, 100)
@@ -90,8 +85,8 @@ class MethodComparison:
                 x_fit, fit_line(x_fit), "--", color="gray", lw=1.5,
                 label=f"Fit: y={coeffs[0]:.2f}x+{fit_line(0):.2f}°"
             )
-            
-            ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}}$")
+
+            ax.set_xlabel(f"Time ({analyzer.time_unit})")
             ax.set_ylabel("Mean Angle (°)")
             ax.set_title(f"{method_name}", pad=10)
             ax.legend(frameon=False, loc="upper left", fontsize=9)
@@ -140,32 +135,24 @@ class MethodComparison:
             zip(self.analyzers, self.method_names, method_colors)
         ):
             xvals, yvals = [], []
-            
-            # Create lighter shades of the base color for each directory
-            n_dirs = len(analyzer.directories)
-            color_variations = [
-                tuple(list(base_color[:3]) + [0.4 + 0.6 * i / max(n_dirs - 1, 1)])
-                for i in range(n_dirs)
-            ]
-            
             for i, directory in enumerate(analyzer.directories):
                 x, y, yerr = analyzer.compute_statistics(directory)
+                # Convert frame numbers to time using the analyzer's time_step
+                x_time = np.arange(len(x)) * analyzer.time_step
                 label = f"{method_name}: {analyzer.get_clean_label(directory)}"
                 marker = markers[(method_idx * 2 + i) % len(markers)]
-                
+
                 ax.errorbar(
-                    x, y, yerr=yerr, fmt=marker, color=base_color,
+                    x_time, y, yerr=yerr, fmt=marker, color=base_color,
                     markersize=6, capsize=3, lw=1.2, alpha=0.7,
                     label=label
                 )
-                xvals.append(x)
+                xvals.append(x_time)
                 yvals.append(y)
-            
-            all_xvals.extend(xvals)
-            all_yvals.extend(yvals)
-            
-            # Linear fit for this method
-            xvals_arr, yvals_arr = np.array(xvals), np.array(yvals)
+
+            # Linear fit using time
+            xvals_arr = np.concatenate(xvals)
+            yvals_arr = np.concatenate(yvals)
             coeffs = np.polyfit(xvals_arr, yvals_arr, 1)
             fit_line = np.poly1d(coeffs)
             x_fit = np.linspace(0, max(xvals_arr) * 1.1, 100)
@@ -173,8 +160,8 @@ class MethodComparison:
                 x_fit, fit_line(x_fit), "--", color=base_color, lw=2,
                 label=f"{method_name} Fit: {fit_line(0):.2f}°"
             )
-        
-        ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}}$")
+
+        ax.set_xlabel(f"Time ({self.analyzers[0].time_unit})")
         ax.set_ylabel("Mean Angle (°)")
         ax.set_title("Method Comparison: Mean Angle vs Surface Area", pad=10)
         ax.legend(frameon=False, loc="upper left", fontsize=8)
@@ -225,28 +212,28 @@ class MethodComparison:
         print("\n" + "=" * 70)
 
 
-# Example usage:
-if __name__ == "__main__":
-    from sliced_trajectory_analyzer import SlicedTrajectoryAnalyzer
-    from binning_trajectory_analyzer import BinningTrajectoryAnalyzer
+# # Example usage:
+# if __name__ == "__main__":
+#     from sliced_trajectory_analyzer import SlicedTrajectoryAnalyzer
+#     from binning_trajectory_analyzer import BinningTrajectoryAnalyzer
     
-    # Define directories for each method
-    sliced_dirs = ["./result_dump_1_reduce_sliced", "./result_dump_2_reduce_sliced"]
-    binned_dirs = ["./result_dump_1_reduce_binned", "./result_dump_2_reduce_binned"]
+#     # Define directories for each method
+#     sliced_dirs = ["./result_dump_1_reduce_sliced", "./result_dump_2_reduce_sliced"]
+#     binned_dirs = ["./result_dump_1_reduce_binned", "./result_dump_2_reduce_binned"]
     
-    # Create analyzers
-    sliced_analyzer = SlicedTrajectoryAnalyzer(directories=sliced_dirs)
-    binned_analyzer = BinningTrajectoryAnalyzer(directories=binned_dirs)
+#     # Create analyzers
+#     sliced_analyzer = SlicedTrajectoryAnalyzer(directories=sliced_dirs)
+#     binned_analyzer = BinningTrajectoryAnalyzer(directories=binned_dirs)
     
-    # Create comparison
-    comparison = MethodComparison(
-        analyzers=[sliced_analyzer, binned_analyzer],
-        method_names=["Sliced Method", "Binning Method"]
-    )
+#     # Create comparison
+#     comparison = MethodComparison(
+#         analyzers=[sliced_analyzer, binned_analyzer],
+#         method_names=["Sliced Method", "Binning Method"]
+#     )
     
-    # Generate comparison plots
-    comparison.plot_side_by_side_comparison(save_path="method_comparison_side_by_side.png")
-    comparison.plot_overlay_comparison(save_path="method_comparison_overlay.png")
+#     # Generate comparison plots
+#     comparison.plot_side_by_side_comparison(save_path="method_comparison_side_by_side.png")
+#     comparison.plot_overlay_comparison(save_path="method_comparison_overlay.png")
     
-    # Print statistics
-    comparison.compare_statistics()
+#     # Print statistics
+#     comparison.compare_statistics()

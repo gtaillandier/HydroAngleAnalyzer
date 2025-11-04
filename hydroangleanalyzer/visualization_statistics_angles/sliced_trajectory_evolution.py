@@ -195,10 +195,24 @@ import matplotlib.pyplot as plt
 from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
 
 class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
-    """
-    Analyzer for sliced trajectory data using polygon area calculations.
-    """
-    
+    def __init__(self, directories, time_steps=None, time_unit="ps"):
+        """
+        Initialize the analyzer with a list of directory paths.
+
+        Parameters
+        ----------
+        directories : list of str
+            List of directory paths containing analysis results.
+        time_steps : dict, optional
+            Dictionary mapping directory to its time step.
+            If None, defaults to 1.0 for all directories.
+        time_unit : str, optional
+            Time unit for the x-axis (e.g., "ps", "ns", "fs").
+        """
+        super().__init__(directories, time_unit=time_unit)
+        self.time_unit = time_unit
+        self.time_steps = time_steps if time_steps else {d: 1.0 for d in directories}
+
     def _initialize_data_structure(self):
         """Initialize data structure for sliced analysis."""
         for directory in self.directories:
@@ -210,7 +224,9 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 "all_alfas": [],
                 "median_alfas": [],
                 "std_alfas": [],
+                "time_step": self.time_steps.get(directory, 1.0),
             }
+
     
     def get_method_name(self):
         """Return method name."""
@@ -307,7 +323,6 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 self.data[directory]["all_alfas"].append(alfas)
                 self.data[directory]["median_alfas"].append(np.median(alfas))
                 self.data[directory]["std_alfas"].append(np.std(alfas))
-
     def plot_median_alfas_evolution(self, save_path):
         """
         Plot the evolution of the median angle (Alfas) with standard deviation for all directories.
@@ -318,7 +333,6 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
 
         # Find the minimum number of frames across all directories
         min_frames = min(len(self.data[d]["median_alfas"]) for d in self.directories)
-        frame_numbers = list(range(min_frames))
 
         plt.figure(figsize=(10, 6))
         colors = plt.cm.gist_rainbow(np.linspace(0, 1, len(self.directories)))
@@ -326,17 +340,20 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         for i, directory in enumerate(self.directories):
             median_alfas = self.data[directory]["median_alfas"][:min_frames]
             std_alfas = self.data[directory]["std_alfas"][:min_frames]
+            time_step = self.data[directory]["time_step"]
+            time_values = np.arange(min_frames) * time_step
 
             plt.plot(
-                frame_numbers,
+                time_values,
                 median_alfas,
                 marker='o',
                 linestyle='-',
                 color=colors[i],
                 label=f'Median Angle ({os.path.basename(directory)})'
             )
+
             plt.fill_between(
-                frame_numbers,
+                time_values,
                 np.array(median_alfas) - np.array(std_alfas),
                 np.array(median_alfas) + np.array(std_alfas),
                 color=colors[i],
@@ -345,7 +362,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             )
 
         plt.title("Evolution of the Median Angle (Alfas) with Standard Deviation")
-        plt.xlabel("Frame Number")
+        plt.xlabel(f"Time ({self.time_unit})")
         plt.ylabel("Angle (Alfas)")
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(False)
