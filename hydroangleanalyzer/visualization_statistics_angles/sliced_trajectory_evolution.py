@@ -39,6 +39,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 "mean_surface_areas": [],
                 "all_alfas": [],
                 "median_alfas": [],
+                "mean_alfas": [],
                 "std_alfas": [],
                 "time_step": self.time_steps.get(directory, 1.0),
             }
