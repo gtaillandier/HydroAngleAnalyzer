@@ -117,6 +117,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 alfas = np.loadtxt(alfa_file)
                 self.data[directory]["mean_surface_areas"].append(mean_surface_area)
                 self.data[directory]["median_alfas"].append(np.median(alfas))
+                self.data[directory]["mean_alfas"].append(np.mean(alfas))
                 self.data[directory]["std_alfas"].append(np.std(alfas))
     
     def get_surface_areas(self, directory):
@@ -137,6 +138,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 alfas = np.loadtxt(alfa_file)
                 self.data[directory]["all_alfas"].append(alfas)
                 self.data[directory]["median_alfas"].append(np.median(alfas))
+                self.data[directory]["mean_alfas"].append(np.mean(alfas))
                 self.data[directory]["std_alfas"].append(np.std(alfas))
     def plot_median_alfas_evolution(self, save_path):
         """
@@ -176,6 +178,52 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             )
 
         plt.title("Evolution of the Median Angle (Alfas) with Standard Deviation")
+        plt.xlabel(f"Time ({self.time_unit})")
+        plt.ylabel("Angle (Alfas)")
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(False)
+        plt.tight_layout()
+        plt.savefig(save_path, dpi=400, bbox_inches="tight")
+        plt.close()
+
+    def plot_mean_alfas_evolution(self, save_path):
+        """
+        Plot the evolution of the mean angle (Alfas) with standard deviation for all directories.
+        Aligns trajectories by truncating to the shortest.
+        """
+        if not self.data[self.directories[0]]["mean_alfas"]:
+            self.analyze_alfas_only()
+
+        # Find the minimum number of frames across all directories
+        min_frames = min(len(self.data[d]["median_alfas"]) for d in self.directories)
+
+        plt.figure(figsize=(10, 6))
+        colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
+
+        for i, directory in enumerate(self.directories):
+            mean_alfas = self.data[directory]["mean_alfas"][:min_frames]
+            std_alfas = self.data[directory]["std_alfas"][:min_frames]
+            time_step = self.data[directory]["time_step"]
+            time_values = np.arange(min_frames) * time_step
+
+            plt.plot(
+                time_values,
+                mean_alfas,
+                linestyle='-',
+                color=colors[i],
+                label=f'Median Angle ({os.path.basename(directory)})'
+            )
+
+            plt.fill_between(
+                time_values,
+                np.array(mean_alfas) - np.array(std_alfas),
+                np.array(mean_alfas) + np.array(std_alfas),
+                color=colors[i],
+                alpha=0.2,
+                label=f'±1 Std Dev ({os.path.basename(directory)})'
+            )
+
+        plt.title("Evolution of the Mean Angle (Alfas) with Standard Deviation")
         plt.xlabel(f"Time ({self.time_unit})")
         plt.ylabel("Angle (Alfas)")
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
