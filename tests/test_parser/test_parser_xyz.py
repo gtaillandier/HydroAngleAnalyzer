@@ -12,7 +12,7 @@ TRAJECTORY_PATH = os.path.join(
 # --- Fixture for XYZ_Parser ---
 @pytest.fixture
 def xyz_parser():
-    return XYZ_Parser(TRAJECTORY_PATH, particle_type_wall=["W"])
+    return XYZ_Parser(TRAJECTORY_PATH)
 
 # --- Test load_xyz_file ---
 def test_load_xyz_file(xyz_parser):

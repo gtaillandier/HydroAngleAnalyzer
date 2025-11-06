@@ -13,13 +13,13 @@ TRAJECTORY_PATH = os.path.join(
 # --- Fixture for Ase_Parser ---
 @pytest.fixture
 def ase_parser():
-    return Ase_Parser(TRAJECTORY_PATH, particle_type_wall=["W"])
+    return Ase_Parser(TRAJECTORY_PATH)
 
 # --- Test ImportError ---
 @patch("ase.io.read", side_effect=ImportError)
 def test_ase_parser_no_ase(mock_read):
     with pytest.raises(ImportError) as excinfo:
-        Ase_Parser(TRAJECTORY_PATH, particle_type_wall=["W"])
+        Ase_Parser(TRAJECTORY_PATH)
     assert "The 'ase' package is required" in str(excinfo.value)
 
 # --- Test parse ---

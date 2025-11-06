@@ -88,6 +88,7 @@ print("Extracted positions for", len(oxygen_positions), "oxygen atoms.")
 ---
 
 ## 4. Example: XYZ File
+
 ```python
 from hydroangleanalyzer.parser import XYZ_Parser
 
@@ -114,6 +115,6 @@ print("Subset of 50 atoms extracted successfully.")
 The parser module provides:
 - **Unified interface** across LAMMPS, ASE, and XYZ formats
 - **Selective parsing** using frame number and atom indices
-- **Water molecule identification** to filter oxygen atoms from bulk water
+- **Water molecule identification** to filter oxygen atoms from bulk water with tools from ase and ovito librarie
 
 All parsers return NumPy arrays of shape `(N, 3)` for direct use in analysis pipelines.

@@ -6,7 +6,7 @@ This tutorial explains how to compute the contact angle of a droplet using the *
 
 ## 1. Overview
 
-The **sliced method** divides the droplet into horizontal slices (along the z-axis) and fits a geometric model (e.g. spherical) to the liquid–solid interface profile.  
+The **sliced method** divides the droplet into horizontal slices (along the z-axis) and fits a geometric model (e.g. spherical) to the liquid–solid interface profile.
 This is ideal for **spherical or hemispherical droplets** on solid surfaces.
 
 ---
@@ -26,6 +26,7 @@ tests/trajectories/traj_spherical_drop_4k.lammpstrj
 ---
 
 ## 3. Example Code
+
 ````python
 # Import necessary modules
 from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder

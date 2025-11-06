@@ -93,9 +93,18 @@ plotter.plot_surface_points(
 )
 
 print("✅ Plot saved as 'droplet_plot.png'")
+
 ```
+## Outputs
+
+
+![Droplet sliced method visualization](../images/droplet_plot.png)
+
+
 
 ---
+
+
 
 ## Summary
 

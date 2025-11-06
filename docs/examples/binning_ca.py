@@ -3,7 +3,7 @@ from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
 from hydroangleanalyzer.contact_angle_method import create_contact_angle_analyzer
 
 # --- Step 1: Define the trajectory file ---
-filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
+filename = "../../tests/trajectories/traj_spherical_drop_4k.lammpstrj"
 
 # --- Step 2: Initialize the water molecule finder ---
 # This identifies O and H atoms in water molecules
@@ -21,11 +21,11 @@ print("Number of water molecules:", len(oxygen_indices))
 # --- Step 4: Define binning parameters ---
 binning_params = {
     'xi_0': 0.0,       # Minimum x-coordinate
-    'xi_f': 100.0,     # Maximum x-coordinate
-    'nbins_xi': 50,    # Number of bins along x
+    'xi_f': 70.0,     # Maximum x-coordinate
+    'nbins_xi': 30,    # Number of bins along x
     'zi_0': 0.0,       # Minimum z-coordinate
-    'zi_f': 100.0,     # Maximum z-coordinate
-    'nbins_zi': 25     # Number of bins along z
+    'zi_f': 70.0,     # Maximum z-coordinate
+    'nbins_zi': 30     # Number of bins along z
 }
 
 # --- Step 5: Initialize the parser ---
@@ -37,8 +37,7 @@ analyzer = create_contact_angle_analyzer(
     parser=parser,
     output_dir='results_binned_example',
     liquid_indices=oxygen_indices,
-    type_model='cylinder_y',     # Interface fitting model
-    width_cylinder=21,           # Width parameter for interface fit
+    type_model='spherical',     # Interface fitting model
     binning_params=binning_params,
     plot_graphs=True           # Enable plotting for automated runs
 )

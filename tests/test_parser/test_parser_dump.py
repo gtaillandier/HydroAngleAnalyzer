@@ -13,13 +13,13 @@ TRAJECTORY_PATH = os.path.join(
 # --- Fixture for DumpParser ---
 @pytest.fixture
 def dump_parser():
-    return DumpParser(TRAJECTORY_PATH, particle_type_wall={1, 2})
+    return DumpParser(TRAJECTORY_PATH)
 
 # --- Test ImportError ---
 @patch("ovito.io.import_file", side_effect=ImportError("The 'ovito' package is required for DumpParser. Install it with: pip install HydroAngleAnalyzer[ovito]"))
 def test_dump_parser_no_ovito(mock_import_file):
     with pytest.raises(ImportError) as excinfo:
-        DumpParser(TRAJECTORY_PATH, particle_type_wall={1, 2})
+        DumpParser(TRAJECTORY_PATH)
     assert "The 'ovito' package is required for DumpParser" in str(excinfo.value)
 
 # --- Test parse ---

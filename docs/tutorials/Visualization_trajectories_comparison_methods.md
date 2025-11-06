@@ -130,6 +130,7 @@ Binning Analysis:
     Mean Angle: 92.0876°
     Std Angle: 0.2391°
 ```
+
 ## Conclusion
 - The SlicedTrajectoryAnalyzer provides more detailed statistics with higher sample counts.
 
@@ -139,5 +140,3 @@ Binning Analysis:
 
 ## Additional Notes
 - Ensure your data directories are correctly formatted and contain the required log files.
-
-- Customize plot labels, colors, and markers as needed.

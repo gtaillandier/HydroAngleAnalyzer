@@ -1,7 +1,7 @@
 # Tutorial: Contact Angle Analysis (Binned Method)
 
 This tutorial demonstrates how to compute the contact angle using the **binned method** in `hydroangleanalyzer`.  
-The method divides the simulation box into spatial bins to calculate the liquid–solid interface and the corresponding contact angle.
+The method divides the simulation box into spatial bins to calculate the liquid–solid interface and the corresponding contact angle, fro a group of frames.
 
 ---
 
@@ -17,15 +17,10 @@ The **binned method** works by:
 
 ## 2. Prerequisites
 
-Make sure your Python environment has:
-```bash
-pip install hydroangleanalyzer ase numpy
-```
-
-Your trajectory file (e.g., a LAMMPS dump file) should contain:
+Your trajectory file (e.g., a LAMMPS dump file) contain:
 - Atom IDs, types, and positions
 - Wall atoms (solid surface)
-- Water molecules (O and H atoms)
+- Liquid particles (in this cas Water molecules: O and H atoms)
 
 Example trajectory:
 ```
@@ -97,10 +92,33 @@ Running this example will:
 
 Example printed output:
 ```
-Number of water molecules: 329
-Analysis results: {'frame': 1, 'contact_angle': 101.3, 'fit_quality': 0.97}
-```
+Number of water molecules: 4000
 
+```sh
+xi range:       (0.22795857644950415,41.63623606829102)
+zi range:       (7.54989,47.3742)
+
+Number of fluid particles in batch:     4000.0
+
+Binning with model: spherical ...
+Advancement: 0.00%
+Advancement: 35.71%
+Advancement: 71.43%
+
+Fitted parameters for batch:
+rho1:-3.387136459516587e-05
+rho2:0.03389671977759232
+R_eq:37.22899870907881
+zi_c:9.244210981996149
+zi_0:6.265045941194059
+t1:-4.384696208816467
+t2:0.07378719793487698
+
+Contact angle for batch:        94.58987060394456
+```
+A heat map representation of the particles density and the fitted semi-circle to get the contact angle.
+
+![Heat maps density particles](../images/bin_plot.png)
 ---
 
 ## 5. Tips
