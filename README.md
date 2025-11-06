@@ -26,15 +26,16 @@ Before installing HydroAngleAnalyzer, ensure you have the following prerequisite
 ### Optional install
 
 If you need to analyze, study lammps trajectory the most convivinient is to install this option: 
-
+```sh
 pip install hydroangleanalyzer[ovito]
-
+```
+```sh
 pip install hydroangleanalyzer[ase]
-
-or 
-
+```
+or to install all
+```sh
 pip install hydroangleanalyzer[all]
-
+```
 
 ### Install OVITO
 
