@@ -1,7 +1,6 @@
-# Contact Angle Analysis Documentation
-
-Welcome to the documentation for the Contact Angle Analysis toolkit.  
-This package provides both *sliced* and *binned* methods to compute the contact angle of droplets from molecular simulations.
+# HydroAngleAnalyzer Documentation
+  
+This package provides both *sliced* and *binned* methods to compute the contact angle of droplets from molecular dynamics simulations.
 
 ## Structure
 - `examples/`: Ready-to-run example scripts and notebooks
