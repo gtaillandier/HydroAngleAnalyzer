@@ -1,6 +1,6 @@
 # HydroAngleAnalyzer
 
-HydroAngleAnalyzer is a Python library designed to parse molecular dynamics (MD) trajectories from LAMMPS, ASE, or XYZ formats. Its objective is to provide a unified tool for referencing and implementing methods to measure contact angles with different approaches.
+HydroAngleAnalyzer is a Python library designed to parse molecular dynamics (MD) trajectories from LAMMPS, ASE, or XYZ formats. Its objective is to provide a unified tool for referencing and implementing methods to measure contact angles with different approaches. Two methods implemented, for two models of droplet of liquids (spherical or cylindrical using PBC).
 
 ---
 
@@ -29,8 +29,11 @@ If you need to analyze, study lammps trajectory the most convivinient is to inst
 
 pip install hydroangleanalyzer[ovito]
 
-
 pip install hydroangleanalyzer[ase]
+
+or 
+
+pip install hydroangleanalyzer[all]
 
 
 ### Install OVITO
