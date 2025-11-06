@@ -8,22 +8,22 @@ import copy
 class ContactAngle_binning:
     """Class for analyzing contact angles in molecular dynamics simulations."""
 
-    def __init__(self, parser, liquid_indices, type_model="spherical", width_masspain=21,
+    def __init__(self, parser, liquid_indices, type_model="spherical", width_cylinder=21,
                  binning_params=None, output_dir="output_analysis/", plot_graphs=True):
         """
         Initialize the contact angle analyzer.
         
         Parameters:
         parser: Parse object for reading trajectory data
-        type_model: type of model for volume calculation ("spherical" or "masspain_x or masspain_y")
-        width_masspain: width parameter for masspain model
+        type_model: type of model for volume calculation ("spherical" or "cylinder_x or cylinder_y")
+        width_cylinder: width parameter for cylinder model
         binning_params: dict with binning parameters (optional)
         output_dir: directory for output files
         """
         self.parser = parser
         self.liquid_indices = liquid_indices
         self.type_model = type_model
-        self.width_masspain = width_masspain
+        self.width_cylinder = width_cylinder
         self.output_dir = output_dir
         self.plot_graphs = plot_graphs
         # Set default binning parameters if not provided
@@ -69,7 +69,7 @@ class ContactAngle_binning:
         self.xi_cc = 0.5 * (self.xi[1:] + self.xi[:-1])
         self.zi_cc = 0.5 * (self.zi[1:] + self.zi[:-1])
 
-    def binning(self, xi_par, zi_par, len_frames, type_model=None, width_masspain=None):
+    def binning(self, xi_par, zi_par, len_frames, type_model=None, width_cylinder=None):
         """
         Bin particle data into a 2D grid to compute the density field.
         
@@ -78,7 +78,7 @@ class ContactAngle_binning:
         zi_par: array of zi coordinates of particles
         len_frames: number of frames used for averaging
         type_model: type of model for volume calculation (overrides instance setting if provided)
-        width_masspain: width parameter for masspain model (overrides instance setting if provided)
+        width_cylinder: width parameter for cylinder model (overrides instance setting if provided)
         
         Returns:
         numpy.ndarray: 2D density field
@@ -86,8 +86,8 @@ class ContactAngle_binning:
         # Use instance values as defaults if not provided
         if type_model is None:
             type_model = self.type_model
-        if width_masspain is None:
-            width_masspain = self.width_masspain
+        if width_cylinder is None:
+            width_cylinder = self.width_cylinder
 
         print(f"Binning with model: {type_model} ...")
 
@@ -102,12 +102,12 @@ class ContactAngle_binning:
                 print(f"Advancement: {100 * i / (len(self.xi_cc) - 1):.2f}%")
 
             # Calculate volume element
-            if type_model == "masspain_x" or type_model == "masspain_y":
-                dV = 2 * width_masspain * self.dxi * self.dzi
+            if type_model == "cylinder_x" or type_model == "cylinder_y":
+                dV = 2 * width_cylinder * self.dxi * self.dzi
             elif type_model == "spherical":
                 dV = 2 * np.pi * (self.xi_cc[i]) * self.dxi * self.dzi
             else:
-                raise ValueError(f"Unknown model type: {type_model}. Use 'masspain_x', 'masspain_y' or 'spherical'.")
+                raise ValueError(f"Unknown model type: {type_model}. Use 'cylinder_x', 'cylinder_y' or 'spherical'.")
 
             for j in range(len(self.zi_cc)):
                 # Find particles in this bin
@@ -179,8 +179,8 @@ class ContactAngle_binning:
             f.write("Simulation parameters:\n")
             f.write(f"reduced_particles_number:{particles_number}\n")
             f.write(f"model_type:{self.type_model}\n")
-            if self.type_model == "masspain_x" or self.type_model == "masspain_y":
-                f.write(f"width_masspain:{self.width_masspain}\n")
+            if self.type_model == "cylinder_x" or self.type_model == "cylinder_y":
+                f.write(f"width_cylinder:{self.width_cylinder}\n")
             f.write("Fitted parameters:\n")
             for param in param_strings:
                 f.write(param)
@@ -317,15 +317,15 @@ class ContactAngle_binning:
 
 #     # Wall height and batch size
 #     batch_size = 100
-#     type_model = "masspain"  # or "spherical"
-#     width_masspain = 21  # only used for masspain model
+#     type_model = "cylinder"  # or "spherical"
+#     width_cylinder = 21  # only used for cylinder model
 
 #     # Initialize parser and analyzer
 #     parser = DumpParser(in_path)
 #     analyzer = ContactAngleAnalyzer(
 #         parser=parser,
 #         type_model=type_model,
-#         width_masspain=''width_masspain,
+#         width_cylinder=''width_cylinder,
 #         binning_params=, binning_params,
 #         output_dir=out_dir
 #     )

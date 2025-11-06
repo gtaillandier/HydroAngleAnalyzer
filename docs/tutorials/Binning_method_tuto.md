@@ -75,8 +75,8 @@ analyzer = create_contact_angle_analyzer(
     parser=parser,
     output_dir='results_binned_example',
     liquid_indices=oxygen_indices,
-    type_model='masspain_y',     # Interface fitting model
-    width_masspain=21,           # Width parameter for interface fit
+    type_model='cylinder_y',     # Interface fitting model
+    width_cylinder=21,           # Width parameter for interface fit
     binning_params=binning_params,
     plot_graphs=False            # Disable plotting for automated runs
 )

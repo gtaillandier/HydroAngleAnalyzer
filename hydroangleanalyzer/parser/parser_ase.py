@@ -44,7 +44,7 @@ class Ase_Parser(BaseParser):
         X_par = frame.positions[mask]
         return X_par
         
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain_y", liquid_indices=None):
+    def return_cylindrical_coord_pars(self, frame_list, type_model="cylinder_y", liquid_indices=None):
         """Convert Cartesian coordinates to cylindrical coordinates for the given frames and indices."""
         xi_par = np.array([])
         zi_par = np.array([])
@@ -62,9 +62,9 @@ class Ase_Parser(BaseParser):
             X_0 = X_par - X_cm
             X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
 
-            if type_model == "masspain_y":
+            if type_model == "cylinder_y":
                 xi_par_frame = np.abs(X_0[:, 0] + 0.01)
-            elif type_model == "masspain_x":
+            elif type_model == "cylinder_x":
                 xi_par_frame = np.abs(X_0[:, 1] + 0.01)
             elif type_model == "spherical":
                 xi_par_frame = np.sqrt(X_0[:, 0]**2 + X_0[:, 1]**2)
@@ -216,7 +216,7 @@ class Ase_wallParser:
         X_wall = self.parse(num_frame)
         return np.max(X_wall[:, 2])
 
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
+    def return_cylindrical_coord_pars(self, frame_list, type_model="cylinder"):
         """Convert Cartesian coordinates to cylindrical coordinates for the given frames."""
         xi_par = np.array([])
         zi_par = np.array([])
@@ -226,7 +226,7 @@ class Ase_wallParser:
             X_cm = np.mean(X_par, axis=0)
             X_0 = X_par - X_cm
             X_0[:, 2] = X_par[:, 2]  # Keep z-coordinate unchanged
-            if type_model == "masspain":
+            if type_model == "cylinder":
                 xi_par_frame = np.abs(X_0[:, 0] + 0.01)
             elif type_model == "spherical":
                 xi_par_frame = np.sqrt(X_0[:, 0]**2 + X_0[:, 1]**2)

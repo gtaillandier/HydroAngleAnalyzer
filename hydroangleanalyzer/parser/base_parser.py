@@ -67,7 +67,7 @@ class BaseParser(ABC):
     def return_cylindrical_coord_pars(
         self,
         frame_list: List[int],
-        type_model: str = "masspain_y",
+        type_model: str = "cylinder_y",
         liquid_indices: Optional[np.ndarray] = None
     ) -> Tuple[np.ndarray, np.ndarray, int]:
         """

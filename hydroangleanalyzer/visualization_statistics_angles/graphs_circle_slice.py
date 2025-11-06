@@ -550,10 +550,10 @@ class ContactAngleAnimator:
         hydrogen_type: int,
         particule_liquid_type: set,
         n_frames: int = 10,
-        type_model: str = "masspain_y",
-        delta_masspain: int = 5,
+        type_model: str = "cylinder_y",
+        delta_cylinder: int = 5,
         max_dist: int = 100,
-        width_masspain: int = 21,
+        width_cylinder: int = 21,
     ):
         self.filename = filename
         self.particle_type_wall = particle_type_wall
@@ -562,9 +562,9 @@ class ContactAngleAnimator:
         self.particule_liquid_type = particule_liquid_type
         self.n_frames = n_frames
         self.type_model = type_model
-        self.delta_masspain = delta_masspain
+        self.delta_cylinder = delta_cylinder
         self.max_dist = max_dist
-        self.width_masspain = width_masspain
+        self.width_cylinder = width_cylinder
 
         # Initialize objects
         self.wat_find = Dump_WaterMoleculeFinder(
@@ -591,9 +591,9 @@ class ContactAngleAnimator:
                 o_coords=oxygen_position,
                 o_center_geom=np.mean(oxygen_position, axis=0),
                 type_model=self.type_model,
-                delta_masspain=self.delta_masspain,
+                delta_cylinder=self.delta_cylinder,
                 max_dist=self.max_dist,
-                width_masspain=self.width_masspain,
+                width_cylinder=self.width_cylinder,
             )
             list_alfas, array_surfaces, array_popt = processor.predict_contact_angle()
             median_idx = np.argsort(list_alfas)[len(list_alfas) // 2]

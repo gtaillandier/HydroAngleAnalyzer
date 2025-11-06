@@ -3,7 +3,7 @@ from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
 class ContactAngle_sliced:
-    def __init__(self, o_coords, max_dist, o_center_geom, type_model='masspain_y',delta_gamma=None, width_masspain=None, delta_masspain=None):
+    def __init__(self, o_coords, max_dist, o_center_geom, type_model='cylinder_y',delta_gamma=None, width_cylinder=None, delta_cylinder=None):
         """
         Initialize the ContactAnglePredictor.
         Args:
@@ -11,9 +11,9 @@ class ContactAngle_sliced:
             delta_gamma (float): Angular step size for spherical calculations.
             max_dist (float): Maximum distance for surface analysis.
             o_center_geom (array): Geometric center of the system.
-            type (str): Type of analysis ('masspain_y', 'masspain_x' or 'spherical').
-            width_masspain (float, optional): Width of the masspain range.
-            delta_masspain (float, optional): Step size for masspain calculations.
+            type (str): Type of analysis ('cylinder_y', 'cylinder_x' or 'spherical').
+            width_cylinder (float, optional): Width of the cylinder range.
+            delta_cylinder (float, optional): Step size for cylinder calculations.
         """
         self.o_coords = o_coords
         
@@ -22,12 +22,12 @@ class ContactAngle_sliced:
         self.type_model = type_model
         
         self.delta_gamma = delta_gamma
-        self.width_masspain = width_masspain
-        self.delta_masspain = delta_masspain
-        # Validate that masspain parameters are provided when needed
-        if self.type_model in ['masspain_y', 'masspain_x']:
-            if width_masspain is None or delta_masspain is None:
-                print(f"Warning: width_masspain and delta_masspain are recommended for {self.type_model} analysis")
+        self.width_cylinder = width_cylinder
+        self.delta_cylinder = delta_cylinder
+        # Validate that cylinder parameters are provided when needed
+        if self.type_model in ['cylinder_y', 'cylinder_x']:
+            if width_cylinder is None or delta_cylinder is None:
+                print(f"Warning: width_cylinder and delta_cylinder are recommended for {self.type_model} analysis")
         if self.type_model == 'spherical':
             if delta_gamma is None:
                 raise ValueError("delta_gamma must be provided for spherical analysis")
@@ -40,8 +40,8 @@ class ContactAngle_sliced:
         Returns:
             list: Y-axis positions.
         """
-        if self.type_model in ('masspain_y', 'masspain_x'):
-            return np.arange(0, self.width_masspain, self.delta_masspain)
+        if self.type_model in ('cylinder_y', 'cylinder_x'):
+            return np.arange(0, self.width_cylinder, self.delta_cylinder)
         elif self.type_model == 'spherical':
             return [self.o_center_geom[1]] * int(180 / self.delta_gamma)
 
@@ -52,8 +52,8 @@ class ContactAngle_sliced:
         Returns:
             list: Gamma values.
         """
-        if self.type_model in ('masspain_y', 'masspain_x'):
-            return [0] * len(np.arange(0, self.width_masspain, self.delta_masspain))
+        if self.type_model in ('cylinder_y', 'cylinder_x'):
+            return [0] * len(np.arange(0, self.width_cylinder, self.delta_cylinder))
         elif self.type_model == 'spherical':
             return np.linspace(0, 180, int(180 / self.delta_gamma))
 

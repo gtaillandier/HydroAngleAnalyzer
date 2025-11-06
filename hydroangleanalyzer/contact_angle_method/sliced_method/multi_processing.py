@@ -26,7 +26,7 @@ class ContactAngle_sliced_parallel():
                 type_model: str = 'spherical',
                 liquid_indices: np.ndarray = np.array([]),
                 delta_gamma: float = None,
-                delta_masspain: float = None,
+                delta_cylinder: float = None,
             ):
         """
         Initialize the BatchFrameProcessor.
@@ -34,14 +34,14 @@ class ContactAngle_sliced_parallel():
         Args:
             filename: Path to the dump file.
             output_repo: Output directory for results.
-            delta_masspain: Y-axis delta parameter.
+            delta_cylinder: Y-axis delta parameter.
             type_model: Type of analysis ('spherical' or other).
             liquid_indices: array of indices.
         """
         self.filename = filename
         self.output_repo = output_repo
         self.delta_gamma = delta_gamma
-        self.delta_masspain = delta_masspain
+        self.delta_cylinder = delta_cylinder
         self.type_model = type_model
         self.liquid_indices = liquid_indices
         # Removed undefined variable: self.particule_liquid_type
@@ -196,14 +196,14 @@ class ContactAngle_sliced_parallel():
 
             max_dist = int(np.max(np.array([parser.box_size_y(num_frame=frame_num), parser.box_size_x(num_frame=frame_num)])) / 2)
             logger.info(f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid particles with max_dist {max_dist}")
-            if self.type_model == 'masspain_x':
+            if self.type_model == 'cylinder_x':
                 liquid_positions = liquid_positions[:, [1, 0, 2]]
             else:
                 liquid_positions = liquid_positions
             # Get box dimensions for the frame
-            if self.type_model == 'masspain_x':
+            if self.type_model == 'cylinder_x':
                 box_dimensions = parser.box_size_x(num_frame=frame_num)
-            elif self.type_model == 'masspain_y':
+            elif self.type_model == 'cylinder_y':
                 box_dimensions = parser.box_size_y(num_frame=frame_num)
             else:
                 box_dimensions = None
@@ -216,8 +216,8 @@ class ContactAngle_sliced_parallel():
                 o_center_geom=mean_liquid_position,
                 type_model=self.type_model,
                 delta_gamma=self.delta_gamma,
-                width_masspain=box_dimensions,
-                delta_masspain=self.delta_masspain
+                width_cylinder=box_dimensions,
+                delta_cylinder=self.delta_cylinder
             )
 
             list_1, list_2, list_3 = predictor.predict_contact_angle()

@@ -76,7 +76,7 @@ These tests are designed to work with your existing trajectory files without gen
 
 - Testing initialization with different parameters
 - Processing single batches and all batches
-- Testing different model types (masspain, spherical)
+- Testing different model types (cylinder, spherical)
 - Testing with different binning parameters
 - Using mocked parsers to avoid file dependencies
 

@@ -48,7 +48,7 @@ class DumpParser(BaseParser):
 
         return X_par
 
-    def return_cylindrical_coord_pars(self, frame_list: list, type_model: str = "masspain_x", liquid_indices= None):
+    def return_cylindrical_coord_pars(self, frame_list: list, type_model: str = "cylinder_x", liquid_indices= None):
         """Convert Cartesian coordinates to cylindrical coordinates for the given frames and IDs."""
         xi_par = np.array([])
         zi_par = np.array([])
@@ -59,9 +59,9 @@ class DumpParser(BaseParser):
             X_cm = [(X_par[:, i]).sum() / len(X_par[:, i]) for i in range(dim)]
             X_0 = [X_par[:, i] - X_cm[i] * (i < 2) for i in range(dim)]
 
-            if type_model == "masspain_y":
+            if type_model == "cylinder_y":
                 xi_par_frame = np.abs(X_0[0] + 0.01)
-            elif type_model == "masspain_x":
+            elif type_model == "cylinder_x":
                 xi_par_frame = np.abs(X_0[1] + 0.01)
             elif type_model == "spherical":
                 xi_par_frame = np.sqrt(X_0[0]**2 + X_0[1]**2)
@@ -142,7 +142,7 @@ class DumpParse_wall:
         return np.max(X_wall[:, 2])
 
     # Convert Cartesian coordinates to cylindrical coordinates
-    def return_cylindrical_coord_pars(self, frame_list, type_model="masspain"):
+    def return_cylindrical_coord_pars(self, frame_list, type_model="cylinder"):
         """Convert Cartesian coordinates to cylindrical coordinates for the given frames."""
         xi_par = np.array([])
         zi_par = np.array([])
@@ -152,7 +152,7 @@ class DumpParse_wall:
             dim = len(X_par[0, :])
             X_cm = [(X_par[:, i]).sum() / len(X_par[:, i]) for i in range(dim)]
             X_0 = [X_par[:, i] - X_cm[i] * (i < 2) for i in range(dim)]
-            if type_model == "masspain":
+            if type_model == "cylinder":
                 xi_par_frame = np.abs(X_0[0]+ 0.01)
             elif type_model == "spherical":
                 xi_par_frame = np.sqrt(X_0[0]**2 + X_0[1]**2)

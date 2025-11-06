@@ -28,7 +28,7 @@ def test_full_processing_flow(temp_output_dir):
     proc = FrameProcessor(
         filename='traj_10_3_330w_nve_4k_reajust.lammpstrj',
         output_repo=temp_output_dir,
-        type='masspain',
+        type='cylinder',
         particle_type_wall={3},
         particule_liquid_type={1, 2}
     )
@@ -57,7 +57,7 @@ def test_specific_frame_processing(temp_output_dir):
     proc = FrameProcessor(
         filename='traj_10_3_330w_nve_4k_reajust.lammpstrj',
         output_repo=temp_output_dir,
-        type='masspain'
+        type='cylinder'
     )
     
     # Process the single frame
@@ -80,7 +80,7 @@ def test_specific_frame_processing(temp_output_dir):
             assert os.path.exists(file_path), f"Expected output file {expected_file} not found"
 
 @needs_traj_file
-@pytest.mark.parametrize("processor_type", ["masspain", "mass", "pain"])
+@pytest.mark.parametrize("processor_type", ["cylinder", "mass", "pain"])
 def test_different_processor_types(temp_output_dir, processor_type):
     """Test that different processor types work correctly."""
     proc = FrameProcessor(
@@ -108,7 +108,7 @@ def test_performance_with_multiple_frames(temp_output_dir):
     proc = FrameProcessor(
         filename='traj_10_3_330w_nve_4k_reajust.lammpstrj',
         output_repo=temp_output_dir,
-        type='masspain'
+        type='cylinder'
     )
     
     # Measure execution time

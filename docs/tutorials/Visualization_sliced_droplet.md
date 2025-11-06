@@ -63,10 +63,10 @@ wall_coords = coord_wall.parse(num_frame=1)
 processor = ContactAngle_sliced(
     o_coords=oxygen_position,
     o_center_geom=np.mean(oxygen_position, axis=0),
-    type_model='masspain_y',
-    delta_masspain=5,
+    type_model='cylinder_y',
+    delta_cylinder=5,
     max_dist=100,
-    width_masspain=21
+    width_cylinder=21
 )
 
 list_alfas, array_surfaces, array_popt = processor.predict_contact_angle()

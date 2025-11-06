@@ -83,7 +83,7 @@ If plotting is enabled, a visualization of the droplet profile and the fitted sp
 
 ## 5. Tips
 
-- Use `type_model='spherical'` for droplets and `type_model='masspain_y'` for flat interfaces.
+- Use `type_model='spherical'` for droplets and `type_model='cylinder_y'` for flat interfaces.
 - Adjust `delta_gamma` for smoother or sharper slicing (larger = smoother).
 - To analyze multiple frames:
 ````python
