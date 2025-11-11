@@ -92,7 +92,7 @@ plotter.plot_surface_points(
     alpha=list_alfas[0]
 )
 
-print("✅ Plot saved as 'droplet_plot.png'")
+print(" Plot saved as 'droplet_plot.png'")
 
 ```
 ## Outputs
@@ -102,16 +102,3 @@ print("✅ Plot saved as 'droplet_plot.png'")
 
 
 
----
-
-
-
-## Summary
-
-This tutorial covered:
-- Loading trajectory data from LAMMPS dump files
-- Identifying water molecules by atom type
-- Computing droplet contact angles using the sliced method
-- Visualizing the droplet surface with fitted geometry and contact angle
-
-For more information, refer to the **HydroAngleAnalyzer** documentation.

@@ -6,8 +6,8 @@ This tutorial explains how to compute the contact angle of a droplet using the *
 
 ## 1. Overview
 
-The **sliced method** divides the droplet into horizontal slices (along the z-axis) and fits a geometric model (e.g. spherical) to the liquid–solid interface profile.
-This is ideal for **spherical or hemispherical droplets** on solid surfaces.
+The **sliced method** divides the droplet into  slices (along the z-axis) and fits a geometric model (e.g. spherical) to the liquid–solid interface profile.
+This is ideal for study the evolution of the angles among a trajectory.
 
 ---
 
@@ -40,8 +40,7 @@ wat_find = Dump_WaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # Wall particle types
     oxygen_type=1,           # Oxygen atom type
-    hydrogen_type=2          # Hydrogen atom type
-)
+    hydrogen_type=2 )        # Hydrogen atom type
 
 # --- Step 3: Identify oxygen atom indices ---
 oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
@@ -84,7 +83,7 @@ If plotting is enabled, a visualization of the droplet profile and the fitted sp
 
 ## 5. Tips
 
-- Use `type_model='spherical'` for droplets and `type_model='cylinder_y'` for flat interfaces.
+- Use `type_model='spherical'` for droplets and `type_model='cylinder_y'` for cylindrical droplet on the y axis or `'cylinder_x'`for cylinder on the x axis.
 - Adjust `delta_gamma` for smoother or sharper slicing (larger = smoother).
 - To analyze multiple frames:
 ````python

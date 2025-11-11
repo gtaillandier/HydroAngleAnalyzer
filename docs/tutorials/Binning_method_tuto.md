@@ -1,14 +1,14 @@
 # Tutorial: Contact Angle Analysis (Binned Method)
 
 This tutorial demonstrates how to compute the contact angle using the **binned method** in `hydroangleanalyzer`.  
-The method divides the simulation box into spatial bins to calculate the liquid–solid interface and the corresponding contact angle, fro a group of frames.
+The method divides the simulation box into spatial bins to calculate the liquid–solid interface and the corresponding contact angle, for a group of frames.
 
 ---
 
 ## 1. Overview
 
 The **binned method** works by:
-1. Extracting the positions of water molecules (typically oxygen atoms).
+1. Collecting the positions of water molecules (typically oxygen atoms).
 2. Dividing the region of interest into bins in the **x–z** plane.
 3. Computing density profiles and fitting the interface shape.
 4. Deriving the contact angle from the interface curvature.
@@ -19,7 +19,6 @@ The **binned method** works by:
 
 Your trajectory file (e.g., a LAMMPS dump file) contain:
 - Atom IDs, types, and positions
-- Wall atoms (solid surface)
 - Liquid particles (in this cas Water molecules: O and H atoms)
 
 Example trajectory:
@@ -30,6 +29,7 @@ tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj
 ---
 
 ## 3. Example Script
+
 ```python
 # Import necessary modules
 from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
