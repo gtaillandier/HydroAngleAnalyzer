@@ -122,34 +122,52 @@ class BaseTrajectoryAnalyzer(ABC):
                         .replace("_reduce_binned", "")
                         .replace("result_dump_", ""))
     
-    def analyze(self):
-        """Analyze and print statistics for each directory."""
+    def analyze(self, output_filename="output_stats.txt"):
+        """
+        Analyze and save statistics for each directory to an output file.
+
+        Args:
+            output_filename (str): Name of the output file (default: "output_stats.txt").
+        """
         self.read_data()
         for directory in self.directories:
-            print(f"Directory: {directory}")
-            print(f"  Method: {self.get_method_name()}")
-            print(f"  Mean Surface Area: {np.mean(self.get_surface_areas(directory)):.4f}")
-            print(f"  Mean Contact Angle: {np.mean(self.get_contact_angles(directory)):.4f}°")
-            print()
-    
-    def plot_mean_angle_vs_surface(self, labels=None, colors=None, markers=None, save_path=None):
+            output_path = f"{directory}/{output_filename}"  # Custom or default output filename
+
+            with open(output_path, 'w') as f:
+                f.write(f"Directory: {directory}\n")
+                f.write(f"Method: {self.get_method_name()}\n")
+                f.write(f"Mean Surface Area: {np.mean(self.get_surface_areas(directory)):.4f}\n")
+                f.write(f"Mean Contact Angle: {np.mean(self.get_contact_angles(directory)):.4f}°\n")
+
+            print(f"Analysis saved to: {output_path}")
+
+    def plot_mean_angle_vs_surface(self, labels=None, colors=None,save_path=None):
         """
         Generate a professional academic plot comparing mean angle vs surface area scaling.
-        
+        If no analysis output is found, run the analysis first.
+
         Parameters
         ----------
         labels : list of str, optional
             Labels for each dataset. If None, directory names are used.
         colors : list of str, optional
             Custom colors for each dataset.
-        markers : list of str, optional
-            Custom marker styles for each dataset.
         save_path : str, optional
             Path to save the figure.
         """
+        # Check if analysis output files exist; if not, run analysis
+        for directory in self.directories:
+            output_file = f"{directory}/output_stats.txt"
+            if not os.path.exists(output_file):
+                print(f"No analysis found for {directory}. Running analysis...")
+                self.analyze()  # Run analysis to generate output files
+                break  # Only need to run once
+
+        # Read data if not already loaded
         if not hasattr(self, 'data') or not self.data:
             self.read_data()
-        
+
+        # Set up plot parameters
         plt.rcParams.update({
             "font.family": "serif",
             "font.size": 13,
@@ -161,21 +179,33 @@ class BaseTrajectoryAnalyzer(ABC):
             "axes.linewidth": 1.0,
             "errorbar.capsize": 3,
         })
-        
+
+        # Create the plot
         fig, ax = plt.subplots(figsize=(7, 4.5))
-        
+
+        # Set default labels and colors if not provided
         if labels is None:
             labels = [self.get_clean_label(d) for d in self.directories]
         if colors is None:
             colors = plt.cm.viridis(np.linspace(0.15, 0.85, len(self.directories)))
-        if markers is None:
-            markers = ["o", "s", "^", "D", "v", "p", "h", "X"][:len(self.directories)]
-        
+
+        # Collect data for plotting
         xvals, yvals = [], []
-        for d, label, color, marker in zip(self.directories, labels, colors, markers):
-            x, y, yerr = self.compute_statistics(d)
+        for d, label, color in zip(self.directories, labels, colors):
+            # Read data from the analysis output file
+            output_file = f"{d}/output_stats.txt"
+            with open(output_file, 'r') as f:
+                lines = f.readlines()
+                mean_surface_area = float(lines[2].split(": ")[1].strip())
+                mean_contact_angle = float(lines[3].split(": ")[1].strip())
+
+            # Use the data for plotting
+            x = 1 / np.sqrt(mean_surface_area)  # Example transformation
+            y = mean_contact_angle
+            yerr = 0.5  # Placeholder for error; adjust as needed
+
             ax.errorbar(
-                x, y, yerr=yerr, fmt=marker, color=color,
+                x, y, yerr=yerr, fmt='o', color=color,
                 markersize=6, capsize=3, lw=1.2
             )
             ax.annotate(
@@ -184,15 +214,16 @@ class BaseTrajectoryAnalyzer(ABC):
             )
             xvals.append(x)
             yvals.append(y)
-        
+
         # Linear fit
         xvals, yvals = np.array(xvals), np.array(yvals)
         coeffs = np.polyfit(xvals, yvals, 1)
         fit_line = np.poly1d(coeffs)
         x_fit = np.linspace(0, max(xvals) * 1.1, 100)
-        ax.plot(x_fit, fit_line(x_fit), "--", color="gray", lw=1.5, 
+        ax.plot(x_fit, fit_line(x_fit), "--", color="gray", lw=1.5,
                 label=f"Linear Fit (y = {fit_line(0):.2f}°)")
-        
+
+        # Set plot labels and title
         ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}}$")
         ax.set_ylabel("Mean Angle (°)")
         ax.set_title(f"{self.get_method_name()} - Mean Angle vs Surface Area", pad=10)
@@ -201,7 +232,8 @@ class BaseTrajectoryAnalyzer(ABC):
         ax.set_xlim(left=-0.001)
         ax.set_ylim(bottom=min(yvals) - 2, top=max(yvals) + 2)
         plt.tight_layout()
-        
+
+        # Save the plot if a path is provided
         if save_path:
             plt.savefig(save_path, dpi=400, bbox_inches="tight")
         plt.close()

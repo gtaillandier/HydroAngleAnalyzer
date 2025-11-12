@@ -15,7 +15,7 @@ Each parser can extract atomic positions for selected frames and atoms, allowing
 
 Every parser follows the same pattern:
 
-1. Initialize the parser with your trajectory file and wall atom type(s).
+1. Initialize the parser with your trajectory file.
 2. (Optional) Use a `WaterMoleculeFinder` class to locate oxygen atoms belonging to water molecules.
 3. Extract coordinates of all atoms or only selected indices using `.parse(num_frame, indices)`.
 

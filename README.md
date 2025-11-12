@@ -37,7 +37,7 @@ or to install all
 pip install hydroangleanalyzer[all]
 ```
 
-### Install OVITO
+#### Install OVITO
 
 OVITO must be installed using the following Conda command:
 
