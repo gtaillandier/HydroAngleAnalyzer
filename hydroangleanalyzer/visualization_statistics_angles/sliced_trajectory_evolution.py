@@ -141,17 +141,27 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 self.data[directory]["median_alfas"].append(np.median(alfas))
                 self.data[directory]["mean_alfas"].append(np.mean(alfas))
                 self.data[directory]["std_alfas"].append(np.std(alfas))
-    def plot_median_alfas_evolution(self, save_path):
+    def plot_median_alfas_evolution(self, save_path, labels=None):
         """
         Plot the evolution of the median angle (Alfas) with standard deviation for all directories.
         Aligns trajectories by truncating to the shortest.
+
+        Parameters
+        ----------
+        save_path : str
+            Path to save the plot.
+        labels : dict, optional
+            Dictionary mapping directory to a custom label for plotting.
+            If None, directory basename is used.
         """
         if not self.data[self.directories[0]]["median_alfas"]:
             self.analyze_alfas_only()
 
+        # Use provided labels or fall back to directory basename
+        plot_labels = labels if labels else {d: os.path.basename(d) for d in self.directories}
+
         # Find the minimum number of frames across all directories
         min_frames = min(len(self.data[d]["median_alfas"]) for d in self.directories)
-
         plt.figure(figsize=(10, 6))
         colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
 
@@ -160,22 +170,22 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             std_alfas = self.data[directory]["std_alfas"][:min_frames]
             time_step = self.data[directory]["time_step"]
             time_values = np.arange(min_frames) * time_step
+            label = plot_labels.get(directory, os.path.basename(directory))
 
             plt.plot(
                 time_values,
                 median_alfas,
                 linestyle='-',
                 color=colors[i],
-                label=f'Median Angle ({os.path.basename(directory)})'
+                label=f'Median Angle ({label})'
             )
-
             plt.fill_between(
                 time_values,
                 np.array(median_alfas) - np.array(std_alfas),
                 np.array(median_alfas) + np.array(std_alfas),
                 color=colors[i],
                 alpha=0.2,
-                label=f'±1 Std Dev ({os.path.basename(directory)})'
+                label=f'±1 Std Dev ({label})'
             )
 
         plt.title("Evolution of the Median Angle (Alfas) with Standard Deviation")
@@ -187,17 +197,27 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         plt.savefig(save_path, dpi=400, bbox_inches="tight")
         plt.close()
 
-    def plot_mean_alfas_evolution(self, save_path):
+    def plot_mean_alfas_evolution(self, save_path, labels=None):
         """
         Plot the evolution of the mean angle (Alfas) with standard deviation for all directories.
         Aligns trajectories by truncating to the shortest.
+
+        Parameters
+        ----------
+        save_path : str
+            Path to save the plot.
+        labels : dict, optional
+            Dictionary mapping directory to a custom label for plotting.
+            If None, directory basename is used.
         """
         if not self.data[self.directories[0]]["mean_alfas"]:
             self.analyze_alfas_only()
 
-        # Find the minimum number of frames across all directories
-        min_frames = min(len(self.data[d]["median_alfas"]) for d in self.directories)
+        # Use provided labels or fall back to directory basename
+        plot_labels = labels if labels else {d: os.path.basename(d) for d in self.directories}
 
+        # Find the minimum number of frames across all directories
+        min_frames = min(len(self.data[d]["mean_alfas"]) for d in self.directories)
         plt.figure(figsize=(10, 6))
         colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
 
@@ -206,22 +226,22 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             std_alfas = self.data[directory]["std_alfas"][:min_frames]
             time_step = self.data[directory]["time_step"]
             time_values = np.arange(min_frames) * time_step
+            label = plot_labels.get(directory, os.path.basename(directory))
 
             plt.plot(
                 time_values,
                 mean_alfas,
                 linestyle='-',
                 color=colors[i],
-                label=f'Median Angle ({os.path.basename(directory)})'
+                label=f'Mean Angle ({label})'
             )
-
             plt.fill_between(
                 time_values,
                 np.array(mean_alfas) - np.array(std_alfas),
                 np.array(mean_alfas) + np.array(std_alfas),
                 color=colors[i],
                 alpha=0.2,
-                label=f'±1 Std Dev ({os.path.basename(directory)})'
+                label=f'±1 Std Dev ({label})'
             )
 
         plt.title("Evolution of the Mean Angle (Alfas) with Standard Deviation")
