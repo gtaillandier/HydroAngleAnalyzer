@@ -177,15 +177,14 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 median_alfas,
                 linestyle='-',
                 color=colors[i],
-                label=f'Median Angle ({label})'
+                label=f'{label}'
             )
             plt.fill_between(
                 time_values,
                 np.array(median_alfas) - np.array(std_alfas),
                 np.array(median_alfas) + np.array(std_alfas),
                 color=colors[i],
-                alpha=0.2,
-                label=f'±1 Std Dev ({label})'
+                alpha=0.2'
             )
 
         plt.title("Evolution of the Median Angle (Alfas) with Standard Deviation")
@@ -232,17 +231,14 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 time_values,
                 mean_alfas,
                 linestyle='-',
-                color=colors[i],
-                label=f'Mean Angle ({label})'
-            )
+                color=colors[i])
+
             plt.fill_between(
                 time_values,
                 np.array(mean_alfas) - np.array(std_alfas),
                 np.array(mean_alfas) + np.array(std_alfas),
                 color=colors[i],
-                alpha=0.2,
-                label=f'±1 Std Dev ({label})'
-            )
+                alpha=0.2)
 
         plt.title("Evolution of the Mean Angle (Alfas) with Standard Deviation")
         plt.xlabel(f"Time ({self.time_unit})")
