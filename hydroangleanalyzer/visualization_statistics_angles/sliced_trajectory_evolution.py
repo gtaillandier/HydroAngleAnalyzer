@@ -184,7 +184,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 np.array(median_alfas) - np.array(std_alfas),
                 np.array(median_alfas) + np.array(std_alfas),
                 color=colors[i],
-                alpha=0.2'
+                alpha=0.2
             )
 
         plt.title("Evolution of the Median Angle (Alfas) with Standard Deviation")
