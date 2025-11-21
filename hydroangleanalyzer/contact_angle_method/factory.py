@@ -5,7 +5,7 @@ from .contact_angle_analyzer import (
 )
 
 
-def create_contact_angle_analyzer(
+def contact_angle_analyzer(
     method: str, parser, output_dir: str, **kwargs
 ) -> BaseContactAngleAnalyzer:
     if method == "sliced":

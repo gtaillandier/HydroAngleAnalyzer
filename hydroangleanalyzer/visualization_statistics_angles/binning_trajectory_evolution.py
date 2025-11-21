@@ -1,6 +1,8 @@
+import glob
 import os
 import re
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
@@ -8,6 +10,26 @@ from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
 
 class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
     """Analyze binned trajectory data using circular segment calculations."""
+
+    def __init__(self, directories, split_factor=1, time_steps=None, time_unit="ps"):
+        """
+        Initialize the analyzer with a list of directory paths and split factor.
+        Parameters
+        ----------
+        directories : list of str
+            List of directory paths containing analysis results.
+        split_factor : int, optional
+            Number of batches/splits to process in each directory.
+        time_steps : dict, optional
+            Dictionary mapping directory to its time step.
+            If None, defaults to 1.0 for all directories.
+        time_unit : str, optional
+            Time unit for the x-axis (e.g., "ps", "ns", "fs").
+        """
+        self.split_factor = split_factor
+        self.time_steps = time_steps if time_steps else {d: 1.0 for d in directories}
+        self.time_unit = time_unit
+        super().__init__(directories, time_unit=time_unit)
 
     def _initialize_data_structure(self):
         """Initialize data structure for binning analysis."""
@@ -18,6 +40,7 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 "zi_0": [],
                 "contact_angles": [],
                 "surface_areas": [],
+                "time_step": self.time_steps.get(directory, 1.0),
             }
 
     def get_method_name(self):
@@ -26,22 +49,7 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
 
     @staticmethod
     def circular_segment_area(R, z_center, z_cut):
-        """Compute the area of a circular segment for any cut position.
-
-        Parameters
-        ----------
-        R : float
-            Radius of the circle.
-        z_center : float
-            z-coordinate of the circle center.
-        z_cut : float
-            z-coordinate of the cut line.
-
-        Returns
-        -------
-        float
-            Area of the circular segment.
-        """
+        """Compute the area of a circular segment for any cut position."""
         h = (z_center + R) - z_cut  # height of the cap
         if h <= 0:
             return 0.0
@@ -49,24 +57,63 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             return np.pi * R**2
         if h <= R:
             return R**2 * np.arccos((R - h) / R) - (R - h) * np.sqrt(2 * R * h - h**2)
-        h_small = 2 * R - h
-        return np.pi * R**2 - (
-            R**2 * np.arccos((R - h_small) / R)
-            - (R - h_small) * np.sqrt(2 * R * h_small - h_small**2)
-        )
+        else:
+            h_small = 2 * R - h
+            return np.pi * R**2 - (
+                R**2 * np.arccos((R - h_small) / R)
+                - (R - h_small) * np.sqrt(2 * R * h_small - h_small**2)
+            )
+
+    def load_files(self):
+        """Load and sort all relevant log files from each directory."""
+        for directory in self.directories:
+            log_files = sorted(
+                glob.glob(os.path.join(directory, "log_data_batch_*.txt")),
+                key=lambda x: int(re.search(r"batch_(\d+)", x).group(1)),
+            )
+            if not log_files:
+                raise ValueError(
+                    f"No log_data_batch_*.txt files found in directory: {directory}"
+                )
+            # Limit the number of files to process based on split_factor
+            self.data[directory]["log_files"] = log_files[: self.split_factor]
 
     def read_data(self):
         """Read and parse data from log files in each directory."""
+        self.load_files()
         for directory in self.directories:
-            log_path = os.path.join(directory, "log_data.txt")
-            if os.path.isfile(log_path):
-                with open(log_path, "r") as f:
+            for log_file in self.data[directory]["log_files"]:
+                with open(log_file, "r") as f:
                     text = f.read()
-                R_eq = float(re.search(r"R_eq:([0-9\.\-eE]+)", text).group(1))
-                zi_c = float(re.search(r"zi_c:([0-9\.\-eE]+)", text).group(1))
-                zi_0 = float(re.search(r"zi_0:([0-9\.\-eE]+)", text).group(1))
-                angle = float(re.search(r"Contact angle:([0-9\.\-eE]+)", text).group(1))
+
+                # Extract R_eq
+                R_eq_match = re.search(r"R_eq:([0-9\.\-eE]+)", text)
+                if not R_eq_match:
+                    raise ValueError(f"R_eq not found in file: {log_file}")
+                R_eq = float(R_eq_match.group(1))
+
+                # Extract zi_c
+                zi_c_match = re.search(r"zi_c:([0-9\.\-eE]+)", text)
+                if not zi_c_match:
+                    raise ValueError(f"zi_c not found in file: {log_file}")
+                zi_c = float(zi_c_match.group(1))
+
+                # Extract zi_0
+                zi_0_match = re.search(r"zi_0:([0-9\.\-eE]+)", text)
+                if not zi_0_match:
+                    raise ValueError(f"zi_0 not found in file: {log_file}")
+                zi_0 = float(zi_0_match.group(1))
+
+                # Extract contact angle
+                angle_match = re.search(r"Contact angle:([0-9\.\-eE]+)", text)
+                if not angle_match:
+                    raise ValueError(f"Contact angle not found in file: {log_file}")
+                angle = float(angle_match.group(1))
+
+                # Calculate surface area
                 A_seg = self.circular_segment_area(R_eq, zi_c, zi_0)
+
+                # Append data
                 self.data[directory]["R_eq"].append(R_eq)
                 self.data[directory]["zi_c"].append(zi_c)
                 self.data[directory]["zi_0"].append(zi_0)
@@ -74,28 +121,30 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 self.data[directory]["surface_areas"].append(A_seg)
 
     def get_surface_areas(self, directory):
-        """Return surface areas for a directory.
-
-        Returns
-        -------
-        numpy.ndarray
-            Surface areas array.
-        """
+        """Return surface areas for a directory."""
         return np.array(self.data[directory]["surface_areas"])
 
     def get_contact_angles(self, directory):
-        """Return contact angles for a directory.
-
-        Returns
-        -------
-        numpy.ndarray
-            Contact angles array.
-        """
+        """Return contact angles for a directory."""
         return np.array(self.data[directory]["contact_angles"])
 
-
-# Example usage:
-# analyzer = Binning_Trajectory_Analyzer(directories=["./result_dump_1",
-# "./result_dump_2"])
-# analyzer.analyze()
-# analyzer.plot_mean_angle_vs_surface(save_path="mean_angle_vs_surface.png")
+    def plot_mean_angle_vs_surface(self, save_path, labels=None):
+        """Plot mean contact angle vs. surface area for all directories."""
+        plot_labels = (
+            labels if labels else {d: os.path.basename(d) for d in self.directories}
+        )
+        plt.figure(figsize=(10, 6))
+        colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
+        for i, directory in enumerate(self.directories):
+            surface_areas = self.data[directory]["surface_areas"]
+            contact_angles = self.data[directory]["contact_angles"]
+            label = plot_labels.get(directory, os.path.basename(directory))
+            plt.scatter(surface_areas, contact_angles, color=colors[i], label=label)
+        plt.title("Mean Contact Angle vs. Surface Area")
+        plt.xlabel("Surface Area")
+        plt.ylabel("Contact Angle")
+        plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
+        plt.grid(False)
+        plt.tight_layout()
+        plt.savefig(save_path, dpi=400, bbox_inches="tight")
+        plt.close()

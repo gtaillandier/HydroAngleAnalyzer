@@ -4,7 +4,7 @@ from .contact_angle_method import (
     BaseContactAngleAnalyzer,
     BinnedContactAngleAnalyzer,
     SlicedContactAngleAnalyzer,
-    create_contact_angle_analyzer,
+    contact_angle_analyzer,
 )
 from .io_utils import (
     detect_parser_type,
@@ -52,7 +52,7 @@ __all__ = [
     "BaseContactAngleAnalyzer",
     "SlicedContactAngleAnalyzer",
     "BinnedContactAngleAnalyzer",
-    "create_contact_angle_analyzer",
+    "contact_angle_analyzer",
     # Parsers
     "BaseParser",
     "Ase_Parser",

@@ -30,7 +30,7 @@ tests/trajectories/traj_spherical_drop_4k.lammpstrj
 ````python
 # Import necessary modules
 from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
-from hydroangleanalyzer.contact_angle_method import create_contact_angle_analyzer
+from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 
 # --- Step 1: Define the trajectory file ---
 filename = "../../tests/trajectories/traj_spherical_drop_4k.lammpstrj"
@@ -51,7 +51,7 @@ parser = DumpParser(filename)
 
 # --- Step 5: Create the contact angle analyzer ---
 # Using the 'sliced' method with a spherical model
-analyzer = create_contact_angle_analyzer(
+analyzer = contact_angle_analyzer(
     method='sliced',
     parser=parser,
     output_dir='result_dump_spherical_sliced',
@@ -106,7 +106,7 @@ using the 'sliced' method on a spherical droplet from a LAMMPS dump trajectory.
 """
 
 from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
-from hydroangleanalyzer.contact_angle_method import create_contact_angle_analyzer
+from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 
 # --- Step 1: Define input trajectory ---
 filename = "../../tests/trajectories/traj_spherical_drop_4k.lammpstrj"
@@ -126,7 +126,7 @@ print(f"Number of water molecules: {len(oxygen_indices)}")
 parser = DumpParser(filename, particle_type_wall={3})
 
 # --- Step 4: Create analyzer for the sliced method ---
-analyzer = create_contact_angle_analyzer(
+analyzer = contact_angle_analyzer(
     method='sliced',
     parser=parser,
     output_dir='result_dump_spherical_sliced',

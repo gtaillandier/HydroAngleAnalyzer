@@ -56,7 +56,7 @@ conda install --strict-channel-priority -c https://conda.ovito.org -c conda-forg
 ```python
 from hydroangleanalyzer import (
     DumpParser, SlicedContactAngleAnalyzer, BinnedContactAngleAnalyzer,
-    detect_parser_type, create_contact_angle_analyzer
+    detect_parser_type, contact_angle_analyzer
 )
 
 traj = "traj.lammpstrj"

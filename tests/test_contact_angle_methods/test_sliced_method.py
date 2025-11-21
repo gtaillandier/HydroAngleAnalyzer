@@ -3,7 +3,7 @@ import pathlib
 import numpy as np
 import pytest
 
-from hydroangleanalyzer.contact_angle_method import create_contact_angle_analyzer
+from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 from hydroangleanalyzer.parser import Dump_WaterMoleculeFinder, DumpParser
 
 
@@ -75,7 +75,7 @@ def test_sliced_contact_angle_analyzer_with_real_data(
     # Use a temporary directory for output
     output_dir = tmp_path / "result_dump_spherical_sliced"
 
-    analyzer = create_contact_angle_analyzer(
+    analyzer = contact_angle_analyzer(
         method="sliced",
         parser=DumpParser(filename),
         output_dir=output_dir,

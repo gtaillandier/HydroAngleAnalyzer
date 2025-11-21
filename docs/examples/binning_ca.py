@@ -1,5 +1,5 @@
 # Import necessary modules
-from hydroangleanalyzer.contact_angle_method import create_contact_angle_analyzer
+from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 from hydroangleanalyzer.parser import Dump_WaterMoleculeFinder, DumpParser
 
 # --- Step 1: Define the trajectory file ---
@@ -32,7 +32,7 @@ binning_params = {
 parser = DumpParser(filename)
 
 # --- Step 6: Create the contact angle analyzer ---
-analyzer = create_contact_angle_analyzer(
+analyzer = contact_angle_analyzer(
     method="binned",
     parser=parser,
     output_dir="results_binned_example",
