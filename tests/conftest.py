@@ -1,12 +1,15 @@
 import os
-import pytest
-import tempfile
 import shutil
+import tempfile
+
+import pytest
+
 
 @pytest.fixture
 def trajectory_file_path():
     """Return the path to the test trajectory file."""
-    return 'trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj'
+    return "trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
+
 
 @pytest.fixture
 def temp_output_dir():
@@ -16,6 +19,7 @@ def temp_output_dir():
         yield temp_dir
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
+
 
 @pytest.fixture
 def sample_trajectory(trajectory_file_path, temp_output_dir):
@@ -29,7 +33,7 @@ def sample_trajectory(trajectory_file_path, temp_output_dir):
     sample_path = os.path.join(temp_output_dir, "sample_trajectory.lammpstrj")
 
     try:
-        with open(trajectory_file_path, 'r') as source, open(sample_path, 'w') as dest:
+        with open(trajectory_file_path, "r") as source, open(sample_path, "w") as dest:
             for _ in range(1000):  # Copy first 1000 lines
                 line = source.readline()
                 if not line:

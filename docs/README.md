@@ -1,5 +1,5 @@
 # HydroAngleAnalyzer Documentation
-  
+
 This package provides both *sliced* and *binned* methods to compute the contact angle of droplets from molecular dynamics simulations.
 
 ## Structure

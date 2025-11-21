@@ -1,6 +1,6 @@
 # Tutorial: Contact Angle Analysis (Binned Method)
 
-This tutorial demonstrates how to compute the contact angle using the **binned method** in `hydroangleanalyzer`.  
+This tutorial demonstrates how to compute the contact angle using the **binned method** in `hydroangleanalyzer`.
 The method divides the simulation box into spatial bins to calculate the liquid–solid interface and the corresponding contact angle, for a group of frames.
 
 ---
@@ -43,8 +43,8 @@ filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
 wat_find = Dump_WaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # Wall atom types
-    oxygen_type=1,           # Oxygen atom type
-    hydrogen_type=2          # Hydrogen atom type
+    oxygen_type=1,  # Oxygen atom type
+    hydrogen_type=2,  # Hydrogen atom type
 )
 
 # --- Step 3: Get oxygen atom indices for the first frame ---
@@ -53,12 +53,12 @@ print("Number of water molecules:", len(oxygen_indices))
 
 # --- Step 4: Define binning parameters ---
 binning_params = {
-    'xi_0': 0.0,       # Minimum x-coordinate
-    'xi_f': 100.0,     # Maximum x-coordinate
-    'nbins_xi': 50,    # Number of bins along x
-    'zi_0': 0.0,       # Minimum z-coordinate
-    'zi_f': 100.0,     # Maximum z-coordinate
-    'nbins_zi': 25     # Number of bins along z
+    "xi_0": 0.0,  # Minimum x-coordinate
+    "xi_f": 100.0,  # Maximum x-coordinate
+    "nbins_xi": 50,  # Number of bins along x
+    "zi_0": 0.0,  # Minimum z-coordinate
+    "zi_f": 100.0,  # Maximum z-coordinate
+    "nbins_zi": 25,  # Number of bins along z
 }
 
 # --- Step 5: Initialize the parser ---
@@ -66,14 +66,14 @@ parser = DumpParser(filename)
 
 # --- Step 6: Create the contact angle analyzer ---
 analyzer = create_contact_angle_analyzer(
-    method='binned',
+    method="binned",
     parser=parser,
-    output_dir='results_binned_example',
+    output_dir="results_binned_example",
     liquid_indices=oxygen_indices,
-    type_model='cylinder_y',     # Interface fitting model
-    width_cylinder=21,           # Width parameter for interface fit
+    type_model="cylinder_y",  # Interface fitting model
+    width_cylinder=21,  # Width parameter for interface fit
     binning_params=binning_params,
-    plot_graphs=False            # Disable plotting for automated runs
+    plot_graphs=False,  # Disable plotting for automated runs
 )
 
 # --- Step 7: Run analysis for a frame range ---

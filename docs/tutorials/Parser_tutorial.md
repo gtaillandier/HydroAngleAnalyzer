@@ -33,10 +33,7 @@ filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
 # --- Step 2: Initialize the water molecule finder ---
 # Specify particle types for the wall and for water oxygens and hydrogens
 wat_find = Dump_WaterMoleculeFinder(
-    filename,
-    particle_type_wall={3},
-    oxygen_type=1,
-    hydrogen_type=2
+    filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
 )
 
 # --- Step 3: Identify oxygen atoms for frame 0 ---
@@ -67,8 +64,8 @@ filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.traj"
 # --- Step 2: Initialize the water molecule finder ---
 wat_find = ASE_WaterMoleculeFinder(
     filename,
-    particle_type_wall=['C'],  # Wall elements (e.g., carbon)
-    oh_cutoff=0.4              # O–H bond cutoff distance
+    particle_type_wall=["C"],  # Wall elements (e.g., carbon)
+    oh_cutoff=0.4,  # O–H bond cutoff distance
 )
 
 # --- Step 3: Identify water oxygens for frame 0 ---
@@ -115,6 +112,6 @@ print("Subset of 50 atoms extracted successfully.")
 The parser module provides:
 - **Unified interface** across LAMMPS, ASE, and XYZ formats
 - **Selective parsing** using frame number and atom indices
-- **Water molecule identification** to filter oxygen atoms from bulk water with tools from ase and ovito librarie
+- **Water molecule identification** to filter oxygen atoms from bulk water with tools from ase and ovito library
 
 All parsers return NumPy arrays of shape `(N, 3)` for direct use in analysis pipelines.

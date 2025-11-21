@@ -1,215 +1,220 @@
-import os
-import math
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from typing import Dict, List, Optional, Any, Tuple, Type
-import numpy as np
 import logging
-from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
-from hydroangleanalyzer.parser import DumpParser, Ase_Parser, XYZ_Parser, BaseParser
-from hydroangleanalyzer.io_utils import detect_parser_type
+import math
 import multiprocessing
-multiprocessing.set_start_method('spawn', force=True)
+import os
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from typing import Dict, List, Optional, Tuple, Type
+
+import numpy as np
+
+from hydroangleanalyzer.parser import BaseParser
+
+multiprocessing.set_start_method("spawn", force=True)
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 logger = logging.getLogger(__name__)
 
-class ContactAngle_sliced_parallel():
-    """
-    A parallel frame processor that uses batch processing to avoid OVITO pickle issues.
+
+class ContactAngle_sliced_parallel:
+    """Batch-parallel contact angle analyzer for sliced method.
+
+    Frames are grouped into batches to mitigate parser pickling issues and to
+    amortize object construction cost. Each batch is processed in a separate
+    process using ``ProcessPoolExecutor``.
+
+    Parameters
+    ----------
+    filename : str
+        Path to trajectory file.
+    output_repo : str
+        Directory to write per-frame results.
+    type_model : str, default "spherical"
+        Geometric model identifier (e.g. "cylinder_x", "cylinder_y", "spherical").
+    liquid_indices : ndarray, optional
+        Indices of liquid particles (subset). Empty array selects none.
+    delta_gamma : float, optional
+        Additional gamma constraint / filtering distance if used by sliced method.
+    delta_cylinder : float, optional
+        Y (or X) half-width of selection cylinder in cylindrical modes.
     """
 
     def __init__(
-                self,
-                filename: str,
-                output_repo: str,
-                type_model: str = 'spherical',
-                liquid_indices: np.ndarray = np.array([]),
-                delta_gamma: float = None,
-                delta_cylinder: float = None,
-            ):
-        """
-        Initialize the BatchFrameProcessor.
-
-        Args:
-            filename: Path to the dump file.
-            output_repo: Output directory for results.
-            delta_cylinder: Y-axis delta parameter.
-            type_model: Type of analysis ('spherical' or other).
-            liquid_indices: array of indices.
-        """
+        self,
+        filename: str,
+        output_repo: str,
+        type_model: str = "spherical",
+        liquid_indices: Optional[np.ndarray] = None,
+        delta_gamma: float = None,
+        delta_cylinder: float = None,
+    ):
         self.filename = filename
         self.output_repo = output_repo
         self.delta_gamma = delta_gamma
         self.delta_cylinder = delta_cylinder
         self.type_model = type_model
-        self.liquid_indices = liquid_indices
-        # Removed undefined variable: self.particule_liquid_type
-
-        # Ensure output directory exists
+        self.liquid_indices = (
+            liquid_indices if liquid_indices is not None else np.array([])
+        )
         os.makedirs(self.output_repo, exist_ok=True)
 
-    def process_frames_parallel(self, frames_to_process: List[int],
-                                num_batches: int = 4,
-                                max_workers: Optional[int] = None) -> Dict[int, float]:
-        """
-        Process multiple frames in parallel using batch processing.
+    def process_frames_parallel(
+        self,
+        frames_to_process: List[int],
+        num_batches: int = 4,
+        max_workers: Optional[int] = None,
+    ) -> Dict[int, float]:
+        """Process many frames in parallel batches.
 
-        Args:
-            frames_to_process: List of frame numbers to process.
-            num_batches: Number of batches to create.
-            max_workers: Maximum worker processes.
+        Parameters
+        ----------
+        frames_to_process : list[int]
+            Frame numbers to analyze.
+        num_batches : int, default 4
+            Number of batches to partition frames into.
+        max_workers : int, optional
+            Maximum number of worker processes. Defaults to ``num_batches``.
 
-        Returns:
-            Dictionary mapping frame numbers to mean contact angles.
+        Returns
+        -------
+        dict[int, float]
+            Mapping frame number -> mean contact angle (failed frames excluded).
         """
         if max_workers is None:
             max_workers = num_batches
-        
-        # Create batches
         batches = self._create_batches(frames_to_process, num_batches)
-        logger.info(f"Processing {len(frames_to_process)} frames in {len(batches)} batches with {max_workers} workers")
-
-        # Process batches in parallel
-        results = {}
+        logger.info(
+            f"Processing {len(frames_to_process)} frames in {len(batches)} batches "
+            f"with {max_workers} workers"
+        )
+        results: Dict[int, float] = {}
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            # Submit all batches
             future_to_batch = {
                 executor.submit(self._process_batch_worker, batch_frames): batch_frames
                 for batch_frames in batches
             }
-
-            # Collect results as they complete
             completed_batches = 0
             for future in as_completed(future_to_batch):
                 batch_frames = future_to_batch[future]
                 try:
                     batch_results = future.result()
                     completed_batches += 1
-                    logger.info(f"Completed batch {completed_batches}/{len(batches)} ({len(batch_results)} frames)")
-                    
-                    # Add results to main dictionary
+                    logger.info(
+                        f"Completed batch {completed_batches}/{len(batches)} "
+                        f"({len(batch_results)} frames)"
+                    )
                     for frame_num, mean_alpha in batch_results:
                         if mean_alpha is not None:
                             results[frame_num] = mean_alpha
-                except Exception as e:
-                    logger.error(f"Error in batch for frames {batch_frames}: {e}", exc_info=True)
-
-        logger.info(f"Successfully processed {len(results)}/{len(frames_to_process)} frames")
+                except Exception as e:  # pragma: no cover
+                    logger.error(
+                        f"Error in batch for frames {batch_frames}: {e}",
+                        exc_info=True,
+                    )
+        logger.info(
+            f"Successfully processed {len(results)}/{len(frames_to_process)} frames"
+        )
         return results
 
     def _create_batches(self, frames: List[int], num_batches: int) -> List[List[int]]:
-        """
-        Split frames into approximately equal batches.
-
-        Args:
-            frames: List of frame numbers.
-            num_batches: Number of batches to create.
-
-        Returns:
-            List of batches.
-        """
+        """Return frame batches of near-equal size."""
         if num_batches >= len(frames):
             return [[frame] for frame in frames]
-        
         batch_size = math.ceil(len(frames) / num_batches)
-        batches = []
-        for i in range(0, len(frames), batch_size):
-            batch = frames[i:i + batch_size]
-            batches.append(batch)
-        return batches
+        return [frames[i : i + batch_size] for i in range(0, len(frames), batch_size)]
 
-    def _process_batch_worker(self, batch_frames: List[int]) -> List[Tuple[int, Optional[float]]]:
-        """
-        Worker function that processes a batch of frames in a single process.
-
-        Args:
-            batch_frames: List of frame numbers in this batch.
-
-        Returns:
-            Results for each frame in the batch.
-        """
+    def _process_batch_worker(
+        self, batch_frames: List[int]
+    ) -> List[Tuple[int, Optional[float]]]:
+        """Worker routine executed in child process for a batch."""
         try:
-            from hydroangleanalyzer.parser.parser_dump import Dump_WaterMoleculeFinder, DumpParser
-            from hydroangleanalyzer.parser.parser_ase import Ase_Parser
-            from hydroangleanalyzer.parser.parser_xyz import XYZ_Parser
-            from hydroangleanalyzer.parser.base_parser import BaseParser
-            from hydroangleanalyzer.contact_angle_method.sliced_method.angle_fitting_sliced import ContactAngle_sliced
             from hydroangleanalyzer.io_utils import detect_parser_type
-                
-        except ImportError as e:
+            from hydroangleanalyzer.parser.base_parser import BaseParser
+            from hydroangleanalyzer.parser.parser_ase import Ase_Parser
+            from hydroangleanalyzer.parser.parser_dump import DumpParser
+            from hydroangleanalyzer.parser.parser_xyz import XYZ_Parser
+        except ImportError as e:  # pragma: no cover
             logger.error(f"Failed to import required classes: {e}")
             return [(frame, None) for frame in batch_frames]
-
         try:
-            # Determine the parser class to use based on file extension
             parser_type = detect_parser_type(self.filename)
             logger.info(f"Detected parser type: {parser_type}")
             parser_class: Type[BaseParser]
-            if parser_type == 'dump':
+            if parser_type == "dump":
                 parser_class = DumpParser
-            elif parser_type == 'ase':
+            elif parser_type == "ase":
                 parser_class = Ase_Parser
-            elif parser_type == 'xyz':
+            elif parser_type == "xyz":
                 parser_class = XYZ_Parser
             else:
                 raise ValueError(f"Unsupported parser type: {parser_type}")
-
-            # Initialize the parser once per batch
-            parser = parser_class(
-                in_path=self.filename,
-            )
-
-        except Exception as e:
+            parser = parser_class(in_path=self.filename)
+        except Exception as e:  # pragma: no cover
             logger.error(f"Error initializing parser: {e}")
             return [(frame, None) for frame in batch_frames]
-
-        batch_results = []
+        batch_results: List[Tuple[int, Optional[float]]] = []
         for frame_num in batch_frames:
             try:
-                # Process the frame - use self.liquid_indices
-                result = self._process_single_frame_with_parsers(frame_num, self.liquid_indices, parser)
+                result = self._process_single_frame_with_parsers(
+                    frame_num, self.liquid_indices, parser
+                )
                 batch_results.append(result)
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 logger.error(f"Error processing frame {frame_num}: {e}")
                 batch_results.append((frame_num, None))
         return batch_results
 
-    def _process_single_frame_with_parsers(self, frame_num: int,
-                                           liquid_indices: np.ndarray,  
-                                           parser: BaseParser) -> Tuple[int, Optional[float]]:
-        """
-        Process a single frame using provided parser instances.
+    def _process_single_frame_with_parsers(
+        self, frame_num: int, liquid_indices: np.ndarray, parser: BaseParser
+    ) -> Tuple[int, Optional[float]]:
+        """Process a single frame and compute mean contact angle.
 
-        Args:
-            frame_num: Frame number to process.
-            liquid_indices: Array of liquid particle indices.
-            parser: BaseParser instance.
-
-        Returns:
-            Frame number and mean contact angle.
+        Returns
+        -------
+        tuple[int, float|None]
+            Frame number and mean angle; ``None`` if processing failed.
         """
+        try:
+            from .angle_fitting_sliced import (
+                ContactAngle_sliced,
+            )
+
+        except ImportError as e:  # pragma: no cover
+            logger.error(f"Missing sliced predictor dependency: {e}")
+            return frame_num, None
         logger.info(f"START processing frame {frame_num}")
         try:
-            # Parse positions of liquid particles
-            liquid_positions = parser.parse(num_frame=frame_num, indices=liquid_indices)
-
-            max_dist = int(np.max(np.array([parser.box_size_y(num_frame=frame_num), parser.box_size_x(num_frame=frame_num)])) / 2)
-            logger.info(f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid particles with max_dist {max_dist}")
-            if self.type_model == 'cylinder_x':
+            liquid_positions = parser.parse(
+                num_frame=frame_num,
+                indices=liquid_indices,
+            )
+            max_dist = int(
+                np.max(
+                    np.array(
+                        [
+                            parser.box_size_y(num_frame=frame_num),
+                            parser.box_size_x(num_frame=frame_num),
+                        ]
+                    )
+                )
+                / 2
+            )
+            logger.info(
+                f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid "
+                f"particles with max_dist {max_dist}"
+            )
+            if self.type_model == "cylinder_x":
                 liquid_positions = liquid_positions[:, [1, 0, 2]]
-            else:
-                liquid_positions = liquid_positions
-            # Get box dimensions for the frame
-            if self.type_model == 'cylinder_x':
+            if self.type_model == "cylinder_x":
                 box_dimensions = parser.box_size_x(num_frame=frame_num)
-            elif self.type_model == 'cylinder_y':
+            elif self.type_model == "cylinder_y":
                 box_dimensions = parser.box_size_y(num_frame=frame_num)
             else:
                 box_dimensions = None
-            # Calculate mean position of liquid particles (NOT from indices!)
             mean_liquid_position = np.mean(liquid_positions, axis=0)
-            # Predict contact angle
             predictor = ContactAngle_sliced(
                 o_coords=liquid_positions,
                 max_dist=max_dist,
@@ -217,22 +222,30 @@ class ContactAngle_sliced_parallel():
                 type_model=self.type_model,
                 delta_gamma=self.delta_gamma,
                 width_cylinder=box_dimensions,
-                delta_cylinder=self.delta_cylinder
+                delta_cylinder=self.delta_cylinder,
             )
-
-            list_1, list_2, list_3 = predictor.predict_contact_angle()
-            mean_alpha = np.mean(list_1)
-
-            # Save results
-            np.savetxt(f"{self.output_repo}/alfasframe{frame_num}.txt", np.array(list_1), fmt='%f')
-            np.save(f"{self.output_repo}/surfacesframe{frame_num}.npy", np.array(list_2))
-            np.save(f"{self.output_repo}/poptsframe{frame_num}.npy", np.array(list_3))
-
-            logger.info(f"Frame {frame_num} - mean angle: {mean_alpha:.2f}°")
+            list_alfas, list_surfaces, list_popt = predictor.predict_contact_angle()
+            if len(list_alfas) == 0:
+                logger.warning(f"Frame {frame_num}: No angles computed (empty list).")
+                mean_alpha = None
+            else:
+                mean_alpha = float(np.mean(list_alfas))
+            np.savetxt(
+                f"{self.output_repo}/alfasframe{frame_num}.txt",
+                np.array(list_alfas),
+                fmt="%f",
+            )
+            np.save(
+                f"{self.output_repo}/surfacesframe{frame_num}.npy",
+                np.array(list_surfaces),
+            )
+            np.save(
+                f"{self.output_repo}/poptsframe{frame_num}.npy",
+                np.array(list_popt),
+            )
+            if mean_alpha is not None:
+                logger.info(f"Frame {frame_num} - mean angle: {mean_alpha:.2f}°")
             return frame_num, mean_alpha
-
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.error(f"Error processing frame {frame_num}: {e}")
             return frame_num, None
-
-

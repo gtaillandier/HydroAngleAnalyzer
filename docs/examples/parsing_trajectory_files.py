@@ -6,7 +6,13 @@ This example shows how to:
 2. Extract only their oxygen atom coordinates.
 """
 
-from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
+from hydroangleanalyzer.parser import (
+    ASE_Parser,
+    ASE_WaterMoleculeFinder,
+    Dump_WaterMoleculeFinder,
+    DumpParser,
+    XYZ_Parser,
+)
 
 # --- Define input file ---
 filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
@@ -14,9 +20,9 @@ filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
 # --- Initialize water molecule finder ---
 wat_find = Dump_WaterMoleculeFinder(
     filename,
-    particle_type_wall={3},   # atom type for wall
-    oxygen_type=1,            # atom type for oxygen
-    hydrogen_type=2           # atom type for hydrogen
+    particle_type_wall={3},  # atom type for wall
+    oxygen_type=1,  # atom type for oxygen
+    hydrogen_type=2,  # atom type for hydrogen
 )
 
 # --- Identify water oxygen indices for the first frame ---
@@ -42,16 +48,14 @@ This example demonstrates how to:
 2. Extract their positions for a given frame.
 """
 
-from hydroangleanalyzer.parser import ASE_Parser, ASE_WaterMoleculeFinder
-
 # --- Define input file ---
 filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.traj"
 
 # --- Initialize water molecule finder ---
 wat_find = ASE_WaterMoleculeFinder(
     filename,
-    particle_type_wall=['C'],  # element name for wall
-    oh_cutoff=0.4              # O–H cutoff distance (Å)
+    particle_type_wall=["C"],  # element name for wall
+    oh_cutoff=0.4,  # O–H cutoff distance (Å)
 )
 
 # --- Get oxygen indices for frame 0 ---
@@ -72,8 +76,6 @@ This example demonstrates how to:
 1. Load atomic positions from an XYZ file.
 2. Extract all atoms or a subset of atoms.
 """
-
-from hydroangleanalyzer.parser import XYZ_Parser
 
 # --- Define input file ---
 filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.xyz"

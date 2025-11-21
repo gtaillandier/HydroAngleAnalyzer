@@ -26,9 +26,15 @@ The `BinningTrajectoryAnalyzer` and `SlicedTrajectoryAnalyzer` classes are desig
 Ensure you have the required classes imported:
 
 ```python
-from hydroangleanalyzer.visualization_statistics_angles.binning_analyzer import BinningTrajectoryAnalyzer
-from hydroangleanalyzer.visualization_statistics_angles.sliced_analyzer import SlicedTrajectoryAnalyzer
-from hydroangleanalyzer.visualization_statistics_angles.comparison_methods import MethodComparison
+from hydroangleanalyzer.visualization_statistics_angles.binning_analyzer import (
+    BinningTrajectoryAnalyzer,
+)
+from hydroangleanalyzer.visualization_statistics_angles.sliced_analyzer import (
+    SlicedTrajectoryAnalyzer,
+)
+from hydroangleanalyzer.visualization_statistics_angles.comparison_methods import (
+    MethodComparison,
+)
 ```
 ---
 
@@ -37,10 +43,10 @@ Specify the directories containing your trajectory data:
 
 ```python
 directories = [
-    'sliced_analysis_CA/result_dump_traj_2k_reduce_binned',
-    'sliced_analysis_CA/result_dump_traj_500_reduce_binned',
-    'sliced_analysis_CA/result_dump_traj_1k_reduce_binned',
-    'sliced_analysis_CA/result_dump_traj_8k_reduce_binned'
+    "sliced_analysis_CA/result_dump_traj_2k_reduce_binned",
+    "sliced_analysis_CA/result_dump_traj_500_reduce_binned",
+    "sliced_analysis_CA/result_dump_traj_1k_reduce_binned",
+    "sliced_analysis_CA/result_dump_traj_8k_reduce_binned",
 ]
 
 # Initialize the analyzers

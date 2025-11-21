@@ -1,193 +1,253 @@
 import numpy as np
-from .surface_defined import SurfaceDefinition
 from scipy.optimize import curve_fit
 
+from .surface_defined import SurfaceDefinition
+
+
 class ContactAngle_sliced:
-    def __init__(self, o_coords, max_dist, o_center_geom, type_model='cylinder_y',delta_gamma=None, width_cylinder=None, delta_cylinder=None):
-        """
-        Initialize the ContactAnglePredictor.
-        Args:
-            o_coords (array): Coordinates of oxygen atoms.
-            delta_gamma (float): Angular step size for spherical calculations.
-            max_dist (float): Maximum distance for surface analysis.
-            o_center_geom (array): Geometric center of the system.
-            type (str): Type of analysis ('cylinder_y', 'cylinder_x' or 'spherical').
-            width_cylinder (float, optional): Width of the cylinder range.
-            delta_cylinder (float, optional): Step size for cylinder calculations.
-        """
+    """Sliced radial line method to estimate contact angle via circle fitting.
+
+    Depending on ``type_model`` the droplet is analyzed by sweeping in y
+    (cylinder modes) or by gamma inclination (spherical). For each slice / tilt
+    a set of radial lines is sampled, a circle is fit to interface points, and
+    the contact angle is derived from intersection with the lowest surface
+    level.
+
+    Parameters
+    ----------
+    o_coords : ndarray, shape (N, 3)
+        Oxygen (or liquid marker) coordinates.
+    max_dist : float
+        Maximum radial distance for line sampling.
+    o_center_geom : ndarray, shape (3,)
+        Geometric droplet center; y component overridden per slice in cylinder
+        modes.
+    type_model : str, default 'cylinder_y'
+        One of {'cylinder_y', 'cylinder_x', 'spherical'} controlling slicing
+        axis.
+    delta_gamma : float, optional
+        Angular increment (degrees) for spherical mode (required if spherical).
+    width_cylinder : float, optional
+        Extent in slicing axis direction (y or x) for cylindrical modes.
+    delta_cylinder : float, optional
+        Step size along slicing axis.
+    surface_filter_offset : float, default 2.0
+        Offset added to minimum droplet height for interface point filtering.
+    """
+
+    def __init__(
+        self,
+        o_coords,
+        max_dist,
+        o_center_geom,
+        type_model="cylinder_y",
+        delta_gamma=None,
+        width_cylinder=None,
+        delta_cylinder=None,
+        surface_filter_offset: float = 2.0,
+    ):
         self.o_coords = o_coords
-        
         self.max_dist = max_dist
         self.o_center_geom = o_center_geom
         self.type_model = type_model
-        
         self.delta_gamma = delta_gamma
         self.width_cylinder = width_cylinder
         self.delta_cylinder = delta_cylinder
-        # Validate that cylinder parameters are provided when needed
-        if self.type_model in ['cylinder_y', 'cylinder_x']:
-            if width_cylinder is None or delta_cylinder is None:
-                print(f"Warning: width_cylinder and delta_cylinder are recommended for {self.type_model} analysis")
-        if self.type_model == 'spherical':
-            if delta_gamma is None:
-                raise ValueError("delta_gamma must be provided for spherical analysis")
-        
+        self.surface_filter_offset = surface_filter_offset
+        if self.type_model in ["cylinder_y", "cylinder_x"] and (
+            width_cylinder is None or delta_cylinder is None
+        ):
+            print(
+                "Warning: width_cylinder and delta_cylinder recommended for "
+                f"{self.type_model}"
+            )
+        if self.type_model == "spherical" and delta_gamma is None:
+            raise ValueError("delta_gamma must be provided for spherical analysis")
 
     def calculate_y_axis_list(self):
-        """
-        Calculate the Y-axis positions based on the type of analysis.
+        """Return axis position list for slicing mode.
 
-        Returns:
-            list: Y-axis positions.
+        Returns
+        -------
+        list[float]
+            Y (or X if 'cylinder_x') positions; spherical returns repeated center y.
         """
-        if self.type_model in ('cylinder_y', 'cylinder_x'):
-            return np.arange(0, self.width_cylinder, self.delta_cylinder)
-        elif self.type_model == 'spherical':
+        if self.type_model in ("cylinder_y", "cylinder_x"):
+            return list(np.arange(0, self.width_cylinder, self.delta_cylinder))
+        if self.type_model == "spherical":
             return [self.o_center_geom[1]] * int(180 / self.delta_gamma)
+        return []
 
     def calculate_gammas_list(self):
-        """
-        Calculate the gamma values based on the type of analysis.
-
-        Returns:
-            list: Gamma values.
-        """
-        if self.type_model in ('cylinder_y', 'cylinder_x'):
-            return [0] * len(np.arange(0, self.width_cylinder, self.delta_cylinder))
-        elif self.type_model == 'spherical':
-            return np.linspace(0, 180, int(180 / self.delta_gamma))
+        """Return gamma inclination list for the chosen model."""
+        if self.type_model in ("cylinder_y", "cylinder_x"):
+            return [
+                0.0
+                for _ in np.arange(
+                    0,
+                    self.width_cylinder,
+                    self.delta_cylinder,
+                )
+            ]
+        if self.type_model == "spherical":
+            return list(
+                np.linspace(
+                    0.0,
+                    180.0,
+                    int(180 / self.delta_gamma),
+                )
+            )
+        return []
 
     def surface_definition(self, v_gamma):
-        """
-        Define the surface based on the input gamma value.
+        """Sample interface lines for a given gamma.
 
-        Args:
-            v_gamma (float): Gamma value for surface definition.
+        Parameters
+        ----------
+        v_gamma : float
+            Gamma inclination in degrees (0 for cylindrical slices).
 
-        Returns:
-            tuple: Arrays of XZ surface and radial distances.
+        Returns
+        -------
+        tuple(ndarray, ndarray)
+            (surf_xz, radial_info); surf_xz (M,2), radial_info (M,2).
         """
-        delta_angle = 8    # angle step for lines
-        surface_def = SurfaceDefinition(self.o_coords, delta_angle, self.max_dist, self.o_center_geom, v_gamma)
+        delta_angle = 8  # degrees between radial lines
+        surface_def = SurfaceDefinition(
+            self.o_coords, delta_angle, self.max_dist, self.o_center_geom, v_gamma
+        )
         list_rr, list_xz = surface_def.analyze_lines()
         return np.array(list_xz), np.array(list_rr)
 
     def separate_surface_data(self, surf, limit_med):
-        """
-        Separate surface data based on a median limit.
+        """Filter surface points above reference height.
 
-        Args:
-            surf (array): Surface data.
-            limit_med (float): Median limit for filtering.
+        Parameters
+        ----------
+        surf : ndarray, shape (M, 2)
+            Surface XZ points.
+        limit_med : float
+            Baseline (minimum droplet height + offset).
 
-        Returns:
-            array: Filtered surface data.
+        Returns
+        -------
+        ndarray
+            Filtered subset of ``surf`` with z > ``limit_med``.
         """
-        return surf[(surf[:, 1] > limit_med)]
+        return surf[surf[:, 1] > limit_med]
 
     def fit_circle(self, X_data, Y_data, initial_guess):
-        """
-        Fit a circle to the surface data.
+        """Perform non-linear least squares circle fit.
 
-        Args:
-            X_data (array): X-coordinate data.
-            Y_data (array): Y-coordinate data.
-            initial_guess (list): Initial guess for circle parameters.
-            
-        Returns:
-            array: Optimal circle parameters.
+        Parameters
+        ----------
+        X_data : ndarray
+            X coordinates.
+        Y_data : ndarray
+            Z coordinates.
+        initial_guess : sequence
+            Initial parameters [x_center, z_center, radius].
+
+        Returns
+        -------
+        ndarray
+            Optimized parameters [x_center, z_center, radius].
         """
-        popt, _ = curve_fit(self.circle_equation, (X_data, Y_data), np.zeros_like(X_data), p0=initial_guess)
-        return popt
-    
-        # Define error function for optimization
-        def error_function(params, x_data, y_data):
-            predicted_y = truncated_circle_model(params, x_data)
-            # Filter out NaN values (points outside the circle's valid x-range)
-            valid_mask = ~np.isnan(predicted_y)
-            if not np.any(valid_mask):
-                return np.full_like(y_data, 1e6)  # Return large error if all predictions invalid
-            
-            # Calculate errors only for valid predictions
-            error = y_data[valid_mask] - predicted_y[valid_mask]
-            return error
-        
-        # Use robust optimization to find the best parameters
-        from scipy.optimize import least_squares
-        result = least_squares(
-            error_function, 
-            initial_guess, 
-            args=(X_data, Y_data),
-            loss='soft_l1',  # Robust loss function to handle outliers
-            method='trf'     # Trust Region Reflective algorithm works well for this
+        popt, _ = curve_fit(
+            self.circle_equation,
+            (X_data, Y_data),
+            np.zeros_like(X_data),
+            p0=initial_guess,
         )
-        return result.x
+        return popt
 
     def find_intersection(self, popt, y_line):
-        """
-        Find the intersection of the circle with a horizontal line.
+        """Compute contact angle from circle intersection with baseline.
 
-        Args:
-            popt (array): Circle parameters (center X, center Z, radius).
-            y_line (float): Y-coordinate of the line.
+        Parameters
+        ----------
+        popt : sequence
+            Circle parameters [x_center, z_center, radius].
+        y_line : float
+            Baseline z-coordinate (minimum droplet height).
 
-        Returns:
-            float: Angle of intersection in degrees, or None if no intersection exists.
+        Returns
+        -------
+        float | None
+            Contact angle (deg) or None if circle does not intersect baseline.
         """
         Xs, Ys, R = popt
         delta_y = y_line - Ys
         discriminant = R**2 - delta_y**2
         if discriminant < 0:
             return None
-        else:
-            theta = np.arccos(delta_y / R)
-            contact_angle = np.degrees(theta)
-            return contact_angle
+        theta = np.arccos(delta_y / R)
+        return float(np.degrees(theta))
+
     def circle_equation(self, xy_data, x_center, z_center, radius):
-        """
-        Equation of a circle used for curve fitting.
+        """Return residuals for circle equation used in fitting.
 
-        Args:
-            xy_data (tuple): Tuple of X and Y data.
-            x_center (float): X-coordinate of the circle center.
-            z_center (float): Z-coordinate of the circle center.
-            radius (float): Radius of the circle.
+        Parameters
+        ----------
+        xy_data : tuple(ndarray, ndarray)
+            (X_data, Y_data) coordinate arrays.
+        x_center : float
+            Circle center x.
+        z_center : float
+            Circle center z.
+        radius : float
+            Circle radius.
 
-        Returns:
-            array: Difference between calculated and actual radius values.
+        Returns
+        -------
+        ndarray
+            Residuals sqrt((x-xc)^2+(z-zc)^2) - R.
         """
         X_data, Y_data = xy_data
-        return np.sqrt((X_data - x_center)**2 + (Y_data - z_center)**2) - radius
+        return np.sqrt((X_data - x_center) ** 2 + (Y_data - z_center) ** 2) - radius
 
     def predict_contact_angle(self):
-        """
-        Predict contact angles based on surface analysis.
+        """Run slicing loop and return per-slice contact angles and geometry.
 
-        Returns:
-            tuple: Lists of contact angles, surfaces, and circle parameters.
+        Returns
+        -------
+        tuple(list[float], list[ndarray], list[ndarray])
+            (angles, surfaces, popt_arrays) where
+            angles : list of contact angles (deg)
+            surfaces : list of surface point arrays (each (M, 2))
+            popt_arrays : list of fitted circle parameter arrays extended by
+            baseline + offset
         """
         gammas = self.calculate_gammas_list()
-
         y_axis_list = self.calculate_y_axis_list()
-        list_alfas = []
-        array_surfaces = []
-        array_popt = []
+        list_alfas: list[float] = []
+        array_surfaces: list[np.ndarray] = []
+        array_popt: list[np.ndarray] = []
         counter = 0
         for value_gamma in gammas:
             self.o_center_geom[1] = y_axis_list[counter]
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
             array_surfaces.append(surf)
-            min_drop = np.min(surf[:,1])
-            surf_line = self.separate_surface_data(surf, min_drop+2)#self.limit_dist_wall)
+            if surf.size == 0:
+                continue
+            min_drop = float(np.min(surf[:, 1]))
+            limit_med = min_drop + self.surface_filter_offset
+            surf_line = self.separate_surface_data(surf, limit_med)
+            if len(surf_line) < 3:  # need at least 3 points to fit a circle
+                continue
             X_data = surf_line[:, 0]
             Y_data = surf_line[:, 1]
-            mean_rr = np.mean(list_rr[:, 0])
+            mean_rr = (
+                float(np.mean(list_rr[:, 0])) if list_rr.size else self.max_dist / 2
+            )
             initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
-            popt = self.fit_circle(X_data, Y_data, initial_guess)
-            angle = self.find_intersection(popt,min_drop)
-            array_popt.append(np.append(popt, min_drop+2))
+            try:
+                popt = self.fit_circle(X_data, Y_data, initial_guess)
+            except Exception:  # pragma: no cover - rare convergence failures
+                continue
+            angle = self.find_intersection(popt, min_drop)
+            array_popt.append(np.append(popt, limit_med))
             if angle is not None:
                 list_alfas.append(angle)
-
         return list_alfas, array_surfaces, array_popt

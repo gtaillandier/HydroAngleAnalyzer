@@ -1,21 +1,14 @@
 import os
 import re
-import glob
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import cm
 
-import os
-import re
 import numpy as np
+
 from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
 
 
 class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
-    """
-    Analyzer for binned trajectory data using circular segment calculations.
-    """
-    
+    """Analyze binned trajectory data using circular segment calculations."""
+
     def _initialize_data_structure(self):
         """Initialize data structure for binning analysis."""
         for directory in self.directories:
@@ -26,17 +19,15 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 "contact_angles": [],
                 "surface_areas": [],
             }
-    
+
     def get_method_name(self):
         """Return method name."""
         return "Binning Analysis"
-    
+
     @staticmethod
     def circular_segment_area(R, z_center, z_cut):
-        """
-        Compute the area of a circular segment (cap) of a circle with radius R.
-        Handles any cut position above or below the center.
-        
+        """Compute the area of a circular segment for any cut position.
+
         Parameters
         ----------
         R : float
@@ -45,7 +36,7 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             z-coordinate of the circle center.
         z_cut : float
             z-coordinate of the cut line.
-            
+
         Returns
         -------
         float
@@ -58,11 +49,12 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             return np.pi * R**2
         if h <= R:
             return R**2 * np.arccos((R - h) / R) - (R - h) * np.sqrt(2 * R * h - h**2)
-        else:
-            h_small = 2 * R - h
-            return np.pi * R**2 - (R**2 * np.arccos((R - h_small) / R) - 
-                                   (R - h_small) * np.sqrt(2 * R * h_small - h_small**2))
-    
+        h_small = 2 * R - h
+        return np.pi * R**2 - (
+            R**2 * np.arccos((R - h_small) / R)
+            - (R - h_small) * np.sqrt(2 * R * h_small - h_small**2)
+        )
+
     def read_data(self):
         """Read and parse data from log files in each directory."""
         for directory in self.directories:
@@ -80,15 +72,30 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 self.data[directory]["zi_0"].append(zi_0)
                 self.data[directory]["contact_angles"].append(angle)
                 self.data[directory]["surface_areas"].append(A_seg)
-    
+
     def get_surface_areas(self, directory):
-        """Get surface areas for a directory."""
+        """Return surface areas for a directory.
+
+        Returns
+        -------
+        numpy.ndarray
+            Surface areas array.
+        """
         return np.array(self.data[directory]["surface_areas"])
-    
+
     def get_contact_angles(self, directory):
-        """Get contact angles for a directory."""
+        """Return contact angles for a directory.
+
+        Returns
+        -------
+        numpy.ndarray
+            Contact angles array.
+        """
         return np.array(self.data[directory]["contact_angles"])
+
+
 # Example usage:
-# analyzer = Binning_Trajectory_Analyzer(directories=["./result_dump_1", "./result_dump_2"])
+# analyzer = Binning_Trajectory_Analyzer(directories=["./result_dump_1",
+# "./result_dump_2"])
 # analyzer.analyze()
 # analyzer.plot_mean_angle_vs_surface(save_path="mean_angle_vs_surface.png")

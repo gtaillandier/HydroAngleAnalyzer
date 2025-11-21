@@ -18,7 +18,11 @@ The visualization workflow involves the following steps:
 ## 2. Import Required Modules
 ```python
 import numpy as np
-from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder, DumpParse_wall
+from hydroangleanalyzer.parser import (
+    DumpParser,
+    Dump_WaterMoleculeFinder,
+    DumpParse_wall,
+)
 from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
 from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
 ```
@@ -27,7 +31,9 @@ from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Pl
 
 ## 3. Define the Input Trajectory
 ```python
-filename = "../HydroAngleAnalyzer/tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
+filename = (
+    "../HydroAngleAnalyzer/tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
+)
 ```
 
 ---
@@ -35,10 +41,7 @@ filename = "../HydroAngleAnalyzer/tests/trajectories/traj_10_3_330w_nve_4k_reaju
 ## 4. Identify Water Molecules
 ```python
 wat_find = Dump_WaterMoleculeFinder(
-    filename,
-    particle_type_wall={3},
-    oxygen_type=1,
-    hydrogen_type=2
+    filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
 )
 
 oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
@@ -63,10 +66,10 @@ wall_coords = coord_wall.parse(num_frame=1)
 processor = ContactAngle_sliced(
     o_coords=oxygen_position,
     o_center_geom=np.mean(oxygen_position, axis=0),
-    type_model='cylinder_y',
+    type_model="cylinder_y",
     delta_cylinder=5,
     max_dist=100,
-    width_cylinder=21
+    width_cylinder=21,
 )
 
 list_alfas, array_surfaces, array_popt = processor.predict_contact_angle()
@@ -77,11 +80,7 @@ print("Mean contact angles (°):", list_alfas)
 
 ## 7. Visualize the Droplet
 ```python
-plotter = Droplet_sliced_Plotter(
-    center=True,
-    show_wall=True,
-    molecule_view=True
-)
+plotter = Droplet_sliced_Plotter(center=True, show_wall=True, molecule_view=True)
 
 plotter.plot_surface_points(
     oxygen_position=oxygen_position,
@@ -89,16 +88,12 @@ plotter.plot_surface_points(
     popt=array_popt[0],
     wall_coords=wall_coords,
     output_filename="droplet_plot.png",
-    alpha=list_alfas[0]
+    alpha=list_alfas[0],
 )
 
 print(" Plot saved as 'droplet_plot.png'")
-
 ```
 ## Outputs
 
 
 ![Droplet sliced method visualization](../images/droplet_plot.png)
-
-
-

@@ -81,7 +81,9 @@ python_files = "test_*.py"
 addopts = "--cov=hydroangleanalyzer"
 
 [tool.ruff]
-select = ["E", "F", "B", "I"]
-ignore = []
 line-length = 88
 target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I"]
+ignore = []
