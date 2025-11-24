@@ -2,9 +2,9 @@ import glob
 import os
 import re
 
-import matplotlib.pyplot as plt
 import numpy as np
 
+# Ensure this matches your actual import structure
 from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
 
 
@@ -14,6 +14,7 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
     def __init__(self, directories, split_factor=1, time_steps=None, time_unit="ps"):
         """
         Initialize the analyzer with a list of directory paths and split factor.
+
         Parameters
         ----------
         directories : list of str
@@ -22,13 +23,13 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             Number of batches/splits to process in each directory.
         time_steps : dict, optional
             Dictionary mapping directory to its time step.
-            If None, defaults to 1.0 for all directories.
         time_unit : str, optional
             Time unit for the x-axis (e.g., "ps", "ns", "fs").
         """
         self.split_factor = split_factor
         self.time_steps = time_steps if time_steps else {d: 1.0 for d in directories}
-        self.time_unit = time_unit
+
+        # Initialize Base Class (this will trigger _initialize_data_structure)
         super().__init__(directories, time_unit=time_unit)
 
     def _initialize_data_structure(self):
@@ -127,24 +128,3 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
     def get_contact_angles(self, directory):
         """Return contact angles for a directory."""
         return np.array(self.data[directory]["contact_angles"])
-
-    def plot_mean_angle_vs_surface(self, save_path, labels=None):
-        """Plot mean contact angle vs. surface area for all directories."""
-        plot_labels = (
-            labels if labels else {d: os.path.basename(d) for d in self.directories}
-        )
-        plt.figure(figsize=(10, 6))
-        colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
-        for i, directory in enumerate(self.directories):
-            surface_areas = self.data[directory]["surface_areas"]
-            contact_angles = self.data[directory]["contact_angles"]
-            label = plot_labels.get(directory, os.path.basename(directory))
-            plt.scatter(surface_areas, contact_angles, color=colors[i], label=label)
-        plt.title("Mean Contact Angle vs. Surface Area")
-        plt.xlabel("Surface Area")
-        plt.ylabel("Contact Angle")
-        plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-        plt.grid(False)
-        plt.tight_layout()
-        plt.savefig(save_path, dpi=400, bbox_inches="tight")
-        plt.close()
