@@ -192,7 +192,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
 
         plt.title("Evolution of the Median Angle")
         plt.xlabel(f"Time ({self.time_unit})")
-        plt.ylabel("Angle (Alfas)")
+        plt.ylabel("Angle (°)")
         plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
         plt.grid(False)
         plt.tight_layout()
@@ -236,7 +236,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
 
         plt.title("Evolution of the Mean Angle (Alfas) with Standard Deviation")
         plt.xlabel(f"Time ({self.time_unit})")
-        plt.ylabel("Angle (Alfas)")
+        plt.ylabel("Angle (°)")
         plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
         plt.grid(False)
         plt.tight_layout()
