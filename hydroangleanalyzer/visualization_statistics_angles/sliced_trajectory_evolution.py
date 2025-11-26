@@ -149,7 +149,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 self.data[directory]["mean_alfas"].append(np.mean(alfas))
                 self.data[directory]["std_alfas"].append(np.std(alfas))
 
-    def plot_median_alfas_evolution(self, save_path, labels=None):
+    def plot_median_alfas_evolution(self, save_path, labels=None, plot_std=True):
         """Plot evolution of median angle (Alfas) with standard deviation.
 
         Align trajectories by truncating to shortest.
@@ -181,13 +181,14 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 color=colors[i],
                 label=f"{label}",
             )
-            plt.fill_between(
-                time_values,
-                np.array(median_alfas) - np.array(std_alfas),
-                np.array(median_alfas) + np.array(std_alfas),
-                color=colors[i],
-                alpha=0.2,
-            )
+            if plot_std:
+                plt.fill_between(
+                    time_values,
+                    np.array(median_alfas) - np.array(std_alfas),
+                    np.array(median_alfas) + np.array(std_alfas),
+                    color=colors[i],
+                    alpha=0.2,
+                )
 
         plt.title("Evolution of the Median Angle (Alfas) with Standard Deviation")
         plt.xlabel(f"Time ({self.time_unit})")

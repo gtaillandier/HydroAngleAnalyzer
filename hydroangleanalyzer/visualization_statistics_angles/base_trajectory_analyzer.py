@@ -140,19 +140,24 @@ class BaseTrajectoryAnalyzer(ABC):
                     "Mean Contact Angle: "
                     f"{np.mean(self.get_contact_angles(directory)):.4f}\u00b0\n"
                 )
+                f.write(
+                    "Std Contact Angle: "
+                    f"{np.std(self.get_contact_angles(directory)):.4f}\u00b0\n"
+                )
             print(f"Analysis saved to: {output_path}")
 
-    def plot_mean_angle_vs_surface(self, labels=None, colors=None, save_path=None):
+    def plot_mean_angle_vs_surface(self, labels=None, color=None, save_path=None):
         """
-        Generate a professional academic plot comparing mean angle vs surface
+        Generate a plot comparing mean angle vs surface
         area scaling. If no analysis output is found, run the analysis first.
 
         Parameters
         ----------
         labels : list of str, optional
             Labels for each dataset. If None, directory names are used.
-        colors : list of str, optional
-            Custom colors for each dataset.
+        color : str, optional
+            Base color for all datasets. If None, a default
+            set of unique colors is used.
         save_path : str, optional
             Path to save the figure.
         """
@@ -189,9 +194,10 @@ class BaseTrajectoryAnalyzer(ABC):
         # Set default labels and colors if not provided
         if labels is None:
             labels = [self.get_clean_label(d) for d in self.directories]
-        if colors is None:
-            colors = plt.cm.viridis(np.linspace(0.15, 0.85, len(self.directories)))
 
+        if color is None:
+            color = "purple"
+        colors = [color] * len(self.directories)
         # Collect data for plotting
         xvals, yvals = [], []
         for d, label, color in zip(self.directories, labels, colors):
@@ -203,11 +209,14 @@ class BaseTrajectoryAnalyzer(ABC):
                 mean_contact_angle = float(
                     lines[3].split(": ")[1].strip().replace("°", "")
                 )
+                std_contact_angle = float(
+                    lines[4].split(": ")[1].strip().replace("°", "")
+                )
 
             # Use the data for plotting
             x = 1 / np.sqrt(mean_surface_area)  # Example transformation
             y = mean_contact_angle
-            yerr = 0.5  # Placeholder for error; adjust as needed
+            yerr = std_contact_angle  # Placeholder for error; adjust as needed
 
             ax.errorbar(
                 x, y, yerr=yerr, fmt="o", color=color, markersize=6, capsize=3, lw=1.2
@@ -240,7 +249,7 @@ class BaseTrajectoryAnalyzer(ABC):
         )
 
         # Set plot labels and title
-        ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}}$")
+        ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}} \; (\mathrm{\AA^{-1}})$")
         ax.set_ylabel("Mean Angle (°)")
         ax.set_title(f"{self.get_method_name()} - Mean Angle vs Surface Area", pad=10)
         ax.legend(frameon=False, loc="upper left")

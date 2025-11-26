@@ -5,15 +5,6 @@ HydroAngleAnalyzer provides modular tools to parse MD trajectories (LAMMPS dump,
 1. Sliced Method (per-frame circle fit) – robust against transient shape changes.
 2. Binned Density Method – averages frames into a density field for a single representative angle.
 
-## Features
-
-- **Flexible Trajectory Parsing:** Supports LAMMPS, ASE, and XYZ formats via a unified parser API.
-- **Contact Angle Measurement:** Multiple methods (sliced, binned) for robust contact angle analysis.
-- **Parallel & Batch Processing:** Efficient analysis of large trajectories.
-- **Visualization:** Tools for plotting surfaces, angles, and analysis results.
-- **Optional Dependencies:** `ovito` and `ase` are only required for specific workflows.
-
----
 
 ## Installation
 

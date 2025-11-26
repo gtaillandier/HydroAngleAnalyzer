@@ -76,13 +76,20 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
                 raise ValueError(
                     f"No log_data_batch_*.txt files found in directory: {directory}"
                 )
-            # Limit the number of files to process based on split_factor
-            self.data[directory]["log_files"] = log_files[: self.split_factor]
+            self.data[directory]["log_files"] = log_files
 
     def read_data(self):
         """Read and parse data from log files in each directory."""
         self.load_files()
         for directory in self.directories:
+            # Clear previous data for this directory
+            self.data[directory]["R_eq"] = []
+            self.data[directory]["zi_c"] = []
+            self.data[directory]["zi_0"] = []
+            self.data[directory]["contact_angles"] = []
+            self.data[directory]["surface_areas"] = []
+            print(self.data[directory]["log_files"])
+            # Read all batch log files for this directory
             for log_file in self.data[directory]["log_files"]:
                 with open(log_file, "r") as f:
                     text = f.read()

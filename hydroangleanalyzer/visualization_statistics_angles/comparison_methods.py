@@ -56,7 +56,7 @@ class MethodComparison:
         with open(output_file, "r") as f:
             lines = f.readlines()
             mean_surface_area = float(lines[2].split(": ")[1].strip())
-            mean_contact_angle = float(lines[3].split(": ")[1].strip())
+            mean_contact_angle = float(lines[3].split(": ")[1].strip().replace("°", ""))
         return mean_surface_area, mean_contact_angle
 
     def plot_side_by_side_comparison(self, save_path=None, figsize=(14, 5)):
