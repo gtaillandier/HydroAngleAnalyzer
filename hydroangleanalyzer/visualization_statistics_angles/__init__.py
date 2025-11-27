@@ -1,7 +1,11 @@
 from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
 from .binning_trajectory_evolution import BinningTrajectoryAnalyzer
 from .comparison_methods import MethodComparison
-from .graphs_circle_slice import Droplet_sliced_Plotter, Droplet_sliced_Plotter_plotly
+from .graphs_circle_slice import (
+    ContactAngleAnimator,
+    Droplet_sliced_Plotter,
+    Droplet_sliced_Plotter_plotly,
+)
 from .sliced_trajectory_evolution import SlicedTrajectoryAnalyzer
 from .tools_visu import (
     plot_liquid_particles,
@@ -17,6 +21,7 @@ __all__ = [
     "MethodComparison",
     "Droplet_sliced_Plotter",
     "Droplet_sliced_Plotter_plotly",
+    "ContactAngleAnimator",
     "SlicedTrajectoryAnalyzer",
     "plot_slice",
     "plot_surface_file",

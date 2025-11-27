@@ -6,7 +6,6 @@ import numpy as np
 
 class MethodComparison:
     """Utility to compare statistics from multiple trajectory analyzers.
-
     Parameters
     ----------
     analyzers : list
@@ -23,8 +22,7 @@ class MethodComparison:
                 analyzer.read_data()
 
     def _check_and_run_analysis(self, analyzer):
-        """Run analyzer if expected output file absent.
-
+        """Run analyzer if expected output file is absent for any directory.
         Parameters
         ----------
         analyzer : BaseTrajectoryAnalyzer
@@ -33,20 +31,19 @@ class MethodComparison:
         for directory in analyzer.directories:
             output_file = f"{directory}/output_stats.txt"
             if not os.path.exists(output_file):
-                print(f"No analysis found for {directory}. Running analysis...")
-                analyzer.analyze()
-                break
+                raise FileNotFoundError(
+                    f"No analysis found for {directory}. "
+                    "Please run the analysis first."
+                )
 
     def _read_analysis_output(self, analyzer, directory):
         """Return mean surface area and angle parsed from stats file.
-
         Parameters
         ----------
         analyzer : BaseTrajectoryAnalyzer
             Analyzer owning the directory.
         directory : str
             Path containing ``output_stats.txt``.
-
         Returns
         -------
         tuple(float, float)
@@ -59,15 +56,18 @@ class MethodComparison:
             mean_contact_angle = float(lines[3].split(": ")[1].strip().replace("°", ""))
         return mean_surface_area, mean_contact_angle
 
-    def plot_side_by_side_comparison(self, save_path=None, figsize=(14, 5)):
+    def plot_side_by_side_comparison(
+        self, save_path=None, figsize=(14, 5), color="purple"
+    ):
         """Produce side-by-side mean contact angle comparison plots.
-
         Parameters
         ----------
         save_path : str, optional
             Output image path; if None not saved.
         figsize : tuple(float, float), default (14, 5)
             Matplotlib figure size.
+        color : str, default "purple"
+            Base color for all datasets.
         """
         plt.rcParams.update(
             {
@@ -85,16 +85,13 @@ class MethodComparison:
         fig, axes = plt.subplots(1, len(self.analyzers), figsize=figsize)
         if len(self.analyzers) == 1:
             axes = [axes]
-        colors_list = [
-            plt.cm.viridis(np.linspace(0.15, 0.85, len(analyzer.directories)))
-            for analyzer in self.analyzers
-        ]
-        for _idx, (analyzer, ax, method_name, colors) in enumerate(
-            zip(self.analyzers, axes, self.method_names, colors_list)
+
+        for _idx, (analyzer, ax, method_name) in enumerate(
+            zip(self.analyzers, axes, self.method_names)
         ):
             self._check_and_run_analysis(analyzer)
             xvals, yvals = [], []
-            for i, directory in enumerate(analyzer.directories):
+            for directory in analyzer.directories:
                 try:
                     _mean_surface_area, mean_contact_angle = self._read_analysis_output(
                         analyzer, directory
@@ -107,18 +104,18 @@ class MethodComparison:
                     if hasattr(analyzer, "time_step")
                     else np.array([0])
                 )
-                analyzer.get_clean_label(directory)
                 ax.errorbar(
                     x_time,
                     mean_contact_angle,
                     yerr=0.5,
-                    color=colors[i],
+                    color=color,
                     markersize=6,
                     capsize=3,
                     lw=1.2,
                 )
                 xvals.append(x_time)
                 yvals.append(mean_contact_angle)
+
             if xvals and yvals:
                 xvals_arr = np.concatenate(xvals)
                 yvals_arr = np.array(yvals)
@@ -134,26 +131,29 @@ class MethodComparison:
                     label=f"Fit: y={coeffs[0]:.2f}x+{fit_line(0):.2f}°",
                 )
                 ax.set_ylim(bottom=min(yvals) - 2, top=max(yvals) + 2)
+
             ax.set_xlabel(f"Time ({getattr(analyzer, 'time_unit', 'fs')})")
             ax.set_ylabel("Mean Angle (°)")
             ax.set_title(f"{method_name}", pad=10)
             ax.legend(frameon=False, loc="upper left", fontsize=9)
             ax.grid(False)
             ax.set_xlim(left=-0.001)
+
         plt.tight_layout()
         if save_path:
             plt.savefig(save_path, dpi=400, bbox_inches="tight")
         plt.show()
 
-    def plot_overlay_comparison(self, save_path=None, figsize=(8, 6)):
+    def plot_overlay_comparison(self, save_path=None, figsize=(8, 6), color="purple"):
         """Overlay mean contact angle time series from analyzers on single axes.
-
         Parameters
         ----------
         save_path : str, optional
             Output image path; if None figure not saved.
         figsize : tuple(float, float), default (8, 6)
             Matplotlib figure size.
+        color : str, default "purple"
+            Base color for all datasets.
         """
         plt.rcParams.update(
             {
@@ -169,14 +169,14 @@ class MethodComparison:
             }
         )
         fig, ax = plt.subplots(figsize=figsize)
-        method_colors = [plt.cm.Set1(i) for i in range(len(self.analyzers))]
         all_yvals = []
-        for _method_idx, (analyzer, method_name, base_color) in enumerate(
-            zip(self.analyzers, self.method_names, method_colors)
+
+        for _method_idx, (analyzer, method_name) in enumerate(
+            zip(self.analyzers, self.method_names)
         ):
             self._check_and_run_analysis(analyzer)
             xvals, yvals = [], []
-            for _i, directory in enumerate(analyzer.directories):
+            for directory in analyzer.directories:
                 try:
                     _mean_surface_area, mean_contact_angle = self._read_analysis_output(
                         analyzer, directory
@@ -194,7 +194,7 @@ class MethodComparison:
                     x_time,
                     mean_contact_angle,
                     yerr=0.5,
-                    color=base_color,
+                    color=color,
                     markersize=6,
                     capsize=3,
                     lw=1.2,
@@ -203,6 +203,7 @@ class MethodComparison:
                 )
                 xvals.append(x_time)
                 yvals.append(mean_contact_angle)
+
             if xvals and yvals:
                 xvals_arr = np.concatenate(xvals)
                 yvals_arr = np.array(yvals)
@@ -213,11 +214,12 @@ class MethodComparison:
                     x_fit,
                     fit_line(x_fit),
                     "--",
-                    color=base_color,
+                    color=color,
                     lw=2,
                     label=f"{method_name} Fit: {fit_line(0):.2f}°",
                 )
                 all_yvals.extend(yvals)
+
         ax.set_xlabel(f"Time ({getattr(self.analyzers[0], 'time_unit', 'fs')})")
         ax.set_ylabel("Mean Angle (°)")
         ax.set_title("Method Comparison: Mean Angle vs Surface Area", pad=10)
@@ -226,6 +228,7 @@ class MethodComparison:
         ax.set_xlim(left=-0.001)
         if all_yvals:
             ax.set_ylim(bottom=min(all_yvals) - 2, top=max(all_yvals) + 2)
+
         plt.tight_layout()
         if save_path:
             plt.savefig(save_path, dpi=400, bbox_inches="tight")
@@ -262,6 +265,6 @@ class MethodComparison:
                 print("\n  Overall Statistics:")
                 print(f"    Total samples: {len(all_angles)}")
                 print(f"    Mean Surface Area: {np.mean(all_surfaces):.4f}")
-                print(f"    Mean Angle: {np.mean(all_angles)::.4f}°")
+                print(f"    Mean Angle: {np.mean(all_angles):.4f}°")
                 print(f"    Std Angle: {np.std(all_angles):.4f}°")
         print("\n" + "=" * 70)

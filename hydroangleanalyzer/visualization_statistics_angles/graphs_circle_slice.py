@@ -589,12 +589,10 @@ class ContactAngleAnimator:
         self, output_filename: str = "ContactAngle_Median_PerFrame_Slider.html"
     ):
         """Build and write HTML with slider of median contact angles over frames.
-
         Parameters
         ----------
         output_filename : str, default "ContactAngle_Median_PerFrame_Slider.html"
             Output HTML file path.
-
         Returns
         -------
         None
@@ -604,7 +602,6 @@ class ContactAngleAnimator:
         frames_list = []
         frame_labels = []
         median_angles = []
-
         for frame_idx in range(self.n_frames):
             oxygen_position = self.parser.parse(
                 num_frame=frame_idx, indices=self.oxygen_indices
@@ -623,7 +620,6 @@ class ContactAngleAnimator:
             popt = array_popt[median_idx]
             surface = np.array([array_surfaces[median_idx]])
             median_angles.append(alpha)
-
             fig_frame = self.plotter.plot_surface_points(
                 oxygen_position=oxygen_position,
                 surface_data=surface,
@@ -638,7 +634,6 @@ class ContactAngleAnimator:
                 show_tangent=True,
                 show_wall=True,
             )
-
             frame = go.Frame(
                 data=fig_frame.data,
                 name=f"Frame {frame_idx}",
@@ -651,7 +646,6 @@ class ContactAngleAnimator:
             )
             frames_list.append(frame)
             frame_labels.append(f"Frame {frame_idx}")
-
         fig.frames = frames_list
         fig.add_traces(frames_list[0].data)
         fig.update_layout(
@@ -691,42 +685,6 @@ class ContactAngleAnimator:
                 scaleanchor="x",
                 scaleratio=1,
             ),
-            updatemenus=[
-                {
-                    "buttons": [
-                        {
-                            "args": [
-                                None,
-                                {
-                                    "frame": {"duration": 500, "redraw": True},
-                                    "mode": "immediate",
-                                },
-                            ],
-                            "label": "Play",
-                            "method": "animate",
-                        },
-                        {
-                            "args": [
-                                [None],
-                                {
-                                    "frame": {"duration": 0, "redraw": True},
-                                    "mode": "immediate",
-                                },
-                            ],
-                            "label": "Pause",
-                            "method": "animate",
-                        },
-                    ],
-                    "direction": "left",
-                    "pad": {"r": 10, "t": 80},
-                    "showactive": False,
-                    "type": "buttons",
-                    "x": 0.1,
-                    "xanchor": "right",
-                    "y": -0.15,
-                    "yanchor": "top",
-                }
-            ],
             sliders=[
                 {
                     "active": 0,

@@ -216,7 +216,7 @@ class BaseTrajectoryAnalyzer(ABC):
             # Use the data for plotting
             x = 1 / np.sqrt(mean_surface_area)  # Example transformation
             y = mean_contact_angle
-            yerr = std_contact_angle  # Placeholder for error; adjust as needed
+            yerr = std_contact_angle / 5  # Placeholder for error; adjust as needed
 
             ax.errorbar(
                 x, y, yerr=yerr, fmt="o", color=color, markersize=6, capsize=3, lw=1.2
