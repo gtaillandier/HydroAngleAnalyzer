@@ -61,10 +61,10 @@ jobs:
       run: |
         # Required to generate rst files from markdown
         sudo apt install pandoc
-        pip install .[docs]
+        pip install .[doc]
 
     - name: Build Sphinx docs
-      working-directory: doc
+      working-directory: docs
       run: |
         # cannot use sphinx build directly as the makefile handles generation
         # of some rst files
@@ -72,14 +72,14 @@ jobs:
 
     - name: Fix permissions # following https://github.com/actions/upload-pages-artifact?tab=readme-ov-file#file-permissions
       run: |
-        chmod -c -R +rX "./doc/build" | while read line; do
+        chmod -c -R +rX "./docs/build" | while read line; do
           echo "::warning title=Invalid file permissions automatically fixed::$line"
         done
 
     - name: Upload docs artifact
       uses: actions/upload-pages-artifact@v2
       with:
-        path: ./doc/build/html
+        path: ./docs/build/html
 
     - name: Get tagged versions
       run: echo "PREVIOUS_VERSION=$(git tag -l --sort -version:refname | sed -n 2p)" >> $GITHUB_ENV

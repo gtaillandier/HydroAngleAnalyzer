@@ -32,6 +32,7 @@ dev = [
     "isort>=5.0.0",
     "mypy>=1.0.0",
     "ruff>=0.0.0",
+    "pre-commit",
 ]
 doc = [
     "sphinx>=7.0.0",

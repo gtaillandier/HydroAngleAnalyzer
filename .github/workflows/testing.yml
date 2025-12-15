@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[strict,tests,dev]
+          pip install .[dev]
 
       - name: Lint
         run: pre-commit run --all-files --show-diff-on-failure
@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[strict,tests,docs]
+          pip install .[dev]
 
       - name: Test
         run: pytest --cov=HydroAngleAnalyzer --cov-report=xml
@@ -64,10 +64,10 @@ jobs:
           python -m pip install --upgrade pip
           # Required to generate rst files from markdown
           sudo apt install pandoc
-          pip install .[strict,docs]
+          pip install .[doc]
 
       - name: Build Sphinx docs
-        working-directory: doc
+        working-directory: docs
         run: |
           # cannot use sphinx build directly as the makefile handles generation
           # of some rst files
