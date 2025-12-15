@@ -59,15 +59,9 @@ class MethodComparison:
     def plot_side_by_side_comparison(
         self, save_path=None, figsize=(14, 5), color="purple"
     ):
-        """Produce side-by-side mean contact angle comparison plots.
-        Parameters
-        ----------
-        save_path : str, optional
-            Output image path; if None not saved.
-        figsize : tuple(float, float), default (14, 5)
-            Matplotlib figure size.
-        color : str, default "purple"
-            Base color for all datasets.
+        """
+        Produce side-by-side comparison of mean contact angle vs. surface area scaling.
+        Inspired by plot_mean_angle_vs_surface().
         """
         plt.rcParams.update(
             {
@@ -86,74 +80,59 @@ class MethodComparison:
         if len(self.analyzers) == 1:
             axes = [axes]
 
-        for _idx, (analyzer, ax, method_name) in enumerate(
-            zip(self.analyzers, axes, self.method_names)
-        ):
-            self._check_and_run_analysis(analyzer)
+        for ax, analyzer, method_name in zip(axes, self.analyzers, self.method_names):
+            # gather one point per directory
             xvals, yvals = [], []
             for directory in analyzer.directories:
-                try:
-                    _mean_surface_area, mean_contact_angle = self._read_analysis_output(
-                        analyzer, directory
-                    )
-                except FileNotFoundError:
-                    x, y, _yerr = analyzer.compute_statistics(directory)
-                    mean_contact_angle = float(np.mean(y))
-                x_time = (
-                    np.arange(len(x)) * analyzer.time_step
-                    if hasattr(analyzer, "time_step")
-                    else np.array([0])
-                )
-                ax.errorbar(
-                    x_time,
-                    mean_contact_angle,
-                    yerr=0.5,
-                    color=color,
-                    markersize=6,
-                    capsize=3,
-                    lw=1.2,
-                )
-                xvals.append(x_time)
-                yvals.append(mean_contact_angle)
+                mean_sa, mean_angle = self._read_analysis_output(analyzer, directory)
 
-            if xvals and yvals:
-                xvals_arr = np.concatenate(xvals)
-                yvals_arr = np.array(yvals)
-                coeffs = np.polyfit(xvals_arr, yvals_arr, 1)
+                x = 1.0 / np.sqrt(mean_sa)  # same as example
+                y = mean_angle
+
+                ax.errorbar(x, y, yerr=0.5, fmt="o", color=color)
+                ax.annotate(
+                    analyzer.get_clean_label(directory),
+                    xy=(x, y),
+                    xytext=(4, 4),
+                    textcoords="offset points",
+                    fontsize=7,
+                )
+
+                xvals.append(x)
+                yvals.append(y)
+
+            # linear fit if we have ≥2 points
+            xvals, yvals = np.array(xvals), np.array(yvals)
+            if len(xvals) >= 2:
+                coeffs = np.polyfit(xvals, yvals, 1)
                 fit_line = np.poly1d(coeffs)
-                x_fit = np.linspace(0, max(xvals_arr) * 1.1, 100)
+                x_fit = np.linspace(0, xvals.max() * 1.1, 100)
                 ax.plot(
                     x_fit,
                     fit_line(x_fit),
                     "--",
                     color="gray",
-                    lw=1.5,
-                    label=f"Fit: y={coeffs[0]:.2f}x+{fit_line(0):.2f}°",
+                    label=f"Fit: y={coeffs[0]:.2f}x+{coeffs[1]:.2f}",
                 )
-                ax.set_ylim(bottom=min(yvals) - 2, top=max(yvals) + 2)
 
-            ax.set_xlabel(f"Time ({getattr(analyzer, 'time_unit', 'fs')})")
+            ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}}$")
             ax.set_ylabel("Mean Angle (°)")
-            ax.set_title(f"{method_name}", pad=10)
-            ax.legend(frameon=False, loc="upper left", fontsize=9)
-            ax.grid(False)
+            ax.set_title(method_name)
+            ax.legend(frameon=False)
             ax.set_xlim(left=-0.001)
+
+            if yvals.size > 0:
+                ax.set_ylim(min(yvals) - 2, max(yvals) + 2)
 
         plt.tight_layout()
         if save_path:
             plt.savefig(save_path, dpi=400, bbox_inches="tight")
-        plt.show()
+        plt.close()
 
     def plot_overlay_comparison(self, save_path=None, figsize=(8, 6), color="purple"):
-        """Overlay mean contact angle time series from analyzers on single axes.
-        Parameters
-        ----------
-        save_path : str, optional
-            Output image path; if None figure not saved.
-        figsize : tuple(float, float), default (8, 6)
-            Matplotlib figure size.
-        color : str, default "purple"
-            Base color for all datasets.
+        """
+        Overlay mean angle vs surface area scaling across all analyzers.
+        Inspired by plot_mean_angle_vs_surface().
         """
         plt.rcParams.update(
             {
@@ -168,71 +147,56 @@ class MethodComparison:
                 "errorbar.capsize": 3,
             }
         )
+
         fig, ax = plt.subplots(figsize=figsize)
         all_yvals = []
 
-        for _method_idx, (analyzer, method_name) in enumerate(
-            zip(self.analyzers, self.method_names)
-        ):
-            self._check_and_run_analysis(analyzer)
+        for analyzer, method_name in zip(self.analyzers, self.method_names):
             xvals, yvals = [], []
-            for directory in analyzer.directories:
-                try:
-                    _mean_surface_area, mean_contact_angle = self._read_analysis_output(
-                        analyzer, directory
-                    )
-                except FileNotFoundError:
-                    x, y, _yerr = analyzer.compute_statistics(directory)
-                    mean_contact_angle = float(np.mean(y))
-                x_time = (
-                    np.arange(len(x)) * analyzer.time_step
-                    if hasattr(analyzer, "time_step")
-                    else np.array([0])
-                )
-                label = f"{method_name}: {analyzer.get_clean_label(directory)}"
-                ax.errorbar(
-                    x_time,
-                    mean_contact_angle,
-                    yerr=0.5,
-                    color=color,
-                    markersize=6,
-                    capsize=3,
-                    lw=1.2,
-                    alpha=0.7,
-                    label=label,
-                )
-                xvals.append(x_time)
-                yvals.append(mean_contact_angle)
 
-            if xvals and yvals:
-                xvals_arr = np.concatenate(xvals)
-                yvals_arr = np.array(yvals)
-                coeffs = np.polyfit(xvals_arr, yvals_arr, 1)
+            for directory in analyzer.directories:
+                mean_sa, mean_angle = self._read_analysis_output(analyzer, directory)
+
+                x = 1.0 / np.sqrt(mean_sa)
+                y = mean_angle
+
+                label = f"{method_name} – {analyzer.get_clean_label(directory)}"
+
+                ax.errorbar(
+                    x, y, yerr=0.5, fmt="o", color=color, alpha=0.7, label=label
+                )
+
+                xvals.append(x)
+                yvals.append(y)
+
+            # Fit per method
+            xvals, yvals = np.array(xvals), np.array(yvals)
+            if len(xvals) >= 2:
+                coeffs = np.polyfit(xvals, yvals, 1)
                 fit_line = np.poly1d(coeffs)
-                x_fit = np.linspace(0, max(xvals_arr) * 1.1, 100)
+                x_fit = np.linspace(0, xvals.max() * 1.1, 100)
                 ax.plot(
                     x_fit,
                     fit_line(x_fit),
                     "--",
-                    color=color,
-                    lw=2,
-                    label=f"{method_name} Fit: {fit_line(0):.2f}°",
+                    label=f"{method_name} fit: y={coeffs[0]:.2f}x+{coeffs[1]:.2f}",
                 )
-                all_yvals.extend(yvals)
 
-        ax.set_xlabel(f"Time ({getattr(self.analyzers[0], 'time_unit', 'fs')})")
+            all_yvals.extend(yvals)
+
+        ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}}$")
         ax.set_ylabel("Mean Angle (°)")
-        ax.set_title("Method Comparison: Mean Angle vs Surface Area", pad=10)
-        ax.legend(frameon=False, loc="upper left", fontsize=8)
-        ax.grid(False)
+        ax.set_title("Method Comparison: Mean Angle vs Surface Area")
+        ax.legend(frameon=False, fontsize=7)
         ax.set_xlim(left=-0.001)
+
         if all_yvals:
-            ax.set_ylim(bottom=min(all_yvals) - 2, top=max(all_yvals) + 2)
+            ax.set_ylim(min(all_yvals) - 2, max(all_yvals) + 2)
 
         plt.tight_layout()
         if save_path:
             plt.savefig(save_path, dpi=400, bbox_inches="tight")
-        plt.show()
+        plt.close()
 
     def compare_statistics(self):
         """Print summary statistics aggregated across methods and directories."""

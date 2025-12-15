@@ -28,7 +28,7 @@ class BaseTrajectoryAnalyzer(ABC):
         pass
 
     @abstractmethod
-    def read_data(self):
+    def load_data(self):
         """Read and parse data from files in each directory."""
         pass
 
@@ -126,7 +126,7 @@ class BaseTrajectoryAnalyzer(ABC):
 
     def analyze(self, output_filename="output_stats.txt"):
         """Analyze and save statistics for each directory to an output file."""
-        self.read_data()
+        self.load_data()
         for directory in self.directories:
             output_path = f"{directory}/{output_filename}"
             with open(output_path, "w") as f:

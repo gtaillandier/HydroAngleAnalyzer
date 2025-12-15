@@ -97,26 +97,54 @@ class ContactAngle_sliced_parallel:
                 for batch_frames in batches
             }
             completed_batches = 0
+            all_alfas = {}
+            all_surfaces = {}
+            all_popts = {}
             for future in as_completed(future_to_batch):
                 batch_frames = future_to_batch[future]
                 try:
                     batch_results = future.result()
+                    for frame_num, mean_alpha, alfas, surfaces, popts in batch_results:
+                        if mean_alpha is not None:
+                            results[frame_num] = mean_alpha
+                            all_alfas[frame_num] = alfas
+                            all_surfaces[frame_num] = surfaces
+                            all_popts[frame_num] = popts
                     completed_batches += 1
                     logger.info(
                         f"Completed batch {completed_batches}/{len(batches)} "
                         f"({len(batch_results)} frames)"
                     )
-                    for frame_num, mean_alpha in batch_results:
-                        if mean_alpha is not None:
-                            results[frame_num] = mean_alpha
                 except Exception as e:  # pragma: no cover
                     logger.error(
                         f"Error in batch for frames {batch_frames}: {e}",
                         exc_info=True,
                     )
+        sorted_frames = sorted(all_alfas.keys())
+
+        # Create a list of (frame_num, alfas), (frame_num, surface), (frame_num, popts)
+
+        alfas_with_frames = [(f, all_alfas[f]) for f in sorted_frames]
+        np.save(
+            f"{self.output_repo}/all_alfas.npy",
+            np.array(alfas_with_frames, dtype=object),
+        )
+
+        surfaces_with_frames = [(f, all_surfaces[f]) for f in sorted_frames]
+        np.save(
+            f"{self.output_repo}/all_surfaces.npy",
+            np.array(surfaces_with_frames, dtype=object),
+        )
+
+        popts_with_frames = [(f, all_popts[f]) for f in sorted_frames]
+        np.save(
+            f"{self.output_repo}/all_popts.npy",
+            np.array(popts_with_frames, dtype=object),
+        )
         logger.info(
             f"Successfully processed {len(results)}/{len(frames_to_process)} frames"
         )
+
         return results
 
     def _create_batches(self, frames: List[int], num_batches: int) -> List[List[int]]:
@@ -230,22 +258,9 @@ class ContactAngle_sliced_parallel:
                 mean_alpha = None
             else:
                 mean_alpha = float(np.mean(list_alfas))
-            np.savetxt(
-                f"{self.output_repo}/alfasframe{frame_num}.txt",
-                np.array(list_alfas),
-                fmt="%f",
-            )
-            np.save(
-                f"{self.output_repo}/surfacesframe{frame_num}.npy",
-                np.array(list_surfaces),
-            )
-            np.save(
-                f"{self.output_repo}/poptsframe{frame_num}.npy",
-                np.array(list_popt),
-            )
             if mean_alpha is not None:
                 logger.info(f"Frame {frame_num} - mean angle: {mean_alpha:.2f}°")
-            return frame_num, mean_alpha
+            return frame_num, mean_alpha, list_alfas, list_surfaces, list_popt
         except Exception as e:  # pragma: no cover
             logger.error(f"Error processing frame {frame_num}: {e}")
             return frame_num, None

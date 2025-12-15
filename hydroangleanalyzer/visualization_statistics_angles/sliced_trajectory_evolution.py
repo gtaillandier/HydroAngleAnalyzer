@@ -1,4 +1,3 @@
-import glob
 import os
 
 import matplotlib.pyplot as plt
@@ -25,6 +24,8 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         self.time_steps = time_steps if time_steps else {d: 1.0 for d in directories}
         self.time_unit = time_unit
         super().__init__(directories, time_unit=time_unit)
+        for directory in directories:
+            self.data[directory] = {}
 
     def _initialize_data_structure(self):
         """Initialize data structure for sliced analysis."""
@@ -44,6 +45,42 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
     def get_method_name(self):
         """Return method name."""
         return "Sliced Analysis"
+
+    def load_data(self):
+        """Load the combined .npy files for all
+        directories and calculate mean surface areas per frame."""
+        for directory in self.directories:
+            all_alfas = np.load(
+                os.path.join(directory, "all_alfas.npy"), allow_pickle=True
+            )
+            all_surfaces = np.load(
+                os.path.join(directory, "all_surfaces.npy"), allow_pickle=True
+            )
+            all_popts = np.load(
+                os.path.join(directory, "all_popts.npy"), allow_pickle=True
+            )
+
+            # Calculate mean surface area for each frame
+            mean_surface_areas = []
+            for frame_data in all_surfaces:
+                surfaces = frame_data[1]
+                all_surf = [
+                    self.calculate_polygon_area(surface) for surface in surfaces
+                ]
+                mean_area = np.mean(np.array(all_surf))
+                mean_surface_areas.append(mean_area)
+
+            self.data[directory] = {
+                "all_alfas": all_alfas,
+                "all_surfaces": all_surfaces,
+                "all_popts": all_popts,
+                "frame_numbers": [item[0] for item in all_alfas],
+                "mean_surface_areas": mean_surface_areas,
+                "median_alfas": [(item[0], np.median(item[1])) for item in all_alfas],
+                "mean_alfas": [(item[0], np.mean(item[1])) for item in all_alfas],
+                "std_alfas": [(item[0], np.std(item[1])) for item in all_alfas],
+                "time_step": self.time_steps.get(directory, 1.0),
+            }
 
     @staticmethod
     def calculate_polygon_area(points):
@@ -65,7 +102,7 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         area = 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
         return area
 
-    def mean_surface_frame(self, surfaces_file):
+    def mean_surface_frame(self, surfaces):
         """
         Calculate the mean surface area for a given surfaces file.
 
@@ -79,54 +116,8 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         float
             Mean surface area across all surfaces in the frame.
         """
-        surfaces = np.load(surfaces_file, allow_pickle=True)
         all_surf = [self.calculate_polygon_area(surface) for surface in surfaces]
         return np.mean(np.array(all_surf))
-
-    def load_files(self):
-        """Load and sort all relevant files from each directory."""
-        for directory in self.directories:
-            self.data[directory]["surfaces_files"] = sorted(
-                glob.glob(os.path.join(directory, "surfacesframe*.npy")),
-                key=lambda x: int(
-                    os.path.basename(x).replace("surfacesframe", "").replace(".npy", "")
-                ),
-            )
-            self.data[directory]["popts_files"] = sorted(
-                glob.glob(os.path.join(directory, "poptsframe*.npy")),
-                key=lambda x: int(
-                    os.path.basename(x).replace("poptsframe", "").replace(".npy", "")
-                ),
-            )
-            self.data[directory]["alfas_files"] = sorted(
-                glob.glob(os.path.join(directory, "alfasframe*.txt")),
-                key=lambda x: int(
-                    os.path.basename(x).replace("alfasframe", "").replace(".txt", "")
-                ),
-            )
-            if not (
-                len(self.data[directory]["surfaces_files"])
-                == len(self.data[directory]["popts_files"])
-                == len(self.data[directory]["alfas_files"])
-            ):
-                raise ValueError(
-                    f"Mismatch in the number of files for directory: {directory}"
-                )
-
-    def read_data(self):
-        """Read and analyze data from files."""
-        self.load_files()
-        for directory in self.directories:
-            for surf_file, alfa_file in zip(
-                self.data[directory]["surfaces_files"],
-                self.data[directory]["alfas_files"],
-            ):
-                mean_surface_area = self.mean_surface_frame(surf_file)
-                alfas = np.loadtxt(alfa_file)
-                self.data[directory]["mean_surface_areas"].append(mean_surface_area)
-                self.data[directory]["median_alfas"].append(np.median(alfas))
-                self.data[directory]["mean_alfas"].append(np.mean(alfas))
-                self.data[directory]["std_alfas"].append(np.std(alfas))
 
     def get_surface_areas(self, directory):
         """Get surface areas for a directory."""
@@ -135,19 +126,6 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
     def get_contact_angles(self, directory):
         """Get contact angles (median alfas) for a directory."""
         return np.array(self.data[directory]["median_alfas"])
-
-    def analyze_alfas_only(self):
-        """
-        Analyze only the alfas data (skip mean surface area calculation).
-        """
-        self.load_files()
-        for directory in self.directories:
-            for alfa_file in self.data[directory]["alfas_files"]:
-                alfas = np.loadtxt(alfa_file)
-                self.data[directory]["all_alfas"].append(alfas)
-                self.data[directory]["median_alfas"].append(np.median(alfas))
-                self.data[directory]["mean_alfas"].append(np.mean(alfas))
-                self.data[directory]["std_alfas"].append(np.std(alfas))
 
     def plot_median_alfas_evolution(self, save_path, labels=None, plot_std=True):
         """Plot evolution of median angle (Alfas) with standard deviation.
@@ -163,20 +141,22 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         )
 
         # Find the minimum number of frames across all directories
-        min_frames = min(len(self.data[d]["median_alfas"]) for d in self.directories)
         plt.figure(figsize=(10, 6))
         colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
 
         for i, directory in enumerate(self.directories):
-            median_alfas = self.data[directory]["median_alfas"][:min_frames]
-            std_alfas = self.data[directory]["std_alfas"][:min_frames]
+            median_alfas = self.data[directory]["median_alfas"]
+            std_alfas = self.data[directory]["std_alfas"]
+            frame_numbers = [item[0] for item in median_alfas]
+            median_values = [item[1] for item in median_alfas]
+            std_values = [item[1] for item in std_alfas]
             time_step = self.data[directory]["time_step"]
-            time_values = np.arange(min_frames) * time_step
+            time_values = np.array(frame_numbers) * time_step
             label = plot_labels.get(directory, os.path.basename(directory))
 
             plt.plot(
                 time_values,
-                median_alfas,
+                median_values,
                 linestyle="-",
                 color=colors[i],
                 label=f"{label}",
@@ -184,8 +164,8 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             if plot_std:
                 plt.fill_between(
                     time_values,
-                    np.array(median_alfas) - np.array(std_alfas),
-                    np.array(median_alfas) + np.array(std_alfas),
+                    np.array(median_values) - np.array(std_values),
+                    np.array(median_values) + np.array(std_values),
                     color=colors[i],
                     alpha=0.2,
                 )
@@ -200,36 +180,30 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
         plt.close()
 
     def plot_mean_alfas_evolution(self, save_path, labels=None):
-        """Plot evolution of mean angle (Alfas) with standard deviation.
-
-        Align trajectories by truncating to shortest.
-        """
-        if not self.data[self.directories[0]]["mean_alfas"]:
-            self.analyze_alfas_only()
-
-        # Use provided labels or fall back to directory basename
+        """Plot evolution of mean angle (Alfas) with standard deviation."""
         plot_labels = (
             labels if labels else {d: os.path.basename(d) for d in self.directories}
         )
-
-        # Find the minimum number of frames across all directories
-        min_frames = min(len(self.data[d]["mean_alfas"]) for d in self.directories)
         plt.figure(figsize=(10, 6))
         colors = plt.cm.tab20(np.linspace(0, 1, len(self.directories)))
 
         for i, directory in enumerate(self.directories):
-            mean_alfas = self.data[directory]["mean_alfas"][:min_frames]
-            std_alfas = self.data[directory]["std_alfas"][:min_frames]
+            mean_alfas = self.data[directory]["mean_alfas"]
+            std_alfas = self.data[directory]["std_alfas"]
+            frame_numbers = [item[0] for item in mean_alfas]
+            mean_values = [item[1] for item in mean_alfas]
+            std_values = [item[1] for item in std_alfas]
             time_step = self.data[directory]["time_step"]
-            time_values = np.arange(min_frames) * time_step
-            plot_labels.get(directory, os.path.basename(directory))
+            time_values = np.array(frame_numbers) * time_step
+            label = plot_labels.get(directory, os.path.basename(directory))
 
-            plt.plot(time_values, mean_alfas, linestyle="-", color=colors[i])
-
+            plt.plot(
+                time_values, mean_values, linestyle="-", color=colors[i], label=label
+            )
             plt.fill_between(
                 time_values,
-                np.array(mean_alfas) - np.array(std_alfas),
-                np.array(mean_alfas) + np.array(std_alfas),
+                np.array(mean_values) - np.array(std_values),
+                np.array(mean_values) + np.array(std_values),
                 color=colors[i],
                 alpha=0.2,
             )
