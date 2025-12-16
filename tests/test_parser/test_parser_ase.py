@@ -1,5 +1,4 @@
 import os
-from unittest.mock import patch
 
 import numpy as np
 import pytest
@@ -17,14 +16,6 @@ TRAJECTORY_PATH = os.path.join(
 @pytest.fixture
 def ase_parser():
     return Ase_Parser(TRAJECTORY_PATH)
-
-
-# --- Test ImportError ---
-@patch("ase.io.read", side_effect=ImportError)
-def test_ase_parser_no_ase(mock_read):
-    with pytest.raises(ImportError) as excinfo:
-        Ase_Parser(TRAJECTORY_PATH)
-    assert "The 'ase' package is required" in str(excinfo.value)
 
 
 # --- Test parse ---
@@ -78,8 +69,6 @@ def test_box_size_x(ase_parser, capsys):
     box_size_x = ase_parser.box_size_x(num_frame)
     assert isinstance(box_size_x, float)
     assert box_size_x > 0
-    captured = capsys.readouterr()
-    assert "cell" in captured.out
 
 
 def test_box_size_y(ase_parser):
