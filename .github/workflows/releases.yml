@@ -77,7 +77,7 @@ jobs:
         done
 
     - name: Upload docs artifact
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: ./docs/build/html
 
@@ -130,4 +130,4 @@ jobs:
 
     steps:
     - name: Deploy docs
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
