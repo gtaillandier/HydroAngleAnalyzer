@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Visualization Tutorial — Droplet Surface and Contact Angle &#8212; HydroAngleAnalyzer 0.1.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=92734c54"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial: Comparing Trajectory Analysis Methods" href="Visualization_trajectories_comparison_methods.html" />
+    <link rel="prev" title="Tutorial: Contact Angle Analysis (Sliced Method)" href="Sliced_method_tuto.html" />
+
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+
+
+
+
+  </head><body>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+
+
+          <div class="body" role="main">
+
+  <section id="visualization-tutorial-droplet-surface-and-contact-angle">
+<h1>Visualization Tutorial — Droplet Surface and Contact Angle<a class="headerlink" href="#visualization-tutorial-droplet-surface-and-contact-angle" title="Link to this heading">¶</a></h1>
+<p>This tutorial demonstrates how to visualize a droplet and compute its contact angle using the <strong>HydroAngleAnalyzer</strong> package. We’ll use the <code class="docutils literal notranslate"><span class="pre">sliced</span></code> contact angle method and visualize the resulting droplet with the <code class="docutils literal notranslate"><span class="pre">Droplet_sliced_Plotter</span></code> class.</p>
+<hr class="docutils" />
+<section id="overview">
+<h2>1. Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The visualization workflow involves the following steps:</p>
+<ol class="arabic simple">
+<li><p>Parse atomic positions from a trajectory file.</p></li>
+<li><p>Identify water molecules (oxygen and hydrogen atoms).</p></li>
+<li><p>Compute the droplet surface and contact angle using the <em>sliced method</em>.</p></li>
+<li><p>Visualize the droplet, fitted circle, tangent, and wall.</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="import-required-modules">
+<h2>2. Import Required Modules<a class="headerlink" href="#import-required-modules" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DumpParser</span><span class="p">,</span>
+    <span class="n">Dump_WaterMoleculeFinder</span><span class="p">,</span>
+    <span class="n">DumpParse_wall</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngle_sliced</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.visualization_statistics_angles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Droplet_sliced_Plotter</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="define-the-input-trajectory">
+<h2>3. Define the Input Trajectory<a class="headerlink" href="#define-the-input-trajectory" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;../HydroAngleAnalyzer/tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="identify-water-molecules">
+<h2>4. Identify Water Molecules<a class="headerlink" href="#identify-water-molecules" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">particle_type_wall</span><span class="o">=</span><span class="p">{</span><span class="mi">3</span><span class="p">},</span> <span class="n">oxygen_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hydrogen_type</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+
+<span class="n">oxygen_indices</span> <span class="o">=</span> <span class="n">wat_find</span><span class="o">.</span><span class="n">get_water_oxygen_ids</span><span class="p">(</span><span class="n">num_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of water molecules detected:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">oxygen_indices</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="parse-atomic-coordinates">
+<h2>5. Parse Atomic Coordinates<a class="headerlink" href="#parse-atomic-coordinates" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">DumpParser</span><span class="p">(</span><span class="n">in_path</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">oxygen_position</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num_frame</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">oxygen_indices</span><span class="p">)</span>
+
+<span class="n">coord_wall</span> <span class="o">=</span> <span class="n">DumpParse_wall</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">particule_liquid_type</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">})</span>
+<span class="n">wall_coords</span> <span class="o">=</span> <span class="n">coord_wall</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num_frame</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="compute-contact-angles">
+<h2>6. Compute Contact Angles<a class="headerlink" href="#compute-contact-angles" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">processor</span> <span class="o">=</span> <span class="n">ContactAngle_sliced</span><span class="p">(</span>
+    <span class="n">o_coords</span><span class="o">=</span><span class="n">oxygen_position</span><span class="p">,</span>
+    <span class="n">o_center_geom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">oxygen_position</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">type_model</span><span class="o">=</span><span class="s2">&quot;cylinder_y&quot;</span><span class="p">,</span>
+    <span class="n">delta_cylinder</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">max_dist</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">width_cylinder</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">list_alfas</span><span class="p">,</span> <span class="n">array_surfaces</span><span class="p">,</span> <span class="n">array_popt</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">predict_contact_angle</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean contact angles (°):&quot;</span><span class="p">,</span> <span class="n">list_alfas</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="visualize-the-droplet">
+<h2>7. Visualize the Droplet<a class="headerlink" href="#visualize-the-droplet" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plotter</span> <span class="o">=</span> <span class="n">Droplet_sliced_Plotter</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_wall</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">molecule_view</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">plot_surface_points</span><span class="p">(</span>
+    <span class="n">oxygen_position</span><span class="o">=</span><span class="n">oxygen_position</span><span class="p">,</span>
+    <span class="n">surface_data</span><span class="o">=</span><span class="n">array_surfaces</span><span class="p">,</span>
+    <span class="n">popt</span><span class="o">=</span><span class="n">array_popt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">wall_coords</span><span class="o">=</span><span class="n">wall_coords</span><span class="p">,</span>
+    <span class="n">output_filename</span><span class="o">=</span><span class="s2">&quot;droplet_plot.png&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">list_alfas</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Plot saved as &#39;droplet_plot.png&#39;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="outputs">
+<h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading">¶</a></h2>
+<img alt="Droplet sliced method visualization" src="../_images/droplet_plot.png" />
+</section>
+</section>
+
+
+          </div>
+
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">HydroAngleAnalyzer</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">On this page:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Parser_tutorial.html">Tutorial: Using the Parser Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Binning_method_tuto.html">Tutorial: Contact Angle Analysis (Binned Method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Sliced_method_tuto.html">Tutorial: Contact Angle Analysis (Sliced Method)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualization Tutorial — Droplet Surface and Contact Angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Visualization_trajectories_comparison_methods.html">Tutorial: Comparing Trajectory Analysis Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Visualisation_size_changing_droplet_infinit_angle.html">Visualization: Size-Changing Droplet with Infinite Angle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API/index.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Tutorials</a><ul>
+      <li>Previous: <a href="Sliced_method_tuto.html" title="previous chapter">Tutorial: Contact Angle Analysis (Sliced Method)</a></li>
+      <li>Next: <a href="Visualization_trajectories_comparison_methods.html" title="next chapter">Tutorial: Comparing Trajectory Analysis Methods</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Gabriel.
+
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+
+      |
+      <a href="../_sources/tutorials/Visualization_sliced_droplet.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+
+
+
+  </body>
+</html>

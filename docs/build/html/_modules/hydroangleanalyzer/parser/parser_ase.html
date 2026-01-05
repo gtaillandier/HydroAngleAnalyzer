@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hydroangleanalyzer.parser.parser_ase &#8212; HydroAngleAnalyzer 0.1.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=92734c54"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+
+
+
+
+  </head><body>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+
+
+          <div class="body" role="main">
+
+  <h1>Source code for hydroangleanalyzer.parser.parser_ase</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseParser</span>
+
+
+<div class="viewcode-block" id="Ase_Parser">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Ase_Parser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ASE-backed trajectory parser exposing minimal interface for analyzers.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_path : str</span>
+<span class="sd">        Path to any ASE-readable trajectory/file pattern (e.g. XYZ, extxyz,</span>
+<span class="sd">        POSCAR, etc.).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover - dependency guard</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;The &#39;ase&#39; package is required to use Ase_Parser. Install with &quot;</span>
+                <span class="s2">&quot;&#39;pip install ase&#39;.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_path</span> <span class="o">=</span> <span class="n">in_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Ase_Parser.parse">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.parse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Cartesian coordinates for selected atoms in a frame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_frame : int</span>
+<span class="sd">            Frame index.</span>
+<span class="sd">        indices : sequence[int], optional</span>
+<span class="sd">            Atom indices to select; if None all atoms are returned.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (M, 3)</span>
+<span class="sd">            Cartesian coordinates of requested atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span></div>
+
+
+<div class="viewcode-block" id="Ase_Parser.parse_liquid">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.parse_liquid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_liquid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_type_liquid</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return liquid atom coordinates filtering by atomic symbol list.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_type_liquid : sequence[str]</span>
+<span class="sd">            Symbols identifying liquid particles.</span>
+<span class="sd">        num_frame : int</span>
+<span class="sd">            Frame index.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (L, 3)</span>
+<span class="sd">            Liquid atom positions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">symbols</span><span class="p">,</span> <span class="n">particle_type_liquid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Ase_Parser.return_cylindrical_coord_pars">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.return_cylindrical_coord_pars">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_cylindrical_coord_pars</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">frame_list</span><span class="p">,</span> <span class="n">type_model</span><span class="o">=</span><span class="s2">&quot;cylinder_y&quot;</span><span class="p">,</span> <span class="n">liquid_indices</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cylindrical projection arrays for multiple frames.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frame_list : sequence[int]</span>
+<span class="sd">            Frames to process.</span>
+<span class="sd">        type_model : str, default &quot;cylinder_y&quot;</span>
+<span class="sd">            One of {&quot;cylinder_y&quot;, &quot;cylinder_x&quot;, &quot;spherical&quot;}.</span>
+<span class="sd">        liquid_indices : sequence[int], optional</span>
+<span class="sd">            Subset indices of atoms to include.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple(ndarray, ndarray, int)</span>
+<span class="sd">            (xi_values, zi_values, n_frames) flattened over frames.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="n">zi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">frame_idx</span> <span class="ow">in</span> <span class="n">frame_list</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame_idx</span><span class="p">]</span>
+            <span class="n">X_par</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span>
+            <span class="k">if</span> <span class="n">liquid_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">liquid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">liquid_indices</span><span class="p">)</span>
+                <span class="n">X_par</span> <span class="o">=</span> <span class="n">X_par</span><span class="p">[</span><span class="n">liquid_indices</span><span class="p">]</span>
+            <span class="n">X_cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_par</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">X_0</span> <span class="o">=</span> <span class="n">X_par</span> <span class="o">-</span> <span class="n">X_cm</span>
+            <span class="n">X_0</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_par</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">type_model</span> <span class="o">==</span> <span class="s2">&quot;cylinder_y&quot;</span><span class="p">:</span>
+                <span class="n">xi_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X_0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">type_model</span> <span class="o">==</span> <span class="s2">&quot;cylinder_x&quot;</span><span class="p">:</span>
+                <span class="n">xi_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X_0</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xi_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X_0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">X_0</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">zi_frame</span> <span class="o">=</span> <span class="n">X_0</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">xi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">xi_par</span><span class="p">,</span> <span class="n">xi_frame</span><span class="p">))</span>
+            <span class="n">zi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">zi_par</span><span class="p">,</span> <span class="n">zi_frame</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">frame_idx</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame: </span><span class="si">{</span><span class="n">frame_idx</span><span class="si">}</span><span class="se">\n</span><span class="s2">Center of Mass: </span><span class="si">{</span><span class="n">X_cm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">xi range:</span><span class="se">\t</span><span class="s2">(</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;zi range:</span><span class="se">\t</span><span class="s2">(</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">zi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">zi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xi_par</span><span class="p">,</span> <span class="n">zi_par</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ase_Parser.box_size_y">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.box_size_y">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_size_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return y-dimension (a2y) of simulation cell for frame.&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Ase_Parser.box_size_x">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.box_size_x">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_size_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return x-dimension (a1x) of simulation cell for frame.&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Ase_Parser.box_lenght_max">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.box_lenght_max">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_lenght_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>  <span class="c1"># legacy spelling retained</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return maximum lattice vector length for frame (legacy name).&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">lengths</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="Ase_Parser.frame_tot">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_Parser.frame_tot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame_tot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total number of frames in trajectory.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ASE_WaterMoleculeFinder">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.ASE_WaterMoleculeFinder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ASE_WaterMoleculeFinder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify water oxygen atoms by counting hydrogen neighbors.</span>
+
+<span class="sd">    Uses ASE neighbor list to find oxygens with exactly two hydrogens.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_path : str</span>
+<span class="sd">        Path to ASE-readable trajectory.</span>
+<span class="sd">    particle_type_wall : sequence[str]</span>
+<span class="sd">        Symbols representing wall particles (unused presently, reserved for</span>
+<span class="sd">        filtering).</span>
+<span class="sd">    oxygen_type : str, default &quot;O&quot;</span>
+<span class="sd">        Oxygen atom symbol.</span>
+<span class="sd">    hydrogen_type : str, default &quot;H&quot;</span>
+<span class="sd">        Hydrogen atom symbol.</span>
+<span class="sd">    oh_cutoff : float, default 1.2</span>
+<span class="sd">        O–H distance cutoff used to detect bonded hydrogens.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">particle_type_wall</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">oxygen_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span>
+        <span class="n">hydrogen_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+        <span class="n">oh_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">ase.neighborlist</span><span class="w"> </span><span class="kn">import</span> <span class="n">NeighborList</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;The &#39;ase&#39; package is required to use ASE_WaterMoleculeFinder. &quot;</span>
+                <span class="s2">&quot;Install it with: pip install ase&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ase_read</span> <span class="o">=</span> <span class="n">read</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_NeighborList</span> <span class="o">=</span> <span class="n">NeighborList</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ase_read</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_wall</span> <span class="o">=</span> <span class="n">particle_type_wall</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oxygen_type</span> <span class="o">=</span> <span class="n">oxygen_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hydrogen_type</span> <span class="o">=</span> <span class="n">hydrogen_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oh_cutoff</span> <span class="o">=</span> <span class="n">oh_cutoff</span>
+
+<div class="viewcode-block" id="ASE_WaterMoleculeFinder.get_water_oxygen_indices">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.ASE_WaterMoleculeFinder.get_water_oxygen_indices">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_oxygen_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return indices of oxygen atoms each bonded to exactly two hydrogens.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_frame : int</span>
+<span class="sd">            Frame index.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Oxygen atom indices satisfying bonding criterion.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="n">symbols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">())</span>
+        <span class="n">oxygen_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">symbols</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">oxygen_type</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">hydrogen_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">symbols</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogen_type</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cutoffs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">oh_cutoff</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">nl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NeighborList</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">,</span> <span class="n">self_interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bothways</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">nl</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">water_oxygens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">o_idx</span> <span class="ow">in</span> <span class="n">oxygen_indices</span><span class="p">:</span>
+            <span class="n">indices</span><span class="p">,</span> <span class="n">_offsets</span> <span class="o">=</span> <span class="n">nl</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="n">o_idx</span><span class="p">)</span>
+            <span class="n">h_neighbors</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hydrogen_indices</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">h_neighbors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">water_oxygens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o_idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">water_oxygens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ASE_WaterMoleculeFinder.get_water_oxygen_positions">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.ASE_WaterMoleculeFinder.get_water_oxygen_positions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_oxygen_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Cartesian positions of water oxygen atoms for a frame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_frame : int</span>
+<span class="sd">            Frame index.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray, shape (N, 3)</span>
+<span class="sd">            Oxygen atom positions; may be empty if none match criteria.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_water_oxygen_indices</span><span class="p">(</span><span class="n">num_frame</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Ase_wallParser">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Ase_wallParser</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parser extracting wall particle coordinates (excluding liquid types).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_path : str</span>
+<span class="sd">        Path to trajectory file.</span>
+<span class="sd">    particule_liquid_type : sequence[str]</span>
+<span class="sd">        Symbols representing liquid particles to exclude.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_path</span><span class="p">,</span> <span class="n">particule_liquid_type</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;The &#39;ase&#39; package is required to use Ase_wallParser. Install it &quot;</span>
+                <span class="s2">&quot;with: pip install ase&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_path</span> <span class="o">=</span> <span class="n">in_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particule_liquid_type</span> <span class="o">=</span> <span class="n">particule_liquid_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Ase_wallParser.parse">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser.parse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return wall coordinates for supplied frame index.&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">particule_liquid_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Ase_wallParser.find_highest_wall_part">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser.find_highest_wall_part">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_highest_wall_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return maximum z-coordinate among wall particles for frame.&quot;&quot;&quot;</span>
+        <span class="n">X_wall</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num_frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X_wall</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="Ase_wallParser.return_cylindrical_coord_pars">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser.return_cylindrical_coord_pars">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_cylindrical_coord_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_list</span><span class="p">,</span> <span class="n">type_model</span><span class="o">=</span><span class="s2">&quot;cylinder&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cylindrical projections for wall particles across frames.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frame_list : sequence[int]</span>
+<span class="sd">            Frame indices.</span>
+<span class="sd">        type_model : str, default &quot;cylinder&quot;</span>
+<span class="sd">            Either &quot;cylinder&quot; or &quot;spherical&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple(ndarray, ndarray, int)</span>
+<span class="sd">            (xi_par, zi_par, n_frames).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="n">zi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">frame_idx</span> <span class="ow">in</span> <span class="n">frame_list</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame_idx</span><span class="p">]</span>
+            <span class="n">X_par</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span>
+            <span class="n">X_cm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_par</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">X_0</span> <span class="o">=</span> <span class="n">X_par</span> <span class="o">-</span> <span class="n">X_cm</span>
+            <span class="n">X_0</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_par</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">type_model</span> <span class="o">==</span> <span class="s2">&quot;cylinder&quot;</span><span class="p">:</span>
+                <span class="n">xi_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X_0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># spherical</span>
+                <span class="n">xi_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X_0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">X_0</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">zi_frame</span> <span class="o">=</span> <span class="n">X_0</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">xi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">xi_par</span><span class="p">,</span> <span class="n">xi_frame</span><span class="p">))</span>
+            <span class="n">zi_par</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">zi_par</span><span class="p">,</span> <span class="n">zi_frame</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">frame_idx</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame: </span><span class="si">{</span><span class="n">frame_idx</span><span class="si">}</span><span class="se">\n</span><span class="s2">Center of Mass: </span><span class="si">{</span><span class="n">X_cm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">xi range:</span><span class="se">\t</span><span class="s2">(</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;zi range:</span><span class="se">\t</span><span class="s2">(</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">zi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">zi_par</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xi_par</span><span class="p">,</span> <span class="n">zi_par</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ase_wallParser.box_size_y">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser.box_size_y">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_size_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return y-dimension (a2y) of simulation cell for frame.&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Ase_wallParser.box_lenght_max">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser.box_lenght_max">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_lenght_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>  <span class="c1"># legacy spelling retained</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return maximum lattice vector length for frame.&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">num_frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">lengths</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="Ase_wallParser.frame_tot">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.Ase_wallParser.frame_tot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame_tot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total number of frames in trajectory.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># Example usage (commented for library import safety):</span>
+<span class="c1"># parser = Ase_Parser(&#39;traj.extxyz&#39;)</span>
+<span class="c1"># coords = parser.parse(num_frame=0)</span>
+</pre></div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">HydroAngleAnalyzer</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">On this page:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Gabriel.
+
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+
+    </div>
+
+
+
+
+  </body>
+</html>

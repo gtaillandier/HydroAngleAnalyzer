@@ -3,6 +3,12 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+# Add the project root to the Python path so autodoc can find the package
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("../../"))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -14,13 +20,18 @@ release = "0.1.2"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+
 extensions = [
     "sphinx.ext.autodoc",  # Automatically generate documentation from docstrings
     "sphinx.ext.viewcode",  # Include links to source code
     "sphinx.ext.napoleon",  # Support for NumPy and Google style docstrings
     "sphinx.ext.mathjax",  # Render math notation
     "sphinx.ext.coverage",  # Check documentation coverage
+    "sphinx.ext.autosummary",  # Generate summary tables for modules
 ]
+
+# Autosummary settings
+autosummary_generate = True  # Automatically generate stub files
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
