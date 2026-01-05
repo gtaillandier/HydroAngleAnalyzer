@@ -44,6 +44,7 @@ conda install --strict-channel-priority -c https://conda.ovito.org -c conda-forg
 
 ## Quick Start
 
+
 ```python
 from hydroangleanalyzer import (
     DumpParser, SlicedContactAngleAnalyzer, BinnedContactAngleAnalyzer,
