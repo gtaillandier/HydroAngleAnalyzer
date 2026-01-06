@@ -39,9 +39,12 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = (
-    "alabaster"  # Default theme; replace with 'sphinx_rtd_theme' or others if needed
-)
+html_theme = "sphinx_book_theme"
+html_logo = "../images/logo-HydroAngleAnalyzer.png"
+html_theme_options = {
+    "repository_url": "https://github.com/username/hydroangleanalyzer",
+    "use_repository_button": True,
+}
 html_static_path = ["_static"]
 
 # -- Napoleon options (for better docstring parsing) -------------------------
