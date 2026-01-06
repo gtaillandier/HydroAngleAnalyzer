@@ -20,32 +20,47 @@ release = "0.1.2"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-
 extensions = [
-    "sphinx.ext.autodoc",  # Automatically generate documentation from docstrings
-    "sphinx.ext.viewcode",  # Include links to source code
-    "sphinx.ext.napoleon",  # Support for NumPy and Google style docstrings
-    "sphinx.ext.mathjax",  # Render math notation
-    "sphinx.ext.coverage",  # Check documentation coverage
-    "sphinx.ext.autosummary",  # Generate summary tables for modules
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.napoleon",
+    "sphinxemoji.sphinxemoji",
+    "sphinx_copybutton",
+    "sphinxarg.ext",
+    "sphinx_code_tabs",
+    "sphinx_issues",
+    "sphinx.ext.mathjax",  # Kept from original
+    "sphinx.ext.coverage",  # Kept from original
+    "sphinx.ext.autosummary",  # Kept from original
 ]
 
 # Autosummary settings
-autosummary_generate = True  # Automatically generate stub files
+autosummary_generate = True
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+# Exclude input prompts from copybutton
+copybutton_exclude = ".linenos, .gp, .go"
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_book_theme"
-html_logo = "../images/logo-HydroAngleAnalyzer.png"
-html_theme_options = {
-    "repository_url": "https://github.com/username/hydroangleanalyzer",
-    "use_repository_button": True,
-}
+html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+
+# Path to GitHub repo {group}/{project}
+issues_github_path = "gtaillandier/HydroAngleAnalyzer"
+
+# which is the equivalent to:
+issues_uri = "https://github.com/{group}/{project}/issues/{issue}"
+issues_prefix = "#"
+issues_pr_uri = "https://github.com/{group}/{project}/pull/{pr}"
+issues_pr_prefix = "#"
+issues_commit_uri = "https://github.com/{group}/{project}/commit/{commit}"
+issues_commit_prefix = "@"
+issues_user_uri = "https://github.com/{user}"
+issues_user_prefix = "@"
 
 # -- Napoleon options (for better docstring parsing) -------------------------
 napoleon_google_docstring = True
