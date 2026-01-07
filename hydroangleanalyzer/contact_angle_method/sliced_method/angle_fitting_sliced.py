@@ -251,3 +251,6 @@ class ContactAngleSliced:
             if angle is not None:
                 list_alfas.append(angle)
         return list_alfas, array_surfaces, array_popt
+
+
+ContactAngle_sliced = ContactAngleSliced

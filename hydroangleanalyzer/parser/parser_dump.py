@@ -217,3 +217,7 @@ class DumpWaterMoleculeFinder:
             oxygen_ids = data.particles["Particle Identifier"][oxygen_indices]
             return oxygen_ids
         return self._manual_identification(data)
+
+
+Dump_WaterMoleculeFinder = DumpWaterMoleculeFinder
+DumpParse_wall = DumpWallParser

@@ -335,3 +335,6 @@ class ContactAngleBinning:
             )
         print("List of contact angles by batch:", angles)
         return angles
+
+
+ContactAngle_binning = ContactAngleBinning

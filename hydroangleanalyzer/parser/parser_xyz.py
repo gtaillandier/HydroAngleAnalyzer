@@ -462,3 +462,8 @@ class XYZWallParser:
     def frame_tot(self):
         """Return total number of frames loaded."""
         return len(self.frames)
+
+
+XYZ_Parser = XYZParser
+XYZ_WaterMoleculeFinder = XYZWaterMoleculeFinder
+XYZ_WallParser = XYZWallParser

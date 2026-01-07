@@ -309,3 +309,7 @@ class AseWallParser:
 # Example usage (commented for library import safety):
 # parser = Ase_Parser('traj.extxyz')
 # coords = parser.parse(num_frame=0)
+
+Ase_Parser = AseParser
+Ase_WaterMoleculeFinder = AseWaterMoleculeFinder
+Ase_WallParser = AseWallParser
