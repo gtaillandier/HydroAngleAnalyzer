@@ -17,7 +17,7 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-   :caption: On this page:
+   :caption: Contents
 
    tutorials/index
    examples/index
