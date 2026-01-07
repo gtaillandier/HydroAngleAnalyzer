@@ -1,8 +1,8 @@
 import os
 
-from .parser_ase import Ase_WaterOxygenParser
-from .parser_dump import WaterOxygenDumpParser
-from .parser_xyz import XYZ_WaterOxygenParser
+from .parser_ase import AseWaterMoleculeFinder
+from .parser_dump import DumpWaterMoleculeFinder
+from .parser_xyz import XYZWaterMoleculeFinder
 
 
 def get_water_parser(filename, particle_type_wall, oxygen_type, hydrogen_type):
@@ -10,15 +10,15 @@ def get_water_parser(filename, particle_type_wall, oxygen_type, hydrogen_type):
     ext = os.path.splitext(filename)[-1].lower()
 
     if ext == ".dump":
-        return WaterOxygenDumpParser(
+        return DumpWaterMoleculeFinder(
             filename, particle_type_wall, oxygen_type, hydrogen_type
         )
     elif ext in [".traj", ".ase"]:
-        return Ase_WaterOxygenParser(
+        return AseWaterMoleculeFinder(
             filename, particle_type_wall, oxygen_type="O", hydrogen_type="H"
         )
     elif ext == ".xyz":
-        return XYZ_WaterOxygenParser(
+        return XYZWaterMoleculeFinder(
             filename, particle_type_wall, oxygen_type="O", hydrogen_type="H"
         )
     else:

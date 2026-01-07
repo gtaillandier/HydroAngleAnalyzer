@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from hydroangleanalyzer.parser.parser_ase import Ase_Parser
+from hydroangleanalyzer.parser.parser_ase import AseParser
 
 # Path to the test trajectory file (ASE format)
 TRAJECTORY_PATH = os.path.join(
@@ -15,7 +15,7 @@ TRAJECTORY_PATH = os.path.join(
 # --- Fixture for Ase_Parser ---
 @pytest.fixture
 def ase_parser():
-    return Ase_Parser(TRAJECTORY_PATH)
+    return AseParser(TRAJECTORY_PATH)
 
 
 # --- Test parse ---

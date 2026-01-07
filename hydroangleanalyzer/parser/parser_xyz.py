@@ -3,7 +3,7 @@ import numpy as np
 from .base_parser import BaseParser
 
 
-class XYZ_Parser(BaseParser):
+class XYZParser(BaseParser):
     """Simple in-memory XYZ trajectory parser with lattice extraction.
 
     Parameters
@@ -174,7 +174,7 @@ class XYZ_Parser(BaseParser):
         return len(self.frames)
 
 
-class XYZ_WaterOxygenParser(BaseParser):
+class XYZWaterMoleculeFinder(BaseParser):
     """Parser specialized for identifying water oxygen atoms in XYZ trajectories.
 
     Parameters
@@ -367,7 +367,7 @@ class XYZ_WaterOxygenParser(BaseParser):
         return np.array(water_oxygens)
 
 
-class XYZ_wallParser:
+class XYZWallParser:
     """Parser for extracting wall particle coordinates from XYZ trajectories.
 
     Parameters

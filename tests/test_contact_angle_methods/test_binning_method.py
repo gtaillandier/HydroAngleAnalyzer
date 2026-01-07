@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
-from hydroangleanalyzer.parser import Dump_WaterMoleculeFinder, DumpParser
+from hydroangleanalyzer.parser import DumpParser, DumpWaterMoleculeFinder
 
 
 # --- Fixtures ---
@@ -20,7 +20,7 @@ def filename():
 
 @pytest.fixture
 def wat_find(filename):
-    return Dump_WaterMoleculeFinder(
+    return DumpWaterMoleculeFinder(
         filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
     )
 

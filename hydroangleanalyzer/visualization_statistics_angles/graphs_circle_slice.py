@@ -13,7 +13,7 @@ from hydroangleanalyzer.parser import (
 plt.style.use("seaborn-v0_8-whitegrid")
 
 
-class Droplet_sliced_Plotter:
+class DropletSlicedPlotter:
     """Plot droplet slice: surface contours, fitted circle and tangent line.
 
     Parameters
@@ -326,7 +326,7 @@ class Droplet_sliced_Plotter:
         plt.close()
 
 
-class Droplet_sliced_Plotter_plotly:
+class DropletSlicedPlotterPlotly:
     """Interactive Plotly slice visualization with toggleable layers."""
 
     def __init__(self, center: bool = True):
@@ -583,7 +583,7 @@ class ContactAngleAnimator:
         )
         self.wall_coords = self.coord_wall.parse(num_frame=1)
         self.parser = DumpParser(in_path=self.filename)
-        self.plotter = Droplet_sliced_Plotter_plotly(center=True)
+        self.plotter = DropletSlicedPlotterPlotly(center=True)
 
     def generate_animation(
         self, output_filename: str = "ContactAngle_Median_PerFrame_Slider.html"

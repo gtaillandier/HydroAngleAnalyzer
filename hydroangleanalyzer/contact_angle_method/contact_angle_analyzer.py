@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-from .binning_method.angle_fitting_binning import ContactAngle_binning
-from .sliced_method.multi_processing import ContactAngle_sliced_parallel
+from .binning_method.angle_fitting_binning import ContactAngleBinning
+from .sliced_method.multi_processing import ContactAngleSlicedParallel
 
 
 class BaseContactAngleAnalyzer(ABC):
@@ -35,7 +35,7 @@ class SlicedContactAngleAnalyzer(BaseContactAngleAnalyzer):
     def __init__(self, parser, output_repo: str, **kwargs):
         self.parser = parser
         self.output_repo = output_repo
-        self._processor = ContactAngle_sliced_parallel(
+        self._processor = ContactAngleSlicedParallel(
             filename=parser.in_path, output_repo=output_repo, **kwargs
         )
 
@@ -66,7 +66,7 @@ class BinnedContactAngleAnalyzer(BaseContactAngleAnalyzer):
     def __init__(self, parser, output_dir: str, **kwargs):
         self.parser = parser
         self.output_dir = output_dir
-        self._analyzer = ContactAngle_binning(
+        self._analyzer = ContactAngleBinning(
             parser=parser, output_dir=output_dir, **kwargs
         )
 

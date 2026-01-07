@@ -3,8 +3,8 @@ from .binning_trajectory_evolution import BinningTrajectoryAnalyzer
 from .comparison_methods import MethodComparison
 from .graphs_circle_slice import (
     ContactAngleAnimator,
-    Droplet_sliced_Plotter,
-    Droplet_sliced_Plotter_plotly,
+    DropletSlicedPlotter,
+    DropletSlicedPlotterPlotly,
 )
 from .sliced_trajectory_evolution import SlicedTrajectoryAnalyzer
 from .tools_visu import (
@@ -19,8 +19,8 @@ __all__ = [
     "BaseTrajectoryAnalyzer",
     "BinningTrajectoryAnalyzer",
     "MethodComparison",
-    "Droplet_sliced_Plotter",
-    "Droplet_sliced_Plotter_plotly",
+    "DropletSlicedPlotter",
+    "DropletSlicedPlotterPlotly",
     "ContactAngleAnimator",
     "SlicedTrajectoryAnalyzer",
     "plot_slice",

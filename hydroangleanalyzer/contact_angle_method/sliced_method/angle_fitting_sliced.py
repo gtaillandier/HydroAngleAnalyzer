@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 from .surface_defined import SurfaceDefinition
 
 
-class ContactAngle_sliced:
+class ContactAngleSliced:
     """Sliced radial line method to estimate contact angle via circle fitting.
 
     Depending on ``type_model`` the droplet is analyzed by sweeping in y

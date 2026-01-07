@@ -88,7 +88,7 @@ class DumpParser(BaseParser):
         return self.pipeline.source.num_frames
 
 
-class DumpParse_wall:
+class DumpWallParser:
     def __init__(self, in_path, particule_liquid_type):
         self.in_path = in_path
         self.particule_liquid_type = particule_liquid_type
@@ -167,7 +167,7 @@ class DumpParse_wall:
         return self.pipeline.source.num_frames
 
 
-class Dump_WaterMoleculeFinder:
+class DumpWaterMoleculeFinder:
     """Identify water oxygen atoms in a parsed LAMMPS trajectory."""
 
     def __init__(

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
-from hydroangleanalyzer.parser import Dump_WaterMoleculeFinder, DumpParser
+from hydroangleanalyzer.parser import DumpParser, DumpWaterMoleculeFinder
 
 
 # --- Fixtures ---
@@ -20,7 +20,7 @@ def filename():
 
 @pytest.fixture
 def wat_find(filename):
-    return Dump_WaterMoleculeFinder(
+    return DumpWaterMoleculeFinder(
         filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
     )
 
@@ -49,10 +49,10 @@ def test_contact_angle_sliced_with_real_data(parser, oxygen_indices):
 
     # Initialize ContactAngle_sliced
     from hydroangleanalyzer.contact_angle_method.sliced_method import (
-        ContactAngle_sliced,
+        ContactAngleSliced,
     )
 
-    predictor = ContactAngle_sliced(
+    predictor = ContactAngleSliced(
         o_coords=liquid_positions,
         o_center_geom=mean_liquid_position,
         type_model="spherical",

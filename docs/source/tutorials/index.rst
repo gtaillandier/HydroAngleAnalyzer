@@ -6,7 +6,7 @@ Step-by-step guides for using HydroAngleAnalyzer.
 .. toctree::
    :maxdepth: 1
    :caption: Available Tutorials:
-
+   Introduction
    Parser_tutorial
    Binning_method_tuto
    Sliced_method_tuto

@@ -10,7 +10,7 @@ from .surface_definition import (
 )
 
 
-class ContactAngle_binning:
+class ContactAngleBinning:
     """Binning-based contact angle estimator using density field fitting.
 
     Frames aggregated in spatial bins form a time-averaged density field.

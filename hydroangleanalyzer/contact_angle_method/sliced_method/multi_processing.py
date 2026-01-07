@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class ContactAngle_sliced_parallel:
+class ContactAngleSlicedParallel:
     """Batch-parallel contact angle analyzer for sliced method.
 
     Frames are grouped into batches to mitigate parser pickling issues and to
@@ -161,9 +161,9 @@ class ContactAngle_sliced_parallel:
         try:
             from hydroangleanalyzer.io_utils import detect_parser_type
             from hydroangleanalyzer.parser.base_parser import BaseParser
-            from hydroangleanalyzer.parser.parser_ase import Ase_Parser
+            from hydroangleanalyzer.parser.parser_ase import AseParser
             from hydroangleanalyzer.parser.parser_dump import DumpParser
-            from hydroangleanalyzer.parser.parser_xyz import XYZ_Parser
+            from hydroangleanalyzer.parser.parser_xyz import XYZParser
         except ImportError as e:  # pragma: no cover
             logger.error(f"Failed to import required classes: {e}")
             return [(frame, None) for frame in batch_frames]
@@ -174,9 +174,9 @@ class ContactAngle_sliced_parallel:
             if parser_type == "dump":
                 parser_class = DumpParser
             elif parser_type == "ase":
-                parser_class = Ase_Parser
+                parser_class = AseParser
             elif parser_type == "xyz":
-                parser_class = XYZ_Parser
+                parser_class = XYZParser
             else:
                 raise ValueError(f"Unsupported parser type: {parser_type}")
             parser = parser_class(in_path=self.filename)
@@ -207,7 +207,7 @@ class ContactAngle_sliced_parallel:
         """
         try:
             from .angle_fitting_sliced import (
-                ContactAngle_sliced,
+                ContactAngleSliced,
             )
 
         except ImportError as e:  # pragma: no cover
@@ -243,7 +243,7 @@ class ContactAngle_sliced_parallel:
             else:
                 box_dimensions = None
             mean_liquid_position = np.mean(liquid_positions, axis=0)
-            predictor = ContactAngle_sliced(
+            predictor = ContactAngleSliced(
                 o_coords=liquid_positions,
                 max_dist=max_dist,
                 o_center_geom=mean_liquid_position,

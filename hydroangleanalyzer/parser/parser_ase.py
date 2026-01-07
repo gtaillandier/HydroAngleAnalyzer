@@ -5,7 +5,7 @@ import numpy as np
 from .base_parser import BaseParser
 
 
-class Ase_Parser(BaseParser):
+class AseParser(BaseParser):
     """ASE-backed trajectory parser exposing minimal interface for analyzers.
 
     Parameters
@@ -131,7 +131,7 @@ class Ase_Parser(BaseParser):
         return len(self.trajectory)
 
 
-class ASE_WaterMoleculeFinder:
+class AseWaterMoleculeFinder:
     """Identify water oxygen atoms by counting hydrogen neighbors.
 
     Uses ASE neighbor list to find oxygens with exactly two hydrogens.
@@ -221,7 +221,7 @@ class ASE_WaterMoleculeFinder:
         return frame.positions[indices]
 
 
-class Ase_wallParser:
+class AseWallParser:
     """Parser extracting wall particle coordinates (excluding liquid types).
 
     Parameters

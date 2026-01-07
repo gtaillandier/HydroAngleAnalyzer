@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from hydroangleanalyzer.parser.parser_xyz import XYZ_Parser
+from hydroangleanalyzer.parser.parser_xyz import XYZParser
 
 # Path to the test trajectory file
 TRAJECTORY_PATH = os.path.join(
@@ -14,7 +14,7 @@ TRAJECTORY_PATH = os.path.join(
 # --- Fixture for XYZ_Parser ---
 @pytest.fixture
 def xyz_parser():
-    return XYZ_Parser(TRAJECTORY_PATH)
+    return XYZParser(TRAJECTORY_PATH)
 
 
 # --- Test load_xyz_file ---
