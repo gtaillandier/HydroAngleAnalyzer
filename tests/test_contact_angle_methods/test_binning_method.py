@@ -27,7 +27,7 @@ def wat_find(filename):
 
 @pytest.fixture
 def oxygen_indices(wat_find):
-    return wat_find.get_water_oxygen_ids(num_frame=0)
+    return wat_find.get_water_oxygen_ids(0)
 
 
 @pytest.fixture

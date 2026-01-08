@@ -53,7 +53,7 @@ The visualization workflow involves the following steps:
        filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
    )
 
-   oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
+   oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
    print("Number of water molecules detected:", len(oxygen_indices))
 
 ----
@@ -64,10 +64,10 @@ The visualization workflow involves the following steps:
 .. code-block:: python
 
    parser = DumpParser(in_path=filename)
-   oxygen_position = parser.parse(num_frame=10, indices=oxygen_indices)
+   oxygen_position = parser.parse(frame_indexs=10, indices=oxygen_indices)
 
    coord_wall = DumpParse_wall(filename, particule_liquid_type={1, 2})
-   wall_coords = coord_wall.parse(num_frame=1)
+   wall_coords = coord_wall.parse(frame_indexs=1)
 
 ----
 

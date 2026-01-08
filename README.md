@@ -98,7 +98,7 @@ OVITO and ASE are only imported inside the respective parser classes. Installing
 
 ## Docstring Style
 
-NumPy-style docstrings adopted across modules. Pre-commit enforces pydocstyle with selected rules; legacy underscores (e.g. `box_lenght_max`) retained with modern alias for backward compatibility.
+NumPy-style docstrings adopted across modules. Pre-commit enforces pydocstyle with selected rules; legacy underscores (e.g. `box_length_max`) retained with modern alias for backward compatibility.
 
 ## Oxygen ID Retrieval Example
 
@@ -106,7 +106,7 @@ NumPy-style docstrings adopted across modules. Pre-commit enforces pydocstyle wi
 from hydroangleanalyzer import Dump_WaterMoleculeFinder
 
 finder = Dump_WaterMoleculeFinder("traj.lammpstrj", particle_type_wall={3}, oxygen_type=1, hydrogen_type=2)
-oxygen_ids = finder.get_water_oxygen_ids(num_frame=0)
+oxygen_ids = finder.get_water_oxygen_ids(frame_indexs=0)
 ```
 
 Use these indices for sliced or binned analyzers via `liquid_indices=oxygen_ids`.

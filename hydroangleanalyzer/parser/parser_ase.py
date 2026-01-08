@@ -1,4 +1,7 @@
-from typing import List
+from __future__ import annotations
+
+import warnings
+from typing import List, Tuple
 
 import numpy as np
 
@@ -20,18 +23,18 @@ class AseParser(BaseParser):
             from ase.io import read
         except ImportError as e:  # pragma: no cover - dependency guard
             raise ImportError(
-                "The 'ase' package is required to use Ase_Parser. Install with "
+                "The 'ase' package is required to use AseParser. Install with "
                 "'pip install ase'."
             ) from e
         self.in_path = in_path
         self.trajectory = read(self.in_path, index=":")
 
-    def parse(self, num_frame, indices=None):
+    def parse(self, frame_index: int, indices: np.ndarray | None = None) -> np.ndarray:
         """Return Cartesian coordinates for selected atoms in a frame.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
         indices : sequence[int], optional
             Atom indices to select; if None all atoms are returned.
@@ -41,20 +44,22 @@ class AseParser(BaseParser):
         ndarray, shape (M, 3)
             Cartesian coordinates of requested atoms.
         """
-        frame = self.trajectory[num_frame]
+        frame = self.trajectory[frame_index]
         if indices is not None:
             indices = np.array(indices)
             return frame.positions[indices]
         return frame.positions
 
-    def parse_liquid(self, particle_type_liquid, num_frame):
+    def parse_liquid_particles(
+        self, liquid_particle_types: List[str], frame_index: int
+    ) -> np.ndarray:
         """Return liquid atom coordinates filtering by atomic symbol list.
 
         Parameters
         ----------
-        particle_type_liquid : sequence[str]
+        liquid_particle_types : sequence[str]
             Symbols identifying liquid particles.
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -62,13 +67,25 @@ class AseParser(BaseParser):
         ndarray, shape (L, 3)
             Liquid atom positions.
         """
-        frame = self.trajectory[num_frame]
-        mask = np.isin(frame.symbols, particle_type_liquid)
+        frame = self.trajectory[frame_index]
+        mask = np.isin(frame.symbols, liquid_particle_types)
         return frame.positions[mask]
 
-    def return_cylindrical_coord_pars(
-        self, frame_list, type_model="cylinder_y", liquid_indices=None
-    ):
+    def parse_liquid(self, *args, **kwargs):
+        """Deprecated alias for parse_liquid_particles."""
+        warnings.warn(
+            "parse_liquid is deprecated, use parse_liquid_particles instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.parse_liquid_particles(*args, **kwargs)
+
+    def get_cylindrical_coordinates(
+        self,
+        frame_list: List[int],
+        type_model: str = "cylinder_y",
+        liquid_indices: np.ndarray | None = None,
+    ) -> Tuple[np.ndarray, np.ndarray, int]:
         """Return cylindrical projection arrays for multiple frames.
 
         Parameters
@@ -85,50 +102,69 @@ class AseParser(BaseParser):
         tuple(ndarray, ndarray, int)
             (xi_values, zi_values, n_frames) flattened over frames.
         """
-        xi_par = np.array([])
-        zi_par = np.array([])
+        xi_values = np.array([])
+        zi_values = np.array([])
         for frame_idx in frame_list:
             frame = self.trajectory[frame_idx]
-            X_par = frame.positions
+            x_par = frame.positions
             if liquid_indices is not None:
                 liquid_indices = np.array(liquid_indices)
-                X_par = X_par[liquid_indices]
-            X_cm = np.mean(X_par, axis=0)
-            X_0 = X_par - X_cm
-            X_0[:, 2] = X_par[:, 2]
+                x_par = x_par[liquid_indices]
+            x_cm = np.mean(x_par, axis=0)
+            x_0 = x_par - x_cm
+            x_0[:, 2] = x_par[:, 2]
             if type_model == "cylinder_y":
-                xi_frame = np.abs(X_0[:, 0] + 0.01)
+                xi_frame = np.abs(x_0[:, 0] + 0.01)
             elif type_model == "cylinder_x":
-                xi_frame = np.abs(X_0[:, 1] + 0.01)
+                xi_frame = np.abs(x_0[:, 1] + 0.01)
             else:
-                xi_frame = np.sqrt(X_0[:, 0] ** 2 + X_0[:, 1] ** 2)
-            zi_frame = X_0[:, 2]
-            xi_par = np.concatenate((xi_par, xi_frame))
-            zi_par = np.concatenate((zi_par, zi_frame))
+                xi_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
+            zi_frame = x_0[:, 2]
+            xi_values = np.concatenate((xi_values, xi_frame))
+            zi_values = np.concatenate((zi_values, zi_frame))
             if frame_idx % 10 == 0:
-                print(f"Frame: {frame_idx}\nCenter of Mass: {X_cm}")
-        print(f"\nxi range:\t({np.min(xi_par)},{np.max(xi_par)})")
-        print(f"zi range:\t({np.min(zi_par)},{np.max(zi_par)})")
-        return xi_par, zi_par, len(frame_list)
+                print(f"Frame: {frame_idx}\nCenter of Mass: {x_cm}")
+        print(f"\nxi range:\t({np.min(xi_values)},{np.max(xi_values)})")
+        print(f"zi range:\t({np.min(zi_values)},{np.max(zi_values)})")
+        return xi_values, zi_values, len(frame_list)
 
-    def box_size_y(self, num_frame):
+    def return_cylindrical_coord_pars(self, *args, **kwargs):
+        """Deprecated alias for get_cylindrical_coordinates."""
+        warnings.warn(
+            "return_cylindrical_coord_pars is deprecated, "
+            "use get_cylindrical_coordinates instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_cylindrical_coordinates(*args, **kwargs)
+
+    def box_size_y(self, frame_index: int) -> float:
         """Return y-dimension (a2y) of simulation cell for frame."""
-        frame = self.trajectory[num_frame]
+        frame = self.trajectory[frame_index]
         return float(frame.cell[1, 1])
 
-    def box_size_x(self, num_frame):
+    def box_size_x(self, frame_index: int) -> float:
         """Return x-dimension (a1x) of simulation cell for frame."""
-        frame = self.trajectory[num_frame]
+        frame = self.trajectory[frame_index]
         return float(frame.cell[0, 0])
 
-    def box_lenght_max(self, num_frame):  # legacy spelling retained
-        """Return maximum lattice vector length for frame (legacy name)."""
-        frame = self.trajectory[num_frame]
+    def box_length_max(self, frame_index: int) -> float:
+        """Return maximum lattice vector length for frame."""
+        frame = self.trajectory[frame_index]
         return float(max(frame.cell.lengths()))
 
-    def frame_tot(self):
+    def frame_count(self) -> int:
         """Return total number of frames in trajectory."""
         return len(self.trajectory)
+
+    def frame_tot(self) -> int:
+        """Deprecated alias for frame_count."""
+        warnings.warn(
+            "frame_tot is deprecated, use frame_count instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.frame_count()
 
 
 class AseWaterMoleculeFinder:
@@ -164,7 +200,7 @@ class AseWaterMoleculeFinder:
             from ase.neighborlist import NeighborList
         except ImportError as e:  # pragma: no cover
             raise ImportError(
-                "The 'ase' package is required to use ASE_WaterMoleculeFinder. "
+                "The 'ase' package is required to use AseWaterMoleculeFinder. "
                 "Install it with: pip install ase"
             ) from e
         self._ase_read = read
@@ -175,12 +211,12 @@ class AseWaterMoleculeFinder:
         self.hydrogen_type = hydrogen_type
         self.oh_cutoff = oh_cutoff
 
-    def get_water_oxygen_indices(self, num_frame):
+    def get_water_oxygen_indices(self, frame_index: int) -> np.ndarray:
         """Return indices of oxygen atoms each bonded to exactly two hydrogens.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -188,7 +224,7 @@ class AseWaterMoleculeFinder:
         ndarray
             Oxygen atom indices satisfying bonding criterion.
         """
-        frame = self.trajectory[num_frame]
+        frame = self.trajectory[frame_index]
         symbols = np.array(frame.get_chemical_symbols())
         oxygen_indices = np.where(symbols == self.oxygen_type)[0]
         hydrogen_indices = np.where(symbols == self.hydrogen_type)[0]
@@ -203,12 +239,12 @@ class AseWaterMoleculeFinder:
                 water_oxygens.append(o_idx)
         return np.array(water_oxygens, dtype=int)
 
-    def get_water_oxygen_positions(self, num_frame: int) -> np.ndarray:
+    def get_water_oxygen_positions(self, frame_index: int) -> np.ndarray:
         """Return Cartesian positions of water oxygen atoms for a frame.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -216,8 +252,8 @@ class AseWaterMoleculeFinder:
         ndarray, shape (N, 3)
             Oxygen atom positions; may be empty if none match criteria.
         """
-        indices = self.get_water_oxygen_indices(num_frame)
-        frame = self.trajectory[num_frame]
+        indices = self.get_water_oxygen_indices(frame_index)
+        frame = self.trajectory[frame_index]
         return frame.positions[indices]
 
 
@@ -228,34 +264,70 @@ class AseWallParser:
     ----------
     in_path : str
         Path to trajectory file.
-    particule_liquid_type : sequence[str]
+    liquid_particle_types : sequence[str]
         Symbols representing liquid particles to exclude.
     """
 
-    def __init__(self, in_path, particule_liquid_type):
+    def __init__(self, in_path: str, liquid_particle_types: List[str]):
         try:
             from ase.io import read
         except ImportError as e:  # pragma: no cover
             raise ImportError(
-                "The 'ase' package is required to use Ase_wallParser. Install it "
+                "The 'ase' package is required to use AseWallParser. Install it "
                 "with: pip install ase"
             ) from e
         self.in_path = in_path
-        self.particule_liquid_type = particule_liquid_type
+        self.liquid_particle_types = liquid_particle_types
         self.trajectory = read(self.in_path, index=":")
 
-    def parse(self, num_frame):
-        """Return wall coordinates for supplied frame index."""
-        frame = self.trajectory[num_frame]
-        mask = ~np.isin(frame.get_chemical_symbols(), self.particule_liquid_type)
+    def parse(self, frame_index: int) -> np.ndarray:
+        """Return wall coordinates for the supplied frame index.
+
+        Parameters
+        ----------
+        frame_index : int
+            Frame index.
+
+        Returns
+        -------
+        ndarray
+            Wall particle coordinates.
+        """
+        frame = self.trajectory[frame_index]
+        mask = ~np.isin(frame.get_chemical_symbols(), self.liquid_particle_types)
         return frame.positions[mask]
 
-    def find_highest_wall_part(self, num_frame):
-        """Return maximum z-coordinate among wall particles for frame."""
-        X_wall = self.parse(num_frame)
-        return float(np.max(X_wall[:, 2]))
+    def find_highest_wall_particle(self, frame_index: int) -> float:
+        """Return the maximum z-coordinate among wall particles for a frame.
 
-    def return_cylindrical_coord_pars(self, frame_list, type_model="cylinder"):
+        Parameters
+        ----------
+        frame_index : int
+            Frame index.
+
+        Returns
+        -------
+        float
+            Maximum z-coordinate.
+        """
+        x_wall = self.parse(frame_index)
+        return float(np.max(x_wall[:, 2]))
+
+    def find_highest_wall_part(self, *args, **kwargs):
+        """Deprecated alias for find_highest_wall_particle."""
+        warnings.warn(
+            "find_highest_wall_part is deprecated, "
+            "use find_highest_wall_particle instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.find_highest_wall_particle(*args, **kwargs)
+
+    def get_cylindrical_coordinates(
+        self,
+        frame_list: List[int],
+        type_model: str = "cylinder",
+    ) -> Tuple[np.ndarray, np.ndarray, int]:
         """Return cylindrical projections for wall particles across frames.
 
         Parameters
@@ -268,47 +340,66 @@ class AseWallParser:
         Returns
         -------
         tuple(ndarray, ndarray, int)
-            (xi_par, zi_par, n_frames).
+            (xi_values, zi_values, n_frames).
         """
-        xi_par = np.array([])
-        zi_par = np.array([])
+        xi_values = np.array([])
+        zi_values = np.array([])
         for frame_idx in frame_list:
             frame = self.trajectory[frame_idx]
-            X_par = frame.positions
-            X_cm = np.mean(X_par, axis=0)
-            X_0 = X_par - X_cm
-            X_0[:, 2] = X_par[:, 2]
+            x_par = frame.positions
+            x_cm = np.mean(x_par, axis=0)
+            x_0 = x_par - x_cm
+            x_0[:, 2] = x_par[:, 2]
             if type_model == "cylinder":
-                xi_frame = np.abs(X_0[:, 0] + 0.01)
+                xi_frame = np.abs(x_0[:, 0] + 0.01)
             else:  # spherical
-                xi_frame = np.sqrt(X_0[:, 0] ** 2 + X_0[:, 1] ** 2)
-            zi_frame = X_0[:, 2]
-            xi_par = np.concatenate((xi_par, xi_frame))
-            zi_par = np.concatenate((zi_par, zi_frame))
+                xi_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
+            zi_frame = x_0[:, 2]
+            xi_values = np.concatenate((xi_values, xi_frame))
+            zi_values = np.concatenate((zi_values, zi_frame))
             if frame_idx % 10 == 0:
-                print(f"Frame: {frame_idx}\nCenter of Mass: {X_cm}")
-        print(f"\nxi range:\t({np.min(xi_par)},{np.max(xi_par)})")
-        print(f"zi range:\t({np.min(zi_par)},{np.max(zi_par)})")
-        return xi_par, zi_par, len(frame_list)
+                print(f"Frame: {frame_idx}\nCenter of Mass: {x_cm}")
+        print(f"\nxi range:\t({np.min(xi_values)},{np.max(xi_values)})")
+        print(f"zi range:\t({np.min(zi_values)},{np.max(zi_values)})")
+        return xi_values, zi_values, len(frame_list)
 
-    def box_size_y(self, num_frame):
+    def return_cylindrical_coord_pars(self, *args, **kwargs):
+        """Deprecated alias for get_cylindrical_coordinates."""
+        warnings.warn(
+            "return_cylindrical_coord_pars is deprecated, "
+            "use get_cylindrical_coordinates instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_cylindrical_coordinates(*args, **kwargs)
+
+    def box_size_y(self, frame_index: int) -> float:
         """Return y-dimension (a2y) of simulation cell for frame."""
-        frame = self.trajectory[num_frame]
+        frame = self.trajectory[frame_index]
         return float(frame.cell[1, 1])
 
-    def box_lenght_max(self, num_frame):  # legacy spelling retained
+    def box_length_max(self, frame_index: int) -> float:
         """Return maximum lattice vector length for frame."""
-        frame = self.trajectory[num_frame]
+        frame = self.trajectory[frame_index]
         return float(max(frame.cell.lengths()))
 
-    def frame_tot(self):
+    def frame_count(self) -> int:
         """Return total number of frames in trajectory."""
         return len(self.trajectory)
+
+    def frame_tot(self) -> int:
+        """Deprecated alias for frame_count."""
+        warnings.warn(
+            "frame_tot is deprecated, use frame_count instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.frame_count()
 
 
 # Example usage (commented for library import safety):
 # parser = Ase_Parser('traj.extxyz')
-# coords = parser.parse(num_frame=0)
+# coords = parser.parse(frame_indexs=0)
 
 Ase_Parser = AseParser
 Ase_WaterMoleculeFinder = AseWaterMoleculeFinder

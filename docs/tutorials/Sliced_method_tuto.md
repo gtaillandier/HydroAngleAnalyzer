@@ -43,7 +43,7 @@ wat_find = Dump_WaterMoleculeFinder(
     hydrogen_type=2 )        # Hydrogen atom type
 
 # --- Step 3: Identify oxygen atom indices ---
-oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
 print("Number of water molecules:", len(oxygen_indices))
 
 # --- Step 4: Initialize the parser ---
@@ -119,7 +119,7 @@ wat_find = Dump_WaterMoleculeFinder(
     hydrogen_type=2
 )
 
-oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
 print(f"Number of water molecules: {len(oxygen_indices)}")
 
 # --- Step 3: Initialize parser ---

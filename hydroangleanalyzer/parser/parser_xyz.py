@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+import warnings
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
 
 from .base_parser import BaseParser
@@ -13,11 +18,11 @@ class XYZParser(BaseParser):
         with lattice vectors, then atom symbol + coordinates.
     """
 
-    def __init__(self, in_path):
+    def __init__(self, in_path: str):
         self.in_path = in_path
         self.frames = self.load_xyz_file()
 
-    def load_xyz_file(self):
+    def load_xyz_file(self) -> List[Dict[str, Any]]:
         """Load all frames from the XYZ file into memory.
 
         Returns
@@ -53,12 +58,12 @@ class XYZParser(BaseParser):
             frame_start += num_atoms
         return frames
 
-    def parse(self, num_frame, indices=None):
+    def parse(self, frame_index: int, indices: np.ndarray | None = None) -> np.ndarray:
         """Return Cartesian coordinates for selected atoms in a frame.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
         indices : sequence[int], optional
             Atom indices to select; if None all atoms are returned.
@@ -68,20 +73,22 @@ class XYZParser(BaseParser):
         ndarray, shape (M, 3)
             Coordinates of requested atoms.
         """
-        frame = self.frames[num_frame]
+        frame = self.frames[frame_index]
         if indices is not None:
             indices = np.array(indices)
             return frame["positions"][indices]
         return frame["positions"]
 
-    def parse_liquid(self, particle_type_liquid, num_frame):
+    def parse_liquid_particles(
+        self, liquid_particle_types: List[str], frame_index: int
+    ) -> np.ndarray:
         """Return positions of liquid particles (filter by symbols).
 
         Parameters
         ----------
-        particle_type_liquid : sequence[str]
+        liquid_particle_types : sequence[str]
             Atom symbols considered liquid (e.g. water molecule constituents).
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -89,13 +96,25 @@ class XYZParser(BaseParser):
         ndarray, shape (L, 3)
             Cartesian coordinates of liquid atoms.
         """
-        frame = self.frames[num_frame]
-        mask = np.isin(frame["symbols"], particle_type_liquid)
+        frame = self.frames[frame_index]
+        mask = np.isin(frame["symbols"], liquid_particle_types)
         return frame["positions"][mask]
 
-    def return_cylindrical_coord_pars(
-        self, frame_list, type_model="cylinder_x", liquid_indices=None
-    ):
+    def parse_liquid(self, *args, **kwargs):
+        """Deprecated alias for parse_liquid_particles."""
+        warnings.warn(
+            "parse_liquid is deprecated, use parse_liquid_particles instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.parse_liquid_particles(*args, **kwargs)
+
+    def get_cylindrical_coordinates(
+        self,
+        frame_list: List[int],
+        type_model: str = "cylinder_x",
+        liquid_indices: np.ndarray | None = None,
+    ) -> Tuple[np.ndarray, np.ndarray, int]:
         """Convert selected frames to cylindrical coordinates per axis mode.
 
         Parameters
@@ -113,42 +132,38 @@ class XYZParser(BaseParser):
         tuple(ndarray, ndarray, int)
             (xi_values, zi_values, n_frames) flattened over frames.
         """
-        xi_par = np.array([])
-        zi_par = np.array([])
+        xi_values = np.array([])
+        zi_values = np.array([])
         for frame_idx in frame_list:
             frame = self.frames[frame_idx]
-            X_par = frame["positions"]
+            x_par = frame["positions"]
             if liquid_indices is not None:
                 liquid_indices = np.array(liquid_indices)
-                X_par = X_par[liquid_indices]
-            X_cm = np.mean(X_par, axis=0)
-            X_0 = X_par - X_cm
-            X_0[:, 2] = X_par[:, 2]
+                x_par = x_par[liquid_indices]
+            x_cm = np.mean(x_par, axis=0)
+            x_0 = x_par - x_cm
+            x_0[:, 2] = x_par[:, 2]
             if type_model == "cylinder_y":
-                xi_frame = np.abs(X_0[:, 0] + 0.01)
+                xi_frame = np.abs(x_0[:, 0] + 0.01)
             elif type_model == "cylinder_x":
-                xi_frame = np.abs(X_0[:, 1] + 0.01)
+                xi_frame = np.abs(x_0[:, 1] + 0.01)
             else:  # spherical
-                xi_frame = np.sqrt(X_0[:, 0] ** 2 + X_0[:, 1] ** 2)
-            zi_frame = X_0[:, 2]
-            xi_par = np.concatenate((xi_par, xi_frame))
-            zi_par = np.concatenate((zi_par, zi_frame))
+                xi_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
+            zi_frame = x_0[:, 2]
+            xi_values = np.concatenate((xi_values, xi_frame))
+            zi_values = np.concatenate((zi_values, zi_frame))
             if frame_idx % 10 == 0:
-                print(f"Frame: {frame_idx}\nCenter of Mass: {X_cm}")
-        print(f"\nxi range:\t({np.min(xi_par)},{np.max(xi_par)})")
-        print(f"zi range:\t({np.min(zi_par)},{np.max(zi_par)})")
-        return xi_par, zi_par, len(frame_list)
+                print(f"Frame: {frame_idx}\nCenter of Mass: {x_cm}")
+        print(f"\nxi range:\t({np.min(xi_values)},{np.max(xi_values)})")
+        print(f"zi range:\t({np.min(zi_values)},{np.max(zi_values)})")
+        return xi_values, zi_values, len(frame_list)
 
-    def box_lenght_max(self, num_frame):  # legacy spelling retained
-        """Return maximum lattice vector length (legacy name)."""
-        return self.box_length_max(num_frame)
-
-    def box_length_max(self, num_frame):
+    def box_length_max(self, frame_index: int) -> float:
         """Return the maximum lattice vector length for a frame.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -156,20 +171,42 @@ class XYZParser(BaseParser):
         float
             Max |a_i| over lattice vectors.
         """
-        lattice_matrix = self.frames[num_frame]["lattice_matrix"]
+        lattice_matrix = self.frames[frame_index]["lattice_matrix"]
         return float(np.max(np.linalg.norm(lattice_matrix, axis=1)))
 
-    def box_size_x(self, num_frame):
-        """Return box length along x (a1x component)."""
-        lattice_matrix = self.frames[num_frame]["lattice_matrix"]
+    def box_size_x(self, frame_index: int) -> float:
+        """Return the box length along x (a1x component).
+
+        Parameters
+        ----------
+        frame_index : int
+            Frame index.
+
+        Returns
+        -------
+        float
+            Box x-length.
+        """
+        lattice_matrix = self.frames[frame_index]["lattice_matrix"]
         return float(lattice_matrix[0, 0])
 
-    def box_size_y(self, num_frame):
-        """Return box length along y (a2y component)."""
-        lattice_matrix = self.frames[num_frame]["lattice_matrix"]
+    def box_size_y(self, frame_index: int) -> float:
+        """Return the box length along y (a2y component).
+
+        Parameters
+        ----------
+        frame_index : int
+            Frame index.
+
+        Returns
+        -------
+        float
+            Box y-length.
+        """
+        lattice_matrix = self.frames[frame_index]["lattice_matrix"]
         return float(lattice_matrix[1, 1])
 
-    def frame_tot(self):
+    def frame_count(self):
         """Return total number of frames loaded."""
         return len(self.frames)
 
@@ -197,7 +234,7 @@ class XYZWaterMoleculeFinder(BaseParser):
         particle_type_wall,
         oxygen_type="O",
         hydrogen_type="H",
-        oh_cutoff=1.2,
+        oh_cutoff: float = 1.2,
     ):
         self.in_path = in_path
         self.particle_type_wall = particle_type_wall
@@ -228,14 +265,14 @@ class XYZWaterMoleculeFinder(BaseParser):
             frame_start += num_atoms
         return frames
 
-    def parse(self, particle_type_liquid, num_frame):
+    def parse(self, liquid_particle_types: List[str], frame_index: int) -> np.ndarray:
         """Return liquid particle coordinates filtering wall types.
 
         Parameters
         ----------
-        particle_type_liquid : sequence[str]
+        liquid_particle_types : sequence[str]
             Symbols for liquid particles.
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -243,11 +280,20 @@ class XYZWaterMoleculeFinder(BaseParser):
         ndarray, shape (L, 3)
             Liquid atom positions.
         """
-        frame = self.frames[num_frame]
-        mask = np.isin(frame["symbols"], particle_type_liquid)
+        frame = self.frames[frame_index]
+        mask = np.isin(frame["symbols"], liquid_particle_types)
         return frame["positions"][mask]
 
-    def return_cylindrical_coord_pars(
+    def parse_liquid(self, *args, **kwargs):
+        """Deprecated alias for parse."""
+        warnings.warn(
+            "parse_liquid is deprecated, use parse instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.parse(*args, **kwargs)
+
+    def get_cylindrical_coordinates(
         self, frame_list, type_model="cylinder_y", liquid_indices=None
     ):
         """Return cylindrical coordinate arrays for multiple frames.
@@ -292,16 +338,28 @@ class XYZWaterMoleculeFinder(BaseParser):
         print(f"zi range:\t({np.min(zi_par)},{np.max(zi_par)})")
         return xi_par, zi_par, len(frame_list)
 
-    def box_lenght_max(self, num_frame):  # legacy name retained
-        """XYZ lacks lattice; method unsupported (legacy name)."""
-        raise NotImplementedError("XYZ files do not inherently store box dimensions.")
+    def box_length_max(self, frame_index: int) -> float:
+        """Return the maximum lattice vector length for a frame.
 
-    def get_water_oxygen_indices(self, num_frame):
+        Parameters
+        ----------
+        frame_index : int
+            Frame index.
+
+        Returns
+        -------
+        float
+            Max |a_i| over lattice vectors.
+        """
+        lattice_matrix = self.frames[frame_index]["lattice_matrix"]
+        return float(np.max(np.linalg.norm(lattice_matrix, axis=1)))
+
+    def get_water_oxygen_indices(self, frame_index):
         """Return indices of oxygen atoms belonging to water molecules.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -309,7 +367,7 @@ class XYZWaterMoleculeFinder(BaseParser):
         ndarray
             Indices of oxygen atoms with exactly two hydrogens within cutoff.
         """
-        data = self.frames[num_frame]
+        data = self.frames[frame_index]
         positions = data["positions"]
         symbols = data["symbols"]
         oxygen_indices = np.where(symbols == self.oxygen_type)[0]
@@ -318,12 +376,12 @@ class XYZWaterMoleculeFinder(BaseParser):
             positions, oxygen_indices, hydrogen_indices
         )
 
-    def get_water_oxygen_positions(self, num_frame):
+    def get_water_oxygen_positions(self, frame_index):
         """Return coordinates of water oxygen atoms for a frame.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
 
         Returns
@@ -331,8 +389,8 @@ class XYZWaterMoleculeFinder(BaseParser):
         ndarray, shape (N, 3)
             Oxygen atom positions; empty array if none detected.
         """
-        positions = self.frames[num_frame]["positions"]
-        indices = self.get_water_oxygen_indices(num_frame)
+        positions = self.frames[frame_index]["positions"]
+        indices = self.get_water_oxygen_indices(frame_index)
         if len(indices) == 0:
             return np.empty((0, 3))
         return positions[indices]
@@ -367,103 +425,5 @@ class XYZWaterMoleculeFinder(BaseParser):
         return np.array(water_oxygens)
 
 
-class XYZWallParser:
-    """Parser for extracting wall particle coordinates from XYZ trajectories.
-
-    Parameters
-    ----------
-    in_path : str
-        Path to XYZ file.
-    particule_liquid_type : sequence[str]
-        Symbols representing liquid particles to exclude.
-    """
-
-    def __init__(self, in_path, particule_liquid_type):
-        self.in_path = in_path
-        self.particule_liquid_type = particule_liquid_type
-        self.frames = self.load_xyz_file()
-
-    def load_xyz_file(self):
-        """Load frames (without lattice) for wall extraction."""
-        frames = []
-        with open(self.in_path, "r") as file:
-            lines = file.readlines()
-        frame_start = 0
-        while frame_start < len(lines):
-            num_atoms = int(lines[frame_start].strip())
-            frame_start += 1
-            frame_start += 1  # skip comment line
-            symbols = []
-            positions = []
-            for i in range(num_atoms):
-                parts = lines[frame_start + i].strip().split()
-                symbols.append(parts[0])
-                positions.append([float(coord) for coord in parts[1:4]])
-            frames.append(
-                {"symbols": np.array(symbols), "positions": np.array(positions)}
-            )
-            frame_start += num_atoms
-        return frames
-
-    def parse(self, num_frame):
-        """Return coordinates of wall particles for frame (excludes liquid symbols)."""
-        frame = self.frames[num_frame]
-        mask = ~np.isin(frame["symbols"], self.particule_liquid_type)
-        return frame["positions"][mask]
-
-    def find_highest_wall_part(self, num_frame):
-        """Return maximum z among wall particle positions for frame."""
-        X_wall = self.parse(num_frame)
-        return float(np.max(X_wall[:, 2]))
-
-    def return_cylindrical_coord_pars(self, frame_list, type_model="cylinder"):
-        """Return cylindrical projection arrays for wall particles across frames.
-
-        Parameters
-        ----------
-        frame_list : sequence[int]
-            Frame indices.
-        type_model : str, default "cylinder"
-            Either "cylinder" or "spherical" to select radial metric.
-
-        Returns
-        -------
-        tuple(ndarray, ndarray, int)
-            (xi_values, zi_values, n_frames).
-        """
-        xi_par = np.array([])
-        zi_par = np.array([])
-        for frame in frame_list:
-            X_par = self.parse(frame)
-            X_cm = np.mean(X_par, axis=0)
-            X_0 = X_par - X_cm
-            X_0[:, 2] = X_par[:, 2]
-            if type_model == "cylinder":
-                xi_frame = np.abs(X_0[:, 0] + 0.01)
-            else:
-                xi_frame = np.sqrt(X_0[:, 0] ** 2 + X_0[:, 1] ** 2)
-            zi_frame = X_0[:, 2]
-            xi_par = np.concatenate((xi_par, xi_frame))
-            zi_par = np.concatenate((zi_par, zi_frame))
-            if frame % 10 == 0:
-                print(f"frame: {frame}\nCenter of Mass: {X_cm}")
-        print(f"\nxi range:\t({np.min(xi_par)},{np.max(xi_par)})")
-        print(f"zi range:\t({np.min(zi_par)},{np.max(zi_par)})")
-        return xi_par, zi_par, len(frame_list)
-
-    def box_size_y(self, num_frame):  # placeholders retained for interface parity
-        """Placeholder: XYZ lacks intrinsic box dimension metadata (y)."""
-        raise NotImplementedError("XYZ files do not inherently store box dimensions.")
-
-    def box_lenght_max(self, num_frame):  # legacy spelling retained
-        """Placeholder: XYZ lacks intrinsic box dimension metadata (max length)."""
-        raise NotImplementedError("XYZ files do not inherently store box dimensions.")
-
-    def frame_tot(self):
-        """Return total number of frames loaded."""
-        return len(self.frames)
-
-
 XYZ_Parser = XYZParser
 XYZ_WaterMoleculeFinder = XYZWaterMoleculeFinder
-XYZ_WallParser = XYZWallParser

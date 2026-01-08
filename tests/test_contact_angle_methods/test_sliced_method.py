@@ -27,7 +27,7 @@ def wat_find(filename):
 
 @pytest.fixture
 def oxygen_indices(wat_find):
-    return wat_find.get_water_oxygen_ids(num_frame=0)
+    return wat_find.get_water_oxygen_ids(0)
 
 
 @pytest.fixture
@@ -38,10 +38,12 @@ def parser(filename):
 # --- Unit Tests for ContactAngle_sliced ---
 def test_contact_angle_sliced_with_real_data(parser, oxygen_indices):
     # Parse liquid positions for frame 0
-    liquid_positions = parser.parse(num_frame=0, indices=oxygen_indices)
+    liquid_positions = parser.parse(frame_index=0, indices=oxygen_indices)
     max_dist = int(
         np.max(
-            np.array([parser.box_size_y(num_frame=0), parser.box_size_x(num_frame=0)])
+            np.array(
+                [parser.box_size_y(frame_index=0), parser.box_size_x(frame_index=0)]
+            )
         )
         / 2
     )

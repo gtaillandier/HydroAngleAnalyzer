@@ -577,11 +577,11 @@ class ContactAngleAnimator:
             oxygen_type=self.oxygen_type,
             hydrogen_type=self.hydrogen_type,
         )
-        self.oxygen_indices = self.wat_find.get_water_oxygen_ids(num_frame=0)
+        self.oxygen_indices = self.wat_find.get_water_oxygen_ids(frame_index=0)
         self.coord_wall = DumpParse_wall(
             self.filename, particule_liquid_type=self.particule_liquid_type
         )
-        self.wall_coords = self.coord_wall.parse(num_frame=1)
+        self.wall_coords = self.coord_wall.parse(frame_index=1)
         self.parser = DumpParser(in_path=self.filename)
         self.plotter = DropletSlicedPlotterPlotly(center=True)
 
@@ -604,7 +604,7 @@ class ContactAngleAnimator:
         median_angles = []
         for frame_idx in range(self.n_frames):
             oxygen_position = self.parser.parse(
-                num_frame=frame_idx, indices=self.oxygen_indices
+                frame_index=frame_idx, indices=self.oxygen_indices
             )
             processor = ContactAngle_sliced(
                 o_coords=oxygen_position,

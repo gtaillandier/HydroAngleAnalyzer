@@ -34,14 +34,14 @@ def test_dump_parser_no_ovito(mock_import_file):
 
 # --- Test parse ---
 def test_parse(dump_parser):
-    num_frame = 0
-    positions = dump_parser.parse(num_frame)
+    frame_indexs = 0
+    positions = dump_parser.parse(frame_indexs)
     assert isinstance(positions, np.ndarray)
     assert positions.shape[1] == 3  # x, y, z coordinates
 
     # Test with specific indices
     indices = np.array([1, 2])
-    positions_subset = dump_parser.parse(num_frame, indices)
+    positions_subset = dump_parser.parse(frame_indexs, indices)
     assert positions_subset.shape[0] <= positions.shape[0]
 
 
@@ -69,10 +69,10 @@ def test_return_cylindrical_coord_pars(dump_parser, capsys):
             print(f"Frame: {frame}")
             print(f"Center of Mass: {X_cm}")
 
-    num_frames = len(frame_list)
+    frame_indexss = len(frame_list)
     assert isinstance(xi_par, np.ndarray)
     assert isinstance(zi_par, np.ndarray)
-    assert num_frames == len(frame_list)
+    assert frame_indexss == len(frame_list)
     assert xi_par.shape == zi_par.shape
 
     print("\nxi range:\t({},{})".format(np.min(xi_par), np.max(xi_par)))
@@ -86,23 +86,23 @@ def test_return_cylindrical_coord_pars(dump_parser, capsys):
 
 # --- Test box_size_x and box_size_y ---
 def test_box_size_x(dump_parser):
-    num_frame = 0
-    box_size_x = dump_parser.box_size_x(num_frame)
+    frame_indexs = 0
+    box_size_x = dump_parser.box_size_x(frame_indexs)
     assert isinstance(box_size_x, float)
     assert box_size_x > 0
 
 
 def test_box_size_y(dump_parser):
-    num_frame = 0
-    box_size_y = dump_parser.box_size_y(num_frame)
+    frame_indexs = 0
+    box_size_y = dump_parser.box_size_y(frame_indexs)
     assert isinstance(box_size_y, float)
     assert box_size_y > 0
 
 
 # --- Test box_length_max ---
 def test_box_length_max(dump_parser):
-    num_frame = 0
-    max_length = dump_parser.box_length_max(num_frame)
+    frame_indexs = 0
+    max_length = dump_parser.box_length_max(frame_indexs)
     assert isinstance(max_length, float)
     assert max_length > 0
 

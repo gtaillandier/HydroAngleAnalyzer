@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 
 <html lang="en" data-content_root="../../../">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>hydroangleanalyzer.parser.parser_dump &#8212; HydroAngleAnalyzer 0.1.2 documentation</title>
@@ -14,23 +15,27 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
 
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
 
 
 
 
 
-  </head><body>
+</head>
+
+<body>
 
 
     <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
 
 
-          <div class="body" role="main">
+                <div class="body" role="main">
 
-  <h1>Source code for hydroangleanalyzer.parser.parser_dump</h1><div class="highlight"><pre>
+                    <h1>Source code for hydroangleanalyzer.parser.parser_dump</h1>
+                    <div class="highlight">
+                        <pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -227,9 +232,9 @@
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y_vector</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="DumpParse_wall.box_lenght_max">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.DumpParse_wall.box_lenght_max">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">box_lenght_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>  <span class="c1"># legacy name kept</span>
+<div class="viewcode-block" id="DumpParse_wall.box_length_max">
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.DumpParse_wall.box_length_max">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_length_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_frame</span><span class="p">):</span>  <span class="c1"># legacy name kept</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">num_frame</span><span class="p">)</span>
         <span class="n">y_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">])</span>
         <span class="n">x_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">])</span>
@@ -301,15 +306,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manual_identification</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 </div>
 
-</pre></div>
+</pre>
+                    </div>
 
-          </div>
+                </div>
 
+            </div>
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../../index.html">HydroAngleAnalyzer</a></h1>
+        <div class="sphinxsidebar" role="navigation" aria-label="Main">
+            <div class="sphinxsidebarwrapper">
+                <h1 class="logo"><a href="../../../index.html">HydroAngleAnalyzer</a></h1>
 
 
 
@@ -319,31 +325,40 @@
 
 
 
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">On this page:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
-</ul>
+                <search id="searchbox" style="display: none" role="search">
+                    <div class="searchformwrapper">
+                        <form class="search" action="../../../search.html" method="get">
+                            <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off"
+                                autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search" />
+                            <input type="submit" value="Go" />
+                        </form>
+                    </div>
+                </search>
+                <script>document.getElementById('searchbox').style.display = "block"</script>
+                <h3>Navigation</h3>
+                <p class="caption" role="heading"><span class="caption-text">On this page:</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal"
+                            href="../../../tutorials/index.html">Tutorials</a></li>
+                    <li class="toctree-l1"><a class="reference internal"
+                            href="../../../examples/index.html">Examples</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API
+                            Reference</a></li>
+                </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+                <div class="relations">
+                    <h3>Related Topics</h3>
+                    <ul>
+                        <li><a href="../../../index.html">Documentation overview</a>
+                            <ul>
+                                <li><a href="../../index.html">Module code</a>
+                                    <ul>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
 
 
 
@@ -352,21 +367,22 @@
 
 
 
+            </div>
         </div>
-      </div>
-      <div class="clearer"></div>
+        <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2025, Gabriel.
+        &#169;2025, Gabriel.
 
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+        |
+        Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+        &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
 
     </div>
 
 
 
 
-  </body>
+</body>
+
 </html>

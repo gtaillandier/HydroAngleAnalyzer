@@ -39,8 +39,8 @@ class ContactAngleBinning:
                 np.max(
                     np.array(
                         [
-                            parser.box_size_y(num_frame=1),
-                            parser.box_size_x(num_frame=1),
+                            parser.box_size_y(frame_index=1),
+                            parser.box_size_x(frame_index=1),
                         ]
                     )
                 )

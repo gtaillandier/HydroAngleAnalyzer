@@ -26,18 +26,18 @@ wat_find = Dump_WaterMoleculeFinder(
 )
 
 # --- Identify water oxygen indices for the first frame ---
-oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
 print(f"Number of water molecules: {len(oxygen_indices)}")
 
 # --- Initialize parser ---
 parser = DumpParser(filename)
 
 # --- Extract only oxygen coordinates for frame 0 ---
-oxygen_positions = parser.parse(num_frame=0, indices=oxygen_indices)
+oxygen_positions = parser.parse(frame_indexs=0, indices=oxygen_indices)
 print("Extracted oxygen coordinates shape:", oxygen_positions.shape)
 
 # --- Optional: Extract all atoms ---
-# all_positions = parser.parse(num_frame=0)
+# all_positions = parser.parse(frame_indexs=0)
 # print("All atom positions shape:", all_positions.shape)
 
 """
@@ -59,14 +59,14 @@ wat_find = ASE_WaterMoleculeFinder(
 )
 
 # --- Get oxygen indices for frame 0 ---
-oxygen_indices = wat_find.get_water_oxygen_indices(num_frame=0)
+oxygen_indices = wat_find.get_water_oxygen_indices(frame_indexs=0)
 print(f"Number of water molecules: {len(oxygen_indices)}")
 
 # --- Initialize parser ---
 parser = ASE_Parser(filename)
 
 # --- Extract oxygen coordinates only ---
-oxygen_positions = parser.parse(num_frame=0, indices=oxygen_indices)
+oxygen_positions = parser.parse(frame_indexs=0, indices=oxygen_indices)
 print("Extracted oxygen coordinates shape:", oxygen_positions.shape)
 
 """
@@ -84,9 +84,9 @@ filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.xyz"
 xyz_parser = XYZ_Parser(filename)
 
 # --- Extract all atom coordinates for frame 0 ---
-positions = xyz_parser.parse(num_frame=0)
+positions = xyz_parser.parse(frame_indexs=0)
 print("Total atoms loaded:", len(positions))
 
 # --- Extract subset of atoms (first 50) ---
-subset = xyz_parser.parse(num_frame=0, indices=list(range(50)))
+subset = xyz_parser.parse(frame_indexs=0, indices=list(range(50)))
 print("Subset (50 atoms) shape:", subset.shape)

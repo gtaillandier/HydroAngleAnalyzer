@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Tuple
 
 import numpy as np
 
@@ -25,12 +27,12 @@ class BaseParser(ABC):
         pass
 
     @abstractmethod
-    def parse(self, num_frame: int, indices: Optional[np.ndarray] = None) -> np.ndarray:
+    def parse(self, frame_index: int, indices: np.ndarray | None = None) -> np.ndarray:
         """Return Cartesian coordinates for selected atoms in a frame.
 
         Parameters
         ----------
-        num_frame : int
+        frame_index : int
             Frame index.
         indices : ndarray[int], optional
             Atom indices to select; if None return all atoms.
@@ -43,8 +45,8 @@ class BaseParser(ABC):
         pass
 
     @abstractmethod
-    def frame_tot(self) -> int:
-        """Return total number of frames available.
+    def frame_count(self) -> int:
+        """Return the total number of frames available.
 
         Returns
         -------
@@ -53,25 +55,48 @@ class BaseParser(ABC):
         """
         pass
 
-    def box_size_x(self, num_frame: int) -> float:  # pragma: no cover - default
-        """Return box x-length for frame (override if available)."""
+    def frame_tot(self) -> int:
+        """Return the total number of frames available. (Legacy name)."""
+        import warnings
+
+        warnings.warn(
+            "frame_tot is deprecated, use frame_count instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.frame_count()
+
+    def box_size_x(self, frame_index: int) -> float:  # pragma: no cover - default
+        """Return the box x-length for a frame. (override if available)."""
         raise NotImplementedError("box_size_x not implemented for this parser.")
 
-    def box_size_y(self, num_frame: int) -> float:  # pragma: no cover - default
-        """Return box y-length for frame (override if available)."""
+    def box_size_y(self, frame_index: int) -> float:  # pragma: no cover - default
+        """Return the box y-length for a frame. (override if available)."""
         raise NotImplementedError("box_size_y not implemented for this parser.")
 
-    def box_length_max(self, num_frame: int) -> float:  # pragma: no cover - default
-        """Return maximum box length for frame (override if available)."""
+    def box_length_max(self, frame_index: int) -> float:  # pragma: no cover - default
+        """Return the maximum box length for a frame. (override if available)."""
         raise NotImplementedError("box_length_max not implemented for this parser.")
 
-    def return_cylindrical_coord_pars(
+    def get_cylindrical_coordinates(
         self,
         frame_list: List[int],
         type_model: str = "cylinder_y",
-        liquid_indices: Optional[np.ndarray] = None,
+        liquid_indices: np.ndarray | None = None,
     ) -> Tuple[np.ndarray, np.ndarray, int]:  # pragma: no cover - default
         """Return cylindrical coordinate arrays for frames (override if available)."""
         raise NotImplementedError(
-            "return_cylindrical_coord_pars not implemented for this parser."
+            "get_cylindrical_coordinates not implemented for this parser."
         )
+
+    def return_cylindrical_coord_pars(self, *args, **kwargs):
+        """Return cylindrical coordinate arrays for frames. (Legacy name)."""
+        import warnings
+
+        warnings.warn(
+            "return_cylindrical_coord_pars is deprecated, "
+            "use get_cylindrical_coordinates instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_cylindrical_coordinates(*args, **kwargs)

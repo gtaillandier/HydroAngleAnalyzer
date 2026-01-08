@@ -15,7 +15,7 @@ wat_find = Dump_WaterMoleculeFinder(
 )
 
 # --- Step 3: Get oxygen atom indices for the first frame ---
-oxygen_indices = wat_find.get_water_oxygen_ids(num_frame=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
 print("Number of water molecules:", len(oxygen_indices))
 
 # --- Step 4: Define binning parameters ---

@@ -16,10 +16,8 @@ from .parser_dump import (
 )
 from .parser_xyz import (
     XYZ_Parser,
-    XYZ_WallParser,
     XYZ_WaterMoleculeFinder,
     XYZParser,
-    XYZWallParser,
     XYZWaterMoleculeFinder,
 )
 
@@ -38,8 +36,6 @@ __all__ = [
     "DumpParser",
     "XYZParser",
     "XYZ_Parser",
-    "XYZWallParser",
-    "XYZ_WallParser",
     "XYZWaterMoleculeFinder",
     "XYZ_WaterMoleculeFinder",
 ]

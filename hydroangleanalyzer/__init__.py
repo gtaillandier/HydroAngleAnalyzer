@@ -23,12 +23,11 @@ from .parser import (
     DumpWallParser,
     DumpWaterMoleculeFinder,
     XYZParser,
-    XYZWallParser,
     XYZWaterMoleculeFinder,
 )
 
 # Visualization utilities
-from .visualization_statistics_angles import (
+from .visualization_angles import (
     BaseTrajectoryAnalyzer,
     BinningTrajectoryAnalyzer,
     DropletSlicedPlotter,
@@ -62,7 +61,6 @@ __all__ = [
     "DumpWallParser",
     "DumpParser",
     "XYZParser",
-    "XYZWallParser",
     "XYZWaterMoleculeFinder",
     # Visualization & analysis
     "BaseTrajectoryAnalyzer",

@@ -216,15 +216,15 @@ class ContactAngleSlicedParallel:
         logger.info(f"START processing frame {frame_num}")
         try:
             liquid_positions = parser.parse(
-                num_frame=frame_num,
+                frame_index=frame_num,
                 indices=liquid_indices,
             )
             max_dist = int(
                 np.max(
                     np.array(
                         [
-                            parser.box_size_y(num_frame=frame_num),
-                            parser.box_size_x(num_frame=frame_num),
+                            parser.box_size_y(frame_index=frame_num),
+                            parser.box_size_x(frame_index=frame_num),
                         ]
                     )
                 )
@@ -237,9 +237,9 @@ class ContactAngleSlicedParallel:
             if self.type_model == "cylinder_x":
                 liquid_positions = liquid_positions[:, [1, 0, 2]]
             if self.type_model == "cylinder_x":
-                box_dimensions = parser.box_size_x(num_frame=frame_num)
+                box_dimensions = parser.box_size_x(frame_index=frame_num)
             elif self.type_model == "cylinder_y":
-                box_dimensions = parser.box_size_y(num_frame=frame_num)
+                box_dimensions = parser.box_size_y(frame_index=frame_num)
             else:
                 box_dimensions = None
             mean_liquid_position = np.mean(liquid_positions, axis=0)
