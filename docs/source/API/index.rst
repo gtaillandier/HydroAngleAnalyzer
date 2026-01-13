@@ -30,7 +30,7 @@ Sliced Method
 Binned Method
 ^^^^^^^^^^^^^
 
-.. automodule:: hydroangleanalyzer.contact_angle_method.binned_method
+.. automodule:: hydroangleanalyzer.contact_angle_method.binning_method
    :members:
    :undoc-members:
    :show-inheritance:
@@ -38,7 +38,7 @@ Binned Method
 Visualization and Statistics
 -----------------------------
 
-.. automodule:: hydroangleanalyzer.visualization_statistics_angles
+.. automodule:: hydroangleanalyzer.visualization_angles
    :members:
    :undoc-members:
    :show-inheritance:
