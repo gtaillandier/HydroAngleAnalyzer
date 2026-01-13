@@ -570,12 +570,10 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        tuple(list[list[float]], list[list[float]])</span>
-<span class="sd">            ``(list_rbeta, list_xz)`` where:</span>
-<span class="sd">            list_rbeta : list of [interface_re, beta_deg]</span>
-<span class="sd">                Fitted interface distance and its azimuth angle.</span>
-<span class="sd">            list_xz : list of [x_proj, z_proj]</span>
-<span class="sd">                Projected interface coordinates in XZ plane.</span>
+<span class="sd">        list_rbeta : list[list[float]]</span>
+<span class="sd">            Fitted interface distance and its azimuth angle ``[interface_re, beta_deg]``.</span>
+<span class="sd">        list_xz : list[list[float]]</span>
+<span class="sd">            Projected interface coordinates ``[x_proj, z_proj]`` in XZ plane.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">360</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_angle</span><span class="p">),</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">list_rbeta</span> <span class="o">=</span> <span class="p">[]</span>

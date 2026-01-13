@@ -148,38 +148,81 @@
 <li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.parser.XYZ_WaterMoleculeFinder"><code class="docutils literal notranslate"><span class="pre">XYZ_WaterMoleculeFinder</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-hydroangleanalyzer.contact_angle_method">Contact Angle Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer"><code class="docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.analyze"><code class="docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer.analyze()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.get_method_name"><code class="docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer.get_method_name()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.summary"><code class="docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer.summary()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contact-angle-methods">Contact Angle Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydroangleanalyzer.contact_angle_method.contact_angle_analyzer">Base Analyzer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer"><code class="docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer"><code class="docutils literal notranslate"><span class="pre">BinnedContactAngleAnalyzer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer"><code class="docutils literal notranslate"><span class="pre">SlicedContactAngleAnalyzer</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer"><code class="docutils literal notranslate"><span class="pre">BinnedContactAngleAnalyzer</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.analyze"><code class="docutils literal notranslate"><span class="pre">BinnedContactAngleAnalyzer.analyze()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.get_method_name"><code class="docutils literal notranslate"><span class="pre">BinnedContactAngleAnalyzer.get_method_name()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.ContactAngle_binning"><code class="docutils literal notranslate"><span class="pre">ContactAngle_binning</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.ContactAngle_sliced"><code class="docutils literal notranslate"><span class="pre">ContactAngle_sliced</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.ContactAngle_sliced_parallel"><code class="docutils literal notranslate"><span class="pre">ContactAngle_sliced_parallel</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer"><code class="docutils literal notranslate"><span class="pre">SlicedContactAngleAnalyzer</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.analyze"><code class="docutils literal notranslate"><span class="pre">SlicedContactAngleAnalyzer.analyze()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.get_method_name"><code class="docutils literal notranslate"><span class="pre">SlicedContactAngleAnalyzer.get_method_name()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer"><code class="docutils literal notranslate"><span class="pre">contact_angle_analyzer()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-hydroangleanalyzer.contact_angle_method.sliced_method">Sliced Method</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced"><code class="docutils literal notranslate"><span class="pre">ContactAngleSliced</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngle_sliced"><code class="docutils literal notranslate"><span class="pre">ContactAngle_sliced</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngle_sliced_parallel"><code class="docutils literal notranslate"><span class="pre">ContactAngle_sliced_parallel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.sliced_method.SurfaceDefinition"><code class="docutils literal notranslate"><span class="pre">SurfaceDefinition</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#binned-method">Binned Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydroangleanalyzer.contact_angle_method.binning_method">Binned Method</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel"><code class="docutils literal notranslate"><span class="pre">HyperbolicTangentModel</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#visualization-and-statistics">Visualization and Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-hydroangleanalyzer.visualization_angles">Visualization and Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.analyze"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.analyze()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.compute_statistics"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.compute_statistics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_clean_label"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.get_clean_label()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_contact_angles"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.get_contact_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_method_name"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.get_method_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_surface_areas"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.get_surface_areas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.load_data"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.plot_mean_angle_vs_surface"><code class="docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer.plot_mean_angle_vs_surface()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.circular_segment_area"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer.circular_segment_area()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_contact_angles"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer.get_contact_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_method_name"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer.get_method_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_surface_areas"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer.get_surface_areas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.load_files"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer.load_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.read_data"><code class="docutils literal notranslate"><span class="pre">BinningTrajectoryAnalyzer.read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.ContactAngleAnimator"><code class="docutils literal notranslate"><span class="pre">ContactAngleAnimator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.ContactAngleAnimator.generate_animation"><code class="docutils literal notranslate"><span class="pre">ContactAngleAnimator.generate_animation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotter"><code class="docutils literal notranslate"><span class="pre">DropletSlicedPlotter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotter.plot_surface_points"><code class="docutils literal notranslate"><span class="pre">DropletSlicedPlotter.plot_surface_points()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotterPlotly"><code class="docutils literal notranslate"><span class="pre">DropletSlicedPlotterPlotly</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotterPlotly.plot_surface_points"><code class="docutils literal notranslate"><span class="pre">DropletSlicedPlotterPlotly.plot_surface_points()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.MethodComparison"><code class="docutils literal notranslate"><span class="pre">MethodComparison</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.MethodComparison.compare_statistics"><code class="docutils literal notranslate"><span class="pre">MethodComparison.compare_statistics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.MethodComparison.plot_overlay_comparison"><code class="docutils literal notranslate"><span class="pre">MethodComparison.plot_overlay_comparison()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.MethodComparison.plot_side_by_side_comparison"><code class="docutils literal notranslate"><span class="pre">MethodComparison.plot_side_by_side_comparison()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.calculate_polygon_area"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.calculate_polygon_area()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_contact_angles"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.get_contact_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_method_name"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.get_method_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_surface_areas"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.get_surface_areas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.load_data"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.mean_surface_frame"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.mean_surface_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.plot_mean_alfas_evolution"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.plot_mean_alfas_evolution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.plot_median_alfas_evolution"><code class="docutils literal notranslate"><span class="pre">SlicedTrajectoryAnalyzer.plot_median_alfas_evolution()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.plot_liquid_particles"><code class="docutils literal notranslate"><span class="pre">plot_liquid_particles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.plot_slice"><code class="docutils literal notranslate"><span class="pre">plot_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.plot_surface_and_points"><code class="docutils literal notranslate"><span class="pre">plot_surface_and_points()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.plot_surface_file"><code class="docutils literal notranslate"><span class="pre">plot_surface_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hydroangleanalyzer.visualization_angles.read_surface_file"><code class="docutils literal notranslate"><span class="pre">read_surface_file()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -800,7 +843,7 @@ with lattice vectors, then atom symbol + coordinates.</p>
 <dd class="field-odd"><p><strong>frame_index</strong> (<em>int</em>) – Frame index.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Max <a href="#id1"><span class="problematic" id="id2">|a_i|</span></a> over lattice vectors.</p>
+<dd class="field-even"><p>Max <code class="docutils literal notranslate"><span class="pre">|a_i|</span></code> over lattice vectors.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -957,7 +1000,7 @@ radial definition.</p></li>
 <dd class="field-odd"><p><strong>frame_index</strong> (<em>int</em>) – Frame index.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Max <a href="#id3"><span class="problematic" id="id4">|a_i|</span></a> over lattice vectors.</p>
+<dd class="field-even"><p>Max <code class="docutils literal notranslate"><span class="pre">|a_i|</span></code> over lattice vectors.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -1067,89 +1110,54 @@ radial definition.</p></li>
 </dd></dl>
 
 </section>
-<section id="module-hydroangleanalyzer.contact_angle_method">
-<span id="contact-angle-methods"></span><h2>Contact Angle Methods<a class="headerlink" href="#module-hydroangleanalyzer.contact_angle_method" title="Link to this heading"></a></h2>
+<section id="contact-angle-methods">
+<h2>Contact Angle Methods<a class="headerlink" href="#contact-angle-methods" title="Link to this heading"></a></h2>
+<section id="module-hydroangleanalyzer.contact_angle_method.contact_angle_analyzer">
+<span id="base-analyzer"></span><h3>Base Analyzer<a class="headerlink" href="#module-hydroangleanalyzer.contact_angle_method.contact_angle_analyzer" title="Link to this heading"></a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">BaseContactAngleAnalyzer</span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.</span></span><span class="sig-name descname"><span class="pre">BaseContactAngleAnalyzer</span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Abstract base for contact angle analysis across trajectories.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.analyze">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.analyze" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer.analyze">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer.analyze" title="Link to this definition"></a></dt>
 <dd><p>Run the analysis and return statistics.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.get_method_name">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_method_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer.get_method_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.get_method_name" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.summary">
-<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.summary" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BaseContactAngleAnalyzer.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer.summary" title="Link to this definition"></a></dt>
 <dd><p>Return quick summary statistics.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">BinnedContactAngleAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BinnedContactAngleAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer" title="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer</span></code></a></p>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.</span></span><span class="sig-name descname"><span class="pre">BinnedContactAngleAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BinnedContactAngleAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer" title="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.analyze">
-<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BinnedContactAngleAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.analyze" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BinnedContactAngleAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer.analyze" title="Link to this definition"></a></dt>
 <dd><p>Run the analysis and return statistics.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.get_method_name">
-<span class="sig-name descname"><span class="pre">get_method_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#BinnedContactAngleAnalyzer.get_method_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.get_method_name" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.ContactAngle_binning">
-<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">ContactAngle_binning</span></span><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.ContactAngle_binning" title="Link to this definition"></a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAngleBinning</span></code></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.ContactAngle_sliced">
-<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">ContactAngle_sliced</span></span><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.ContactAngle_sliced" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced" title="hydroangleanalyzer.contact_angle_method.sliced_method.angle_fitting_sliced.ContactAngleSliced"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAngleSliced</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.ContactAngle_sliced_parallel">
-<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">ContactAngle_sliced_parallel</span></span><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.ContactAngle_sliced_parallel" title="Link to this definition"></a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAngleSlicedParallel</span></code></p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">SlicedContactAngleAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_repo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#SlicedContactAngleAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer" title="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer</span></code></a></p>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.</span></span><span class="sig-name descname"><span class="pre">SlicedContactAngleAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_repo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#SlicedContactAngleAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer" title="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseContactAngleAnalyzer</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.analyze">
-<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#SlicedContactAngleAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.analyze" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#SlicedContactAngleAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer.analyze" title="Link to this definition"></a></dt>
 <dd><p>Run the analysis and return statistics.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.get_method_name">
-<span class="sig-name descname"><span class="pre">get_method_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/contact_angle_analyzer.html#SlicedContactAngleAnalyzer.get_method_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.get_method_name" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer">
-<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.</span></span><span class="sig-name descname"><span class="pre">contact_angle_analyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer" title="hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer"><span class="pre">BaseContactAngleAnalyzer</span></a></span></span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/factory.html#contact_angle_analyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
+</section>
 <section id="module-hydroangleanalyzer.contact_angle_method.sliced_method">
 <span id="sliced-method"></span><h3>Sliced Method<a class="headerlink" href="#module-hydroangleanalyzer.contact_angle_method.sliced_method" title="Link to this heading"></a></h3>
 <p>Public exports for sliced contact angle method.</p>
@@ -1319,18 +1327,6 @@ baseline + offset</p>
 
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngle_sliced">
-<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.sliced_method.</span></span><span class="sig-name descname"><span class="pre">ContactAngle_sliced</span></span><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngle_sliced" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced" title="hydroangleanalyzer.contact_angle_method.sliced_method.angle_fitting_sliced.ContactAngleSliced"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAngleSliced</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngle_sliced_parallel">
-<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.sliced_method.</span></span><span class="sig-name descname"><span class="pre">ContactAngle_sliced_parallel</span></span><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngle_sliced_parallel" title="Link to this definition"></a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAngleSlicedParallel</span></code></p>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.sliced_method.SurfaceDefinition">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.sliced_method.</span></span><span class="sig-name descname"><span class="pre">SurfaceDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_geom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_conversion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/sliced_method/surface_defined.html#SurfaceDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.sliced_method.SurfaceDefinition" title="Link to this definition"></a></dt>
@@ -1357,19 +1353,11 @@ the interface position (“re”) which is then projected back to XZ plane.</p>
 <dd><p>Sample density along radial lines and fit interface positions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p><code class="docutils literal notranslate"><span class="pre">(list_rbeta,</span> <span class="pre">list_xz)</span></code> where:
-list_rbeta : list of [interface_re, beta_deg]</p>
-<blockquote>
-<div><p>Fitted interface distance and its azimuth angle.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>list_xz<span class="classifier">list of [x_proj, z_proj]</span></dt><dd><p>Projected interface coordinates in XZ plane.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>list_rbeta</strong> (<em>list[list[float]]</em>) – Fitted interface distance and its azimuth angle <code class="docutils literal notranslate"><span class="pre">[interface_re,</span> <span class="pre">beta_deg]</span></code>.</p></li>
+<li><p><strong>list_xz</strong> (<em>list[list[float]]</em>) – Projected interface coordinates <code class="docutils literal notranslate"><span class="pre">[x_proj,</span> <span class="pre">z_proj]</span></code> in XZ plane.</p></li>
+</ul>
 </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple(list[list[float]], list[list[float]])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1441,12 +1429,587 @@ list_rbeta : list of [interface_re, beta_deg]</p>
 </dd></dl>
 
 </section>
-<section id="binned-method">
-<h3>Binned Method<a class="headerlink" href="#binned-method" title="Link to this heading"></a></h3>
+<section id="module-hydroangleanalyzer.contact_angle_method.binning_method">
+<span id="binned-method"></span><h3>Binned Method<a class="headerlink" href="#module-hydroangleanalyzer.contact_angle_method.binning_method" title="Link to this heading"></a></h3>
+<p>Public exports for binning contact angle method.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.contact_angle_method.binning_method.</span></span><span class="sig-name descname"><span class="pre">HyperbolicTangentModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SurfaceModel</span></code></p>
+<p>Liquid–vapor interface model using a hyperbolic tangent profile.</p>
+<p>The density field is modeled as the product of two sigmoidal (tanh) terms: one
+depending on the spherical radial distance and one along the vertical axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>initial_params</strong> (<em>list</em><em>[</em><em>float</em><em>]</em><em>, </em><em>optional</em>) – <p>Seven parameters <code class="docutils literal notranslate"><span class="pre">[rho1,</span> <span class="pre">rho2,</span> <span class="pre">R_eq,</span> <span class="pre">zi_c,</span> <span class="pre">zi_0,</span> <span class="pre">t1,</span> <span class="pre">t2]</span></code>:</p>
+<ul class="simple">
+<li><p>rho1 : Liquid-phase density.</p></li>
+<li><p>rho2 : Vapor-phase density.</p></li>
+<li><p>R_eq : Equivalent spherical radius.</p></li>
+<li><p>zi_c : z-coordinate of the sphere center.</p></li>
+<li><p>zi_0 : Reference wall z-coordinate.</p></li>
+<li><p>t1 : Interface thickness (radial component).</p></li>
+<li><p>t2 : Interface thickness (vertical component).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.compute_contact_angle">
+<span class="sig-name descname"><span class="pre">compute_contact_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel.compute_contact_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.compute_contact_angle" title="Link to this definition"></a></dt>
+<dd><p>Return the contact angle (degrees) implied by fitted parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Contact angle in degrees.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.compute_isoline">
+<span class="sig-name descname"><span class="pre">compute_isoline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel.compute_isoline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.compute_isoline" title="Link to this definition"></a></dt>
+<dd><p>Compute an iso-surface circle and wall line approximation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale_factor</strong> (<em>float</em><em>, </em><em>default 0.95</em>) – Factor applied to fitted radius for visualization.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(circle_xi,</span> <span class="pre">circle_zi,</span> <span class="pre">wall_line_xi,</span> <span class="pre">wall_line_zi)</span></code> arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(ndarray, ndarray, ndarray, ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the fitted hyperbolic tangent model at <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>)</em>) – Coordinates <code class="docutils literal notranslate"><span class="pre">(xi,</span> <span class="pre">zi)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Density value at the given point.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the model parameters to provided density samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_data</strong> (<em>tuple</em><em>(</em><em>ndarray</em><em>, </em><em>ndarray</em><em>)</em>) – Coordinate arrays <code class="docutils literal notranslate"><span class="pre">(xi_array,</span> <span class="pre">zi_array)</span></code> flattened or broadcastable.</p></li>
+<li><p><strong>density_data</strong> (<em>ndarray</em>) – Density values corresponding to <code class="docutils literal notranslate"><span class="pre">x_data</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Fitted model instance (<code class="docutils literal notranslate"><span class="pre">self</span></code>).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel" title="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel">HyperbolicTangentModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.get_parameter_strings">
+<span class="sig-name descname"><span class="pre">get_parameter_strings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel.get_parameter_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.get_parameter_strings" title="Link to this definition"></a></dt>
+<dd><p>Return formatted parameter strings suitable for logging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Formatted parameter strings (<code class="docutils literal notranslate"><span class="pre">&quot;name:value\n&quot;</span></code>).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/contact_angle_method/binning_method/surface_definition.html#HyperbolicTangentModel.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.contact_angle_method.binning_method.HyperbolicTangentModel.get_parameters" title="Link to this definition"></a></dt>
+<dd><p>Return a mapping of parameter names to fitted values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of parameter names and values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
-<section id="visualization-and-statistics">
-<h2>Visualization and Statistics<a class="headerlink" href="#visualization-and-statistics" title="Link to this heading"></a></h2>
+<section id="module-hydroangleanalyzer.visualization_angles">
+<span id="visualization-and-statistics"></span><h2>Visualization and Statistics<a class="headerlink" href="#module-hydroangleanalyzer.visualization_angles" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">BaseTrajectoryAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directories</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ps'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.analyze">
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output_stats.txt'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.analyze" title="Link to this definition"></a></dt>
+<dd><p>Analyze and save statistics for each directory to an output file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.compute_statistics">
+<span class="sig-name descname"><span class="pre">compute_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.compute_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.compute_statistics" title="Link to this definition"></a></dt>
+<dd><p>Compute mean surface area, mean angle, and standard error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(x_value, y_value, y_error) where:
+- x_value: 1/sqrt(mean_surface_area)
+- y_value: mean contact angle
+- y_error: standard error of the mean</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_clean_label">
+<span class="sig-name descname"><span class="pre">get_clean_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.get_clean_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_clean_label" title="Link to this definition"></a></dt>
+<dd><p>Generate a clean label from directory name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cleaned directory name for plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_contact_angles">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_contact_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.get_contact_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_contact_angles" title="Link to this definition"></a></dt>
+<dd><p>Get contact angles for a given directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of contact angle values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_method_name">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_method_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.get_method_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_method_name" title="Link to this definition"></a></dt>
+<dd><p>Return the name of this analysis method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Method name for labels and titles.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_surface_areas">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_surface_areas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.get_surface_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.get_surface_areas" title="Link to this definition"></a></dt>
+<dd><p>Get surface areas for a given directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of surface area values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.load_data">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.load_data" title="Link to this definition"></a></dt>
+<dd><p>Read and parse data from files in each directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.plot_mean_angle_vs_surface">
+<span class="sig-name descname"><span class="pre">plot_mean_angle_vs_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/base_trajectory_analyzer.html#BaseTrajectoryAnalyzer.plot_mean_angle_vs_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer.plot_mean_angle_vs_surface" title="Link to this definition"></a></dt>
+<dd><p>Generate a plot comparing mean angle vs surface
+area scaling. If no analysis output is found, run the analysis first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – Labels for each dataset. If None, directory names are used.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em>, </em><em>optional</em>) – Base color for all datasets. If None, a default
+set of unique colors is used.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to save the figure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">BinningTrajectoryAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directories</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ps'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer" title="hydroangleanalyzer.visualization_angles.base_trajectory_analyzer.BaseTrajectoryAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer</span></code></a></p>
+<p>Analyze binned trajectory data using circular segment calculations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.circular_segment_area">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">circular_segment_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer.circular_segment_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.circular_segment_area" title="Link to this definition"></a></dt>
+<dd><p>Compute the area of a circular segment for any cut position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_contact_angles">
+<span class="sig-name descname"><span class="pre">get_contact_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer.get_contact_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_contact_angles" title="Link to this definition"></a></dt>
+<dd><p>Return contact angles for a directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_method_name">
+<span class="sig-name descname"><span class="pre">get_method_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer.get_method_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_method_name" title="Link to this definition"></a></dt>
+<dd><p>Return method name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_surface_areas">
+<span class="sig-name descname"><span class="pre">get_surface_areas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer.get_surface_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.get_surface_areas" title="Link to this definition"></a></dt>
+<dd><p>Return surface areas for a directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.load_files">
+<span class="sig-name descname"><span class="pre">load_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer.load_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.load_files" title="Link to this definition"></a></dt>
+<dd><p>Load and sort all relevant log files from each directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.read_data">
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/binning_trajectory_evolution.html#BinningTrajectoryAnalyzer.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.BinningTrajectoryAnalyzer.read_data" title="Link to this definition"></a></dt>
+<dd><p>Read and parse data from log files in each directory.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.ContactAngleAnimator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">ContactAngleAnimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_type_wall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oxygen_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hydrogen_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particule_liquid_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cylinder_y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_cylinder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_cylinder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/graphs_circle_slice.html#ContactAngleAnimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.ContactAngleAnimator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Generate interactive Plotly slider animation of median slice angle per frame.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.ContactAngleAnimator.generate_animation">
+<span class="sig-name descname"><span class="pre">generate_animation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ContactAngle_Median_PerFrame_Slider.html'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/graphs_circle_slice.html#ContactAngleAnimator.generate_animation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.ContactAngleAnimator.generate_animation" title="Link to this definition"></a></dt>
+<dd><p>Build and write HTML with slider of median contact angles over frames.
+:param output_filename: Output HTML file path.
+:type output_filename: str, default “ContactAngle_Median_PerFrame_Slider.html”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Writes HTML file and prints path.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.DropletSlicedPlotter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">DropletSlicedPlotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_wall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecule_view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/graphs_circle_slice.html#DropletSlicedPlotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Plot droplet slice: surface contours, fitted circle and tangent line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>bool</em><em>, </em><em>default True</em>) – If True recentre z coordinates by subtracting mean wall z.</p></li>
+<li><p><strong>show_wall</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to draw wall particles.</p></li>
+<li><p><strong>molecule_view</strong> (<em>bool</em><em>, </em><em>default True</em>) – If True draw fake hydrogens around each oxygen (schematic water view).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.DropletSlicedPlotter.plot_surface_points">
+<span class="sig-name descname"><span class="pre">plot_surface_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oxygen_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wall_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/graphs_circle_slice.html#DropletSlicedPlotter.plot_surface_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotter.plot_surface_points" title="Link to this definition"></a></dt>
+<dd><p>Render slice figure and save to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>oxygen_position</strong> (<em>ndarray</em><em> (</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of oxygen atoms for the frame.</p></li>
+<li><p><strong>surface_data</strong> (<em>list</em><em>[</em><em>array</em><em>]</em>) – List of arrays with surface line coordinates (x, z) for each slice.</p></li>
+<li><p><strong>popt</strong> (<em>sequence</em>) – Fitted circle parameters (Xc, Zc, R, extra) for chosen slice.</p></li>
+<li><p><strong>wall_coords</strong> (<em>ndarray</em><em> (</em><em>M</em><em>, </em><em>3</em><em>)</em>) – Wall particle coordinates.</p></li>
+<li><p><strong>output_filename</strong> (<em>str</em><em> or </em><em>Path</em>) – Path to save the PNG figure.</p></li>
+<li><p><strong>y_com</strong> (<em>float</em><em>, </em><em>optional</em>) – Y centre used to select atoms in a thin slice. If None computed.</p></li>
+<li><p><strong>pbc_y</strong> (<em>float</em><em>, </em><em>optional</em>) – Box length in y for PBC wrapping; if provided shortest-distance used.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Contact angle in degrees; if given draw tangent line and arc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Saves figure to <code class="docutils literal notranslate"><span class="pre">output_filename</span></code> and closes it.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.DropletSlicedPlotterPlotly">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">DropletSlicedPlotterPlotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/graphs_circle_slice.html#DropletSlicedPlotterPlotly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotterPlotly" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interactive Plotly slice visualization with toggleable layers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.DropletSlicedPlotterPlotly.plot_surface_points">
+<span class="sig-name descname"><span class="pre">plot_surface_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oxygen_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wall_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_water</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_circle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_tangent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_wall</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/graphs_circle_slice.html#DropletSlicedPlotterPlotly.plot_surface_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.DropletSlicedPlotterPlotly.plot_surface_points" title="Link to this definition"></a></dt>
+<dd><p>Create interactive Plotly figure for a single frame slice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>oxygen_position</strong> (<em>ndarray</em><em> (</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Oxygen atom coordinates.</p></li>
+<li><p><strong>surface_data</strong> (<em>list</em><em>[</em><em>array</em><em>]</em>) – List of surface contours for selected slice.</p></li>
+<li><p><strong>popt</strong> (<em>sequence</em>) – Fitted circle parameters (Xc, Zc, R, extra).</p></li>
+<li><p><strong>wall_coords</strong> (<em>ndarray</em><em> (</em><em>M</em><em>, </em><em>3</em><em>)</em>) – Wall particle coordinates.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Contact angle for tangent construction.</p></li>
+<li><p><strong>y_com</strong> (<em>float</em><em>, </em><em>optional</em>) – Mean y used for slicing; computed if None.</p></li>
+<li><p><strong>pbc_y</strong> (<em>float</em><em>, </em><em>optional</em>) – Y box length for periodic slicing.</p></li>
+<li><p><strong>show_water</strong> (<em>bool</em>) – Layer visibility toggles.</p></li>
+<li><p><strong>show_surface</strong> (<em>bool</em>) – Layer visibility toggles.</p></li>
+<li><p><strong>show_circle</strong> (<em>bool</em>) – Layer visibility toggles.</p></li>
+<li><p><strong>show_tangent</strong> (<em>bool</em>) – Layer visibility toggles.</p></li>
+<li><p><strong>show_wall</strong> (<em>bool</em>) – Layer visibility toggles.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configured figure object (not saved).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.MethodComparison">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">MethodComparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyzers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/comparison_methods.html#MethodComparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.MethodComparison" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility to compare statistics from multiple trajectory analyzers.
+:param analyzers: Analyzer instances exposing <code class="docutils literal notranslate"><span class="pre">directories</span></code> and required API methods.
+:type analyzers: list
+:param method_names: Custom display names. If None, uses each analyzer’s <code class="docutils literal notranslate"><span class="pre">get_method_name</span></code>.
+:type method_names: list[str], optional</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.MethodComparison.compare_statistics">
+<span class="sig-name descname"><span class="pre">compare_statistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/comparison_methods.html#MethodComparison.compare_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.MethodComparison.compare_statistics" title="Link to this definition"></a></dt>
+<dd><p>Print summary statistics aggregated across methods and directories.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.MethodComparison.plot_overlay_comparison">
+<span class="sig-name descname"><span class="pre">plot_overlay_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'purple'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/comparison_methods.html#MethodComparison.plot_overlay_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.MethodComparison.plot_overlay_comparison" title="Link to this definition"></a></dt>
+<dd><p>Overlay mean angle vs surface area scaling across all analyzers.
+Inspired by plot_mean_angle_vs_surface().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.MethodComparison.plot_side_by_side_comparison">
+<span class="sig-name descname"><span class="pre">plot_side_by_side_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(14,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'purple'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/comparison_methods.html#MethodComparison.plot_side_by_side_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.MethodComparison.plot_side_by_side_comparison" title="Link to this definition"></a></dt>
+<dd><p>Produce side-by-side comparison of mean contact angle vs. surface area scaling.
+Inspired by plot_mean_angle_vs_surface().</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">SlicedTrajectoryAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directories</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ps'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydroangleanalyzer.visualization_angles.BaseTrajectoryAnalyzer" title="hydroangleanalyzer.visualization_angles.base_trajectory_analyzer.BaseTrajectoryAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTrajectoryAnalyzer</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.calculate_polygon_area">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_polygon_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.calculate_polygon_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.calculate_polygon_area" title="Link to this definition"></a></dt>
+<dd><p>Calculate the area of a polygon given its vertices using the Shoelace formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>numpy.ndarray</em>) – Array of shape (N, 2) containing polygon vertices.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Area of the polygon.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_contact_angles">
+<span class="sig-name descname"><span class="pre">get_contact_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.get_contact_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_contact_angles" title="Link to this definition"></a></dt>
+<dd><p>Get contact angles (median alfas) for a directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_method_name">
+<span class="sig-name descname"><span class="pre">get_method_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.get_method_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_method_name" title="Link to this definition"></a></dt>
+<dd><p>Return method name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_surface_areas">
+<span class="sig-name descname"><span class="pre">get_surface_areas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.get_surface_areas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.get_surface_areas" title="Link to this definition"></a></dt>
+<dd><p>Get surface areas for a directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.load_data" title="Link to this definition"></a></dt>
+<dd><p>Load the combined .npy files for all
+directories and calculate mean surface areas per frame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.mean_surface_frame">
+<span class="sig-name descname"><span class="pre">mean_surface_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surfaces</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.mean_surface_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.mean_surface_frame" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mean surface area for a given surfaces file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>surfaces_file</strong> (<em>str</em>) – Path to the surfaces file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mean surface area across all surfaces in the frame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.plot_mean_alfas_evolution">
+<span class="sig-name descname"><span class="pre">plot_mean_alfas_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.plot_mean_alfas_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.plot_mean_alfas_evolution" title="Link to this definition"></a></dt>
+<dd><p>Plot evolution of mean angle (Alfas) with standard deviation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.plot_median_alfas_evolution">
+<span class="sig-name descname"><span class="pre">plot_median_alfas_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/sliced_trajectory_evolution.html#SlicedTrajectoryAnalyzer.plot_median_alfas_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.SlicedTrajectoryAnalyzer.plot_median_alfas_evolution" title="Link to this definition"></a></dt>
+<dd><p>Plot evolution of median angle (Alfas) with standard deviation.</p>
+<p>Align trajectories by truncating to shortest.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.plot_liquid_particles">
+<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">plot_liquid_particles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tab:blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/tools_visu.html#plot_liquid_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.plot_liquid_particles" title="Link to this definition"></a></dt>
+<dd><p>Scatter plot 3D particle positions with optional subsampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<em>ndarray</em><em>, </em><em>shape</em><em> (</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Particle coordinates.</p></li>
+<li><p><strong>ax</strong> (<em>mpl_toolkits.mplot3d.Axes3D</em><em>, </em><em>optional</em>) – Existing axes to plot on; new figure created if None.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em>, </em><em>default &quot;tab:blue&quot;</em>) – Marker color.</p></li>
+<li><p><strong>subsample</strong> (<em>int</em><em>, </em><em>optional</em>) – If provided and smaller than N, random subset size to plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Axes object used for plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mpl_toolkits.mplot3d.Axes3D</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.plot_slice">
+<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">plot_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/tools_visu.html#plot_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.plot_slice" title="Link to this definition"></a></dt>
+<dd><p>Plot 2D slice given x,y arrays.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.plot_surface_and_points">
+<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">plot_surface_and_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_surf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_surf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_surf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/tools_visu.html#plot_surface_and_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.plot_surface_and_points" title="Link to this definition"></a></dt>
+<dd><p>Render 3D plot of surface curve and point cloud.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_surf</strong> (<em>ndarray</em>) – Surface coordinates.</p></li>
+<li><p><strong>y_surf</strong> (<em>ndarray</em>) – Surface coordinates.</p></li>
+<li><p><strong>z_surf</strong> (<em>ndarray</em>) – Surface coordinates.</p></li>
+<li><p><strong>x_points</strong> (<em>ndarray</em>) – Point cloud coordinates.</p></li>
+<li><p><strong>y_points</strong> (<em>ndarray</em>) – Point cloud coordinates.</p></li>
+<li><p><strong>z_points</strong> (<em>ndarray</em>) – Point cloud coordinates.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.plot_surface_file">
+<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">plot_surface_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/tools_visu.html#plot_surface_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.plot_surface_file" title="Link to this definition"></a></dt>
+<dd><p>Return x,y columns from surface text file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Path to whitespace-delimited file with at least two columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(x, y) coordinate arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(ndarray, ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydroangleanalyzer.visualization_angles.read_surface_file">
+<span class="sig-prename descclassname"><span class="pre">hydroangleanalyzer.visualization_angles.</span></span><span class="sig-name descname"><span class="pre">read_surface_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hydroangleanalyzer/visualization_angles/tools_visu.html#read_surface_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydroangleanalyzer.visualization_angles.read_surface_file" title="Link to this definition"></a></dt>
+<dd><p>Load surface file returning x,y,z arrays (z zeros if absent).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Path to surface file with 2 or 3 columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(x, y, z) arrays; z is zeros if file has only two columns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(ndarray, ndarray, ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 

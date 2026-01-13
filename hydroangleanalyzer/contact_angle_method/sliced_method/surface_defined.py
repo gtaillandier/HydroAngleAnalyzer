@@ -114,12 +114,11 @@ class SurfaceDefinition:
 
         Returns
         -------
-        tuple(list[list[float]], list[list[float]])
-            ``(list_rbeta, list_xz)`` where:
-            list_rbeta : list of [interface_re, beta_deg]
-                Fitted interface distance and its azimuth angle.
-            list_xz : list of [x_proj, z_proj]
-                Projected interface coordinates in XZ plane.
+        list_rbeta : list[list[float]]
+            Fitted interface distance and its azimuth angle
+             ``[interface_re, beta_deg]``.
+        list_xz : list[list[float]]
+            Projected interface coordinates ``[x_proj, z_proj]`` in XZ plane.
         """
         beta = np.linspace(0, 360, int(360 / self.delta_angle), endpoint=False)
         list_rbeta = []

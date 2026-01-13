@@ -448,7 +448,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ContactAngleSliced</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sliced radial line method to estimate contact angle via circle fitting.</span>
 
@@ -510,7 +510,7 @@ window.addEventListener("load", load);
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;delta_gamma must be provided for spherical analysis&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ContactAngleSliced.calculate_y_axis_list">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.calculate_y_axis_list">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.calculate_y_axis_list">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_y_axis_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return axis position list for slicing mode.</span>
 
@@ -527,7 +527,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.calculate_gammas_list">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.calculate_gammas_list">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.calculate_gammas_list">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_gammas_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return gamma inclination list for the chosen model.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_model</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cylinder_y&quot;</span><span class="p">,</span> <span class="s2">&quot;cylinder_x&quot;</span><span class="p">):</span>
@@ -551,7 +551,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.surface_definition">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.surface_definition">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.surface_definition">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">surface_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v_gamma</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample interface lines for a given gamma.</span>
 
@@ -574,7 +574,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.separate_surface_data">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.separate_surface_data">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.separate_surface_data">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">separate_surface_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surf</span><span class="p">,</span> <span class="n">limit_med</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter surface points above reference height.</span>
 
@@ -594,7 +594,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.fit_circle">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.fit_circle">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.fit_circle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_data</span><span class="p">,</span> <span class="n">Y_data</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform non-linear least squares circle fit.</span>
 
@@ -622,7 +622,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.find_intersection">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.find_intersection">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.find_intersection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">y_line</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute contact angle from circle intersection with baseline.</span>
 
@@ -648,7 +648,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.circle_equation">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.circle_equation">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.circle_equation">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">circle_equation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy_data</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">z_center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return residuals for circle equation used in fitting.</span>
 
@@ -673,7 +673,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ContactAngleSliced.predict_contact_angle">
-<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.ContactAngleSliced.predict_contact_angle">[docs]</a>
+<a class="viewcode-back" href="../../../../API/index.html#hydroangleanalyzer.contact_angle_method.sliced_method.ContactAngleSliced.predict_contact_angle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">predict_contact_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run slicing loop and return per-slice contact angles and geometry.</span>
 

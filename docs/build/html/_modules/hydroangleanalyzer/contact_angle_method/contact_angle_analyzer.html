@@ -451,12 +451,12 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseContactAngleAnalyzer">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseContactAngleAnalyzer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base for contact angle analysis across trajectories.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseContactAngleAnalyzer.analyze">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.analyze">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer.analyze">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">frame_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -465,15 +465,12 @@ window.addEventListener("load", load);
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="BaseContactAngleAnalyzer.get_method_name">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.get_method_name">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_method_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">pass</span></div>
-
+        <span class="k">pass</span>
 
 <div class="viewcode-block" id="BaseContactAngleAnalyzer.summary">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BaseContactAngleAnalyzer.summary">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BaseContactAngleAnalyzer.summary">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return quick summary statistics.&quot;&quot;&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
@@ -487,7 +484,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="SlicedContactAngleAnalyzer">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlicedContactAngleAnalyzer</span><span class="p">(</span><span class="n">BaseContactAngleAnalyzer</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">output_repo</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
@@ -497,7 +494,7 @@ window.addEventListener("load", load);
         <span class="p">)</span>
 
 <div class="viewcode-block" id="SlicedContactAngleAnalyzer.analyze">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.analyze">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.SlicedContactAngleAnalyzer.analyze">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">frame_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -518,16 +515,13 @@ window.addEventListener("load", load);
         <span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="SlicedContactAngleAnalyzer.get_method_name">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.SlicedContactAngleAnalyzer.get_method_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_method_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;sliced_parallel&quot;</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="BinnedContactAngleAnalyzer">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BinnedContactAngleAnalyzer</span><span class="p">(</span><span class="n">BaseContactAngleAnalyzer</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
@@ -537,7 +531,7 @@ window.addEventListener("load", load);
         <span class="p">)</span>
 
 <div class="viewcode-block" id="BinnedContactAngleAnalyzer.analyze">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.analyze">[docs]</a>
+<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.contact_angle_analyzer.BinnedContactAngleAnalyzer.analyze">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">frame_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -570,11 +564,8 @@ window.addEventListener("load", load);
         <span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="BinnedContactAngleAnalyzer.get_method_name">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.contact_angle_method.BinnedContactAngleAnalyzer.get_method_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_method_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;binned_density&quot;</span></div>
-</div>
 
 </pre></div>
 

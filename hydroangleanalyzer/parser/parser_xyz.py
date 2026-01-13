@@ -169,7 +169,7 @@ class XYZParser(BaseParser):
         Returns
         -------
         float
-            Max |a_i| over lattice vectors.
+            Max ``|a_i|`` over lattice vectors.
         """
         lattice_matrix = self.frames[frame_index]["lattice_matrix"]
         return float(np.max(np.linalg.norm(lattice_matrix, axis=1)))
@@ -349,7 +349,7 @@ class XYZWaterMoleculeFinder(BaseParser):
         Returns
         -------
         float
-            Max |a_i| over lattice vectors.
+            Max ``|a_i|`` over lattice vectors.
         """
         lattice_matrix = self.frames[frame_index]["lattice_matrix"]
         return float(np.max(np.linalg.norm(lattice_matrix, axis=1)))

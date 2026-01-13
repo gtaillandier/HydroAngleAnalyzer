@@ -81,21 +81,15 @@ class HyperbolicTangentModel(SurfaceModel):
     Parameters
     ----------
     initial_params : list[float], optional
-        Seven parameters ``[rho1, rho2, R_eq, zi_c, zi_0, t1, t2]`` where:
-        rho1 : float
-            Liquid-phase density.
-        rho2 : float
-            Vapor-phase density.
-        R_eq : float
-            Equivalent spherical radius.
-        zi_c : float
-            z-coordinate of the sphere center.
-        zi_0 : float
-            Reference wall z-coordinate.
-        t1 : float
-            Interface thickness (radial component).
-        t2 : float
-            Interface thickness (vertical component).
+        Seven parameters ``[rho1, rho2, R_eq, zi_c, zi_0, t1, t2]``:
+
+        - rho1 : Liquid-phase density.
+        - rho2 : Vapor-phase density.
+        - R_eq : Equivalent spherical radius.
+        - zi_c : z-coordinate of the sphere center.
+        - zi_0 : Reference wall z-coordinate.
+        - t1 : Interface thickness (radial component).
+        - t2 : Interface thickness (vertical component).
     """
 
     def __init__(self, initial_params=None):
@@ -260,7 +254,7 @@ class HyperbolicTangentModel(SurfaceModel):
         Returns
         -------
         list[str]
-            Each entry formatted as ``"name:value\n"``.
+            Formatted parameter strings (``"name:value\\n"``).
         """
         if self.params is None:
             raise ValueError("Model must be fitted before getting parameter strings")
