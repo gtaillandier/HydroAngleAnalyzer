@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.mathjax",  # Kept from original
     "sphinx.ext.coverage",  # Kept from original
     "sphinx.ext.autosummary",  # Kept from original
+    "sphinxcontrib.mermaid",
 ]
 
 # Autosummary settings
