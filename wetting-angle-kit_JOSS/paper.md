@@ -10,22 +10,22 @@ authors:
     orcid: 0009-0006-9544-0982
     affiliation: "1, 2"
   - name:
-    orcid: 
-    affiliation: 
-  - name: 
-    orcid: 
-    affiliation: 
-  - name: 
-    orcid: 
+    orcid:
     affiliation:
-  - name:   
-    orcid: 
-    affiliation: 
-  - name: 
-    orcid: 
-    affiliation: 
+  - name:
+    orcid:
+    affiliation:
+  - name:
+    orcid:
+    affiliation:
+  - name:
+    orcid:
+    affiliation:
+  - name:
+    orcid:
+    affiliation:
 
-affiliations:  
+affiliations:
  - name: Matgenix, A6K Advanced Engineering Centre, Charleroi, Belgium.
    index: 1
  - name: Department of Chemistry, University of Crete, Heraklion, Greece

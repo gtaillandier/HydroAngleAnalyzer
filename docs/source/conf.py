@@ -33,6 +33,7 @@ extensions = [
     "sphinx.ext.coverage",  # Kept from original
     "sphinx.ext.autosummary",  # Kept from original
     "sphinxcontrib.mermaid",
+    "myst_parser",
 ]
 
 # Autosummary settings

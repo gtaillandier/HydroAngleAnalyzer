@@ -43,6 +43,8 @@ doc = [
     "sphinx-code-tabs",
     "sphinx-issues",
     "nbsphinx>=0.8.0",
+    "sphinxcontrib-mermaid",
+    "myst-parser",
 ]
 viz = [
     "plotly>=5.22.0",
