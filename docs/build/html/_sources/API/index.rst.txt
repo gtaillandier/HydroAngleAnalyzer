@@ -27,7 +27,7 @@ Sliced Method
    :undoc-members:
    :show-inheritance:
 
-Binned Method
+Binning Method
 ^^^^^^^^^^^^^
 
 .. automodule:: hydroangleanalyzer.contact_angle_method.binned_method

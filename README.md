@@ -3,7 +3,7 @@
 HydroAngleAnalyzer provides modular tools to parse MD trajectories (LAMMPS dump, XYZ, ASE) and compute droplet contact angles using two complementary approaches:
 
 1. Sliced Method (per-frame circle fit) – robust against transient shape changes.
-2. Binned Density Method – averages frames into a density field for a single representative angle.
+2. Binning Density Method – averages frames into a density field for a single representative angle.
 
 
 ## Installation
@@ -59,8 +59,8 @@ sliced = SlicedContactAngleAnalyzer(parser, output_repo="out_sliced", liquid_ind
 res = sliced.analyze(frame_range=range(0, 50))
 print(res["mean_angle"], res["std_angle"])  # per-frame distribution
 
-binned = BinnedContactAngleAnalyzer(parser, output_dir="out_binned", liquid_indices=oxygen_ids, droplet_geometry="spherical")
-res_b = binned.analyze(frame_range=range(0, 200))
+binning = BinnedContactAngleAnalyzer(parser, output_dir="out_binned", liquid_indices=oxygen_ids, droplet_geometry="spherical")
+res_b = binning.analyze(frame_range=range(0, 200))
 print(res_b["mean_angle"], res_b["std_angle"])  # single or batched average
 ```
 
@@ -109,14 +109,14 @@ finder = Dump_WaterMoleculeFinder("traj.lammpstrj", particle_type_wall={3}, oxyg
 oxygen_ids = finder.get_water_oxygen_ids(frame_indexs=0)
 ```
 
-Use these indices for sliced or binned analyzers via `liquid_indices=oxygen_ids`.
+Use these indices for sliced or binning analyzers via `liquid_indices=oxygen_ids`.
 
 ## Public API
 Explicit exports avoid wildcard imports and improve static analysis. See `hydroangleanalyzer/__init__.py` for the authoritative list.
 
 ## Upcoming BaseAngleMethod
 
-A common abstract base will standardize interface (`analyze`, `predict_contact_angle`, metadata access) between sliced and binned strategies enabling factory dispatch and future auto-discovery of new angle methods.
+A common abstract base will standardize interface (`analyze`, `predict_contact_angle`, metadata access) between sliced and binning strategies enabling factory dispatch and future auto-discovery of new angle methods.
 
 ## Contributing
 Run pre-commit hooks:

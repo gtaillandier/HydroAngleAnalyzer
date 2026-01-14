@@ -14,10 +14,10 @@ This example demonstrates how to parse different trajectory file formats.
 
 ----
 
-Binned Contact Angle Analysis
+Binning Contact Angle Analysis
 ------------------------------
 
-Example of using the binned method for contact angle analysis.
+Example of using the binning method for contact angle analysis.
 
 .. literalinclude:: ../../examples/binning_ca.py
    :language: python

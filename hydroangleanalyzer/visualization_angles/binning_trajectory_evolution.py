@@ -9,7 +9,7 @@ from .base_trajectory_analyzer import BaseTrajectoryAnalyzer
 
 
 class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
-    """Analyze binned trajectory data using circular segment calculations."""
+    """Analyze binning trajectory data using circular segment calculations."""
 
     def __init__(self, directories, split_factor=1, time_steps=None, time_unit="ps"):
         """

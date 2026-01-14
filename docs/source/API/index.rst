@@ -30,7 +30,7 @@ Sliced Method
    :show-inheritance:
    :exclude-members: ContactAngle_sliced, ContactAngle_sliced_parallel
 
-Binned Method
+Binning Method
 ^^^^^^^^^^^^^
 
 .. automodule:: hydroangleanalyzer.contact_angle_method.binning_method

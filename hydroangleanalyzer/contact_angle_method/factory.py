@@ -12,9 +12,9 @@ def contact_angle_analyzer(
         return SlicedContactAngleAnalyzer(
             parser=parser, output_repo=output_dir, **kwargs
         )
-    elif method == "binned":
+    elif method == "binning":
         return BinnedContactAngleAnalyzer(
             parser=parser, output_dir=output_dir, **kwargs
         )
     else:
-        raise ValueError(f"Unknown method '{method}'. Expected 'sliced' or 'binned'.")
+        raise ValueError(f"Unknown method '{method}'. Expected 'sliced' or 'binning'.")

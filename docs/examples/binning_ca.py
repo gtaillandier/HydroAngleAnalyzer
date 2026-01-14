@@ -33,7 +33,7 @@ parser = DumpParser(filename)
 
 # --- Step 6: Create the contact angle analyzer ---
 analyzer = contact_angle_analyzer(
-    method="binned",
+    method="binning",
     parser=parser,
     output_dir="results_binned_example",
     liquid_indices=oxygen_indices,

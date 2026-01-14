@@ -66,10 +66,10 @@ The **Sliced Method** is ideal for analyzing the evolution of the contact angle 
 *   **Process**: For each slice, the liquid-vapor interface is determined. A geometric model (such as a sphere or cylinder) is then fitted to these interface points.
 *   **Application**: Best for spherical droplets or specific 2D projections where a clear profile can be mathematically fitted.
 
-**Binned Method**
+**Binning Method**
 ^^^^^^^^^^^^^^^^^
 
-The **Binned Method** uses a spatial discretization approach, suitable for averaging over multiple frames to get a smooth density profile.
+The **Binning Method** uses a spatial discretization approach, suitable for averaging over multiple frames to get a smooth density profile.
 
 *   **Theory**: The simulation box is divided into a grid (bins) in the plane of interest (e.g., x-z).
 *   **Process**: The local density of liquid particles is calculated for each bin. The interface is defined by the isodensity contour (where density drops to half the bulk value). The contact angle is derived from the tangent of this contour at the solid surface.
@@ -81,6 +81,6 @@ The **Binned Method** uses a spatial discretization approach, suitable for avera
 Finally, the results are visualized to validate the analysis.
 
 *   **Profile Plots**: View the fitted geometric shape (circle, ellipse) overlaying the droplet points (as seen in the Sliced method).
-*   **Heatmaps**: For the Binned method, a 2D density heatmap is generated, showing the liquid distribution and the computed interface line.
+*   **Heatmaps**: For the Binning method, a 2D density heatmap is generated, showing the liquid distribution and the computed interface line.
 
 Examples of these visualizations can be found in the respective tutorials for each method.

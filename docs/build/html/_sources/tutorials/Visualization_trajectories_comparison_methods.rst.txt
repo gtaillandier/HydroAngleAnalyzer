@@ -163,7 +163,7 @@ Conclusion
 ----------
 
 - The ``SlicedTrajectoryAnalyzer`` provides more detailed statistics with higher sample counts.
-- The ``BinningTrajectoryAnalyzer`` offers a simplified, binned approach.
+- The ``BinningTrajectoryAnalyzer`` offers a simplified, binning approach.
 - Use the comparison tools to visualize and interpret differences between methods.
 
 Additional Notes

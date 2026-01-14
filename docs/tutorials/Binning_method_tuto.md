@@ -1,13 +1,13 @@
-# Tutorial: Contact Angle Analysis (Binned Method)
+# Tutorial: Contact Angle Analysis (Binning Method)
 
-This tutorial demonstrates how to compute the contact angle using the **binned method** in `hydroangleanalyzer`.
+This tutorial demonstrates how to compute the contact angle using the **binning method** in `hydroangleanalyzer`.
 The method divides the simulation box into spatial bins to calculate the liquid–solid interface and the corresponding contact angle, for a group of frames.
 
 ---
 
 ## 1. Overview
 
-The **binned method** works by:
+The **binning method** works by:
 1. Collecting the positions of water molecules (typically oxygen atoms).
 2. Dividing the region of interest into bins in the **x–z** plane.
 3. Computing density profiles and fitting the interface shape.
@@ -66,7 +66,7 @@ parser = DumpParser(filename)
 
 # --- Step 6: Create the contact angle analyzer ---
 analyzer = contact_angle_analyzer(
-    method="binned",
+    method="binning",
     parser=parser,
     output_dir="results_binned_example",
     liquid_indices=oxygen_indices,
@@ -125,7 +125,7 @@ A heat map representation of the particles density and the fitted semi-circle to
 
 - Adjust `xi_f`, `zi_f`, and the bin counts (`nbins_xi`, `nbins_zi`) according to your simulation box dimensions.
 - If the wall surface is not flat or the system is tilted, pre-align it before analysis.
-- Use `plot_graphs=True` to visualize the binned density and interface fitting.
+- Use `plot_graphs=True` to visualize the binning density and interface fitting.
 - For multiple frames: `analyzer.analyze(range(0, 100, 10))`.
 
 ---

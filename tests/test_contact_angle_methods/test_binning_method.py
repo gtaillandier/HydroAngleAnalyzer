@@ -56,7 +56,7 @@ def test_binned_contact_angle_analyzer_with_real_data(
 
     # Create the analyzer
     analyzer = contact_angle_analyzer(
-        method="binned",
+        method="binning",
         parser=DumpParser(filename),
         output_dir=output_dir,
         atom_indices=oxygen_indices,
@@ -85,7 +85,7 @@ def test_binned_contact_angle_analyzer_multiple_frames(
     output_dir = tmp_path / "result_dump_masspain_noplot_multiple"
 
     analyzer = contact_angle_analyzer(
-        method="binned",
+        method="binning",
         parser=DumpParser(filename),
         output_dir=output_dir,
         atom_indices=oxygen_indices,

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: Contact Angle Analysis (Binned Method) &mdash; HydroAngleAnalyzer 0.1.2 documentation</title>
+  <title>Tutorial: Contact Angle Analysis (Binning Method) &mdash; HydroAngleAnalyzer 0.1.2 documentation</title>
   <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
   <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
   <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -56,7 +56,7 @@
                 <li class="toctree-l2"><a class="reference internal" href="Parser_tutorial.html">Tutorial: Using the
                     Parser Module</a></li>
                 <li class="toctree-l2 current"><a class="current reference internal" href="#">Tutorial: Contact Angle
-                    Analysis (Binned Method)</a>
+                    Analysis (Binning Method)</a>
                   <ul>
                     <li class="toctree-l3"><a class="reference internal" href="#overview">1. Overview</a></li>
                     <li class="toctree-l3"><a class="reference internal" href="#prerequisites">2. Prerequisites</a></li>
@@ -99,7 +99,7 @@
             <ul class="wy-breadcrumbs">
               <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
               <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
-              <li class="breadcrumb-item active">Tutorial: Contact Angle Analysis (Binned Method)</li>
+              <li class="breadcrumb-item active">Tutorial: Contact Angle Analysis (Binning Method)</li>
               <li class="wy-breadcrumbs-aside">
                 <a href="../_sources/tutorials/Binning_method_tuto.rst.txt" rel="nofollow"> View page source</a>
               </li>
@@ -109,17 +109,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div itemprop="articleBody">
 
-              <section id="tutorial-contact-angle-analysis-binned-method">
-                <h1>Tutorial: Contact Angle Analysis (Binned Method)<a class="headerlink"
-                    href="#tutorial-contact-angle-analysis-binned-method" title="Link to this heading"></a></h1>
-                <p>This tutorial demonstrates how to compute the contact angle using the <strong>binned method</strong>
+              <section id="tutorial-contact-angle-analysis-binning-method">
+                <h1>Tutorial: Contact Angle Analysis (Binning Method)<a class="headerlink"
+                    href="#tutorial-contact-angle-analysis-binning-method" title="Link to this heading"></a></h1>
+                <p>This tutorial demonstrates how to compute the contact angle using the <strong>binning method</strong>
                   in <code class="docutils literal notranslate"><span class="pre">hydroangleanalyzer</span></code>.
                   The method divides the simulation box into spatial bins to calculate the liquid–solid interface and
                   the corresponding contact angle, for a group of frames.</p>
                 <hr class="docutils" />
                 <section id="overview">
                   <h2>1. Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-                  <p>The <strong>binned method</strong> works by:</p>
+                  <p>The <strong>binning method</strong> works by:</p>
                   <ol class="arabic simple">
                     <li>
                       <p>Collecting the positions of water molecules (typically oxygen atoms).</p>
@@ -197,7 +197,7 @@
 
 <span class="c1"># --- Step 6: Create the contact angle analyzer ---</span>
 <span class="n">analyzer</span> <span class="o">=</span> <span class="n">contact_angle_analyzer</span><span class="p">(</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;binning&quot;</span><span class="p">,</span>
     <span class="n">parser</span><span class="o">=</span><span class="n">parser</span><span class="p">,</span>
     <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;results_binned_example&quot;</span><span class="p">,</span>
     <span class="n">liquid_indices</span><span class="o">=</span><span class="n">oxygen_indices</span><span class="p">,</span>
@@ -279,7 +279,7 @@
                     </li>
                     <li>
                       <p>Use <code class="docutils literal notranslate"><span class="pre">plot_graphs=True</span></code>
-                        to visualize the binned density and interface fitting.</p>
+                        to visualize the binning density and interface fitting.</p>
                     </li>
                     <li>
                       <p>For multiple frames: <code
