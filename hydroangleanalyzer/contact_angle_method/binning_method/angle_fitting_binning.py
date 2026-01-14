@@ -77,7 +77,9 @@ class ContactAngleBinning:
         self.xi_cc = 0.5 * (self.xi[1:] + self.xi[:-1])
         self.zi_cc = 0.5 * (self.zi[1:] + self.zi[:-1])
 
-    def binning(self, xi_par, zi_par, len_frames, droplet_geometry=None, width_cylinder=None):
+    def binning(
+        self, xi_par, zi_par, len_frames, droplet_geometry=None, width_cylinder=None
+    ):
         """Return 2D density field by binning particle coordinates.
 
         Parameters
@@ -332,7 +334,9 @@ class ContactAngleBinning:
             angles.append(angle)
         if save_angles:
             np.save(
-                os.path.join(self.output_dir, f"all_angles_{self.droplet_geometry}.npy"),
+                os.path.join(
+                    self.output_dir, f"all_angles_{self.droplet_geometry}.npy"
+                ),
                 np.array(angles),
             )
         print("List of contact angles by batch:", angles)

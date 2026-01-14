@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Dict, List, Tuple, Sequence, Optional
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 

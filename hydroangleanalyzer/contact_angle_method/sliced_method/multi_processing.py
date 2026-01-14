@@ -56,9 +56,7 @@ class ContactAngleSlicedParallel:
         self.delta_gamma = delta_gamma
         self.delta_cylinder = delta_cylinder
         self.droplet_geometry = droplet_geometry
-        self.atom_indices = (
-            atom_indices if atom_indices is not None else np.array([])
-        )
+        self.atom_indices = atom_indices if atom_indices is not None else np.array([])
         os.makedirs(self.output_repo, exist_ok=True)
 
     def process_frames_parallel(

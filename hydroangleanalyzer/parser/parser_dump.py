@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import List, Tuple, Sequence, Optional
+from typing import List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -93,7 +93,7 @@ class DumpParser(BaseParser):
         z_values = np.array([])
         for frame_idx in frame_indices:
             x_par = self.parse(frame_idx, atom_indices)
-            dim = x_par.shape[1]
+            # dim = x_par.shape[1]
             x_cm = np.mean(x_par, axis=0)
             x_0 = x_par - x_cm
             x_0[:, 2] = x_par[:, 2]
@@ -267,13 +267,15 @@ class DumpWallParser:
             data = self.pipeline.compute(frame_idx)
             x_par = np.asarray(data.particles["Position"])
             if atom_indices is not None:
-                # In DumpWallParser, we use Particle Identifier to filter if indices are provided
-                # But DumpWallParser seems to be designed to exclude liquid types already.
+                # In DumpWallParser, we use Particle Identifier to filter
+                # if indices are provided
+                # But DumpWallParser seems to be designed to
+                # exclude liquid types already.
                 # However, for consistency with the interface:
                 particle_ids = np.asarray(data.particles["Particle Identifier"])
                 mask = np.isin(particle_ids, atom_indices)
                 x_par = x_par[mask]
-            
+
             x_cm = np.mean(x_par, axis=0)
             x_0 = x_par - x_cm
             x_0[:, 2] = x_par[:, 2]
