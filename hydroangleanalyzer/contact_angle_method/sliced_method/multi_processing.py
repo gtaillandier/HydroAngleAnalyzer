@@ -32,9 +32,9 @@ class ContactAngleSlicedParallel:
         Path to trajectory file.
     output_repo : str
         Directory to write per-frame results.
-    type_model : str, default "spherical"
+    droplet_geometry : str, default "spherical"
         Geometric model identifier (e.g. "cylinder_x", "cylinder_y", "spherical").
-    liquid_indices : ndarray, optional
+    atom_indices : ndarray, optional
         Indices of liquid particles (subset). Empty array selects none.
     delta_gamma : float, optional
         Additional gamma constraint / filtering distance if used by sliced method.
@@ -46,8 +46,8 @@ class ContactAngleSlicedParallel:
         self,
         filename: str,
         output_repo: str,
-        type_model: str = "spherical",
-        liquid_indices: Optional[np.ndarray] = None,
+        droplet_geometry: str = "spherical",
+        atom_indices: Optional[np.ndarray] = None,
         delta_gamma: float = None,
         delta_cylinder: float = None,
     ):
@@ -55,9 +55,9 @@ class ContactAngleSlicedParallel:
         self.output_repo = output_repo
         self.delta_gamma = delta_gamma
         self.delta_cylinder = delta_cylinder
-        self.type_model = type_model
-        self.liquid_indices = (
-            liquid_indices if liquid_indices is not None else np.array([])
+        self.droplet_geometry = droplet_geometry
+        self.atom_indices = (
+            atom_indices if atom_indices is not None else np.array([])
         )
         os.makedirs(self.output_repo, exist_ok=True)
 
@@ -179,7 +179,7 @@ class ContactAngleSlicedParallel:
                 parser_class = XYZParser
             else:
                 raise ValueError(f"Unsupported parser type: {parser_type}")
-            parser = parser_class(in_path=self.filename)
+            parser = parser_class(filepath=self.filename)
         except Exception as e:  # pragma: no cover
             logger.error(f"Error initializing parser: {e}")
             return [(frame, None) for frame in batch_frames]
@@ -187,7 +187,7 @@ class ContactAngleSlicedParallel:
         for frame_num in batch_frames:
             try:
                 result = self._process_single_frame_with_parsers(
-                    frame_num, self.liquid_indices, parser
+                    frame_num, self.atom_indices, parser
                 )
                 batch_results.append(result)
             except Exception as e:  # pragma: no cover
@@ -196,7 +196,7 @@ class ContactAngleSlicedParallel:
         return batch_results
 
     def _process_single_frame_with_parsers(
-        self, frame_num: int, liquid_indices: np.ndarray, parser: BaseParser
+        self, frame_num: int, atom_indices: np.ndarray, parser: BaseParser
     ) -> Tuple[int, Optional[float]]:
         """Process a single frame and compute mean contact angle.
 
@@ -217,7 +217,7 @@ class ContactAngleSlicedParallel:
         try:
             liquid_positions = parser.parse(
                 frame_index=frame_num,
-                indices=liquid_indices,
+                indices=atom_indices,
             )
             max_dist = int(
                 np.max(
@@ -234,11 +234,11 @@ class ContactAngleSlicedParallel:
                 f"Frame {frame_num}: Parsed {len(liquid_positions)} liquid "
                 f"particles with max_dist {max_dist}"
             )
-            if self.type_model == "cylinder_x":
+            if self.droplet_geometry == "cylinder_x":
                 liquid_positions = liquid_positions[:, [1, 0, 2]]
-            if self.type_model == "cylinder_x":
+            if self.droplet_geometry == "cylinder_x":
                 box_dimensions = parser.box_size_x(frame_index=frame_num)
-            elif self.type_model == "cylinder_y":
+            elif self.droplet_geometry == "cylinder_y":
                 box_dimensions = parser.box_size_y(frame_index=frame_num)
             else:
                 box_dimensions = None
@@ -247,7 +247,7 @@ class ContactAngleSlicedParallel:
                 o_coords=liquid_positions,
                 max_dist=max_dist,
                 o_center_geom=mean_liquid_position,
-                type_model=self.type_model,
+                droplet_geometry=self.droplet_geometry,
                 delta_gamma=self.delta_gamma,
                 width_cylinder=box_dimensions,
                 delta_cylinder=self.delta_cylinder,

@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 
-def load_dump_ovito(in_path):
+def load_dump_ovito(filepath):
     try:
         from ovito.io import import_file
     except ImportError as e:  # add exception chaining
@@ -11,7 +11,7 @@ def load_dump_ovito(in_path):
             "The 'ovito' package is required for load dump_ovito. Install it with: "
             "pip install HydroAngleAnalyzer[ovito]"
         ) from e
-    pipeline = import_file(in_path)
+    pipeline = import_file(filepath)
     # Add necessary modifiers
     return pipeline
 

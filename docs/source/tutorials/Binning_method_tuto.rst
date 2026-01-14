@@ -76,7 +76,7 @@ Example trajectory::
        parser=parser,
        output_dir="results_binned_example",
        liquid_indices=oxygen_indices,
-       type_model="cylinder_y",  # Interface fitting model
+       droplet_geometry="cylinder_y",  # Interface fitting model
        width_cylinder=21,  # Width parameter for interface fit
        binning_params=binning_params,
        plot_graphs=False,  # Disable plotting for automated runs

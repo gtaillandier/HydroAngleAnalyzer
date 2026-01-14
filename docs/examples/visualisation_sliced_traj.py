@@ -23,7 +23,7 @@ oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
 print("Number of water molecules detected:", len(oxygen_indices))
 
 # --- 3. Parse Atomic Coordinates ---
-parser = DumpParser(in_path=filename)
+parser = DumpParser(filepath=filename)
 oxygen_position = parser.parse(frame_indexs=10, indices=oxygen_indices)
 
 coord_wall = DumpParse_wall(filename, particule_liquid_type={1, 2})
@@ -36,7 +36,7 @@ wall_coords = coord_wall.parse(frame_indexs=1)
 processor = ContactAngle_sliced(
     o_coords=oxygen_position,
     o_center_geom=np.mean(oxygen_position, axis=0),
-    type_model="cylinder_y",
+    droplet_geometry="cylinder_y",
     delta_cylinder=5,
     max_dist=100,
     width_cylinder=21,

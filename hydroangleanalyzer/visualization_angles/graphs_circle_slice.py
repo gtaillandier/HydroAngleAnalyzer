@@ -554,7 +554,7 @@ class ContactAngleAnimator:
         hydrogen_type: int,
         particule_liquid_type: set,
         n_frames: int = 10,
-        type_model: str = "cylinder_y",
+        droplet_geometry: str = "cylinder_y",
         delta_cylinder: int = 5,
         max_dist: int = 100,
         width_cylinder: int = 21,
@@ -565,7 +565,7 @@ class ContactAngleAnimator:
         self.hydrogen_type = hydrogen_type
         self.particule_liquid_type = particule_liquid_type
         self.n_frames = n_frames
-        self.type_model = type_model
+        self.droplet_geometry = droplet_geometry
         self.delta_cylinder = delta_cylinder
         self.max_dist = max_dist
         self.width_cylinder = width_cylinder
@@ -582,7 +582,7 @@ class ContactAngleAnimator:
             self.filename, particule_liquid_type=self.particule_liquid_type
         )
         self.wall_coords = self.coord_wall.parse(frame_index=1)
-        self.parser = DumpParser(in_path=self.filename)
+        self.parser = DumpParser(filepath=self.filename)
         self.plotter = DropletSlicedPlotterPlotly(center=True)
 
     def generate_animation(
@@ -609,7 +609,7 @@ class ContactAngleAnimator:
             processor = ContactAngle_sliced(
                 o_coords=oxygen_position,
                 o_center_geom=np.mean(oxygen_position, axis=0),
-                type_model=self.type_model,
+                droplet_geometry=self.droplet_geometry,
                 delta_cylinder=self.delta_cylinder,
                 max_dist=self.max_dist,
                 width_cylinder=self.width_cylinder,

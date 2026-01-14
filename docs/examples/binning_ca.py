@@ -37,7 +37,7 @@ analyzer = contact_angle_analyzer(
     parser=parser,
     output_dir="results_binned_example",
     liquid_indices=oxygen_indices,
-    type_model="spherical",  # Interface fitting model
+    droplet_geometry="spherical",  # Interface fitting model
     binning_params=binning_params,
     plot_graphs=True,  # Enable plotting for automated runs
 )

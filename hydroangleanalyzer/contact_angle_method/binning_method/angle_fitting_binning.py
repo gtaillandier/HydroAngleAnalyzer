@@ -21,16 +21,16 @@ class ContactAngleBinning:
     def __init__(
         self,
         parser,
-        liquid_indices,
-        type_model="spherical",
+        atom_indices,
+        droplet_geometry="spherical",
         width_cylinder=21,
         binning_params=None,
         output_dir="output_analysis/",
         plot_graphs=True,
     ):
         self.parser = parser
-        self.liquid_indices = liquid_indices
-        self.type_model = type_model
+        self.atom_indices = atom_indices
+        self.droplet_geometry = droplet_geometry
         self.width_cylinder = width_cylinder
         self.output_dir = output_dir
         self.plot_graphs = plot_graphs
@@ -77,7 +77,7 @@ class ContactAngleBinning:
         self.xi_cc = 0.5 * (self.xi[1:] + self.xi[:-1])
         self.zi_cc = 0.5 * (self.zi[1:] + self.zi[:-1])
 
-    def binning(self, xi_par, zi_par, len_frames, type_model=None, width_cylinder=None):
+    def binning(self, xi_par, zi_par, len_frames, droplet_geometry=None, width_cylinder=None):
         """Return 2D density field by binning particle coordinates.
 
         Parameters
@@ -88,7 +88,7 @@ class ContactAngleBinning:
             Vertical coordinate values for particles over frames.
         len_frames : int
             Number of frames aggregated.
-        type_model : str, optional
+        droplet_geometry : str, optional
             Override instance model type.
         width_cylinder : float, optional
             Override cylinder width.
@@ -98,22 +98,22 @@ class ContactAngleBinning:
         ndarray, shape (nbins_xi-1, nbins_zi-1)
             Averaged density field on cell centers.
         """
-        if type_model is None:
-            type_model = self.type_model
+        if droplet_geometry is None:
+            droplet_geometry = self.droplet_geometry
         if width_cylinder is None:
             width_cylinder = self.width_cylinder
-        print(f"Binning with model: {type_model} ...")
+        print(f"Binning with model: {droplet_geometry} ...")
         rho_cc = np.zeros((len(self.xi_cc), len(self.zi_cc)))
         xi_par_0, zi_par_0 = copy.deepcopy(xi_par), copy.deepcopy(zi_par)
         for i in range(len(self.xi_cc)):
             if i % 10 == 0:
                 print(f"Advancement: {100 * i / (len(self.xi_cc) - 1):.2f}%")
-            if type_model in ("cylinder_x", "cylinder_y"):
+            if droplet_geometry in ("cylinder_x", "cylinder_y"):
                 dV = 2 * width_cylinder * self.dxi * self.dzi
-            elif type_model == "spherical":
+            elif droplet_geometry == "spherical":
                 dV = 2 * np.pi * (self.xi_cc[i]) * self.dxi * self.dzi
             else:
-                raise ValueError("Unknown model type: {}".format(type_model))
+                raise ValueError("Unknown model type: {}".format(droplet_geometry))
             for j in range(len(self.zi_cc)):
                 where = (
                     (xi_par_0 > self.xi[i])
@@ -210,8 +210,8 @@ class ContactAngleBinning:
         with open(os.path.join(self.output_dir, f"log_data{batch_str}.txt"), "w") as f:
             f.write("Simulation parameters:\n")
             f.write(f"reduced_particles_number:{particles_number}\n")
-            f.write(f"model_type:{self.type_model}\n")
-            if self.type_model in ("cylinder_x", "cylinder_y"):
+            f.write(f"model_type:{self.droplet_geometry}\n")
+            if self.droplet_geometry in ("cylinder_x", "cylinder_y"):
                 f.write(f"width_cylinder:{self.width_cylinder}\n")
             f.write("Fitted parameters:\n")
             for param in param_strings:
@@ -246,8 +246,10 @@ class ContactAngleBinning:
         tuple(float, SurfaceModel)
             (contact_angle_degrees, fitted_model).
         """
-        xi_par, zi_par, len_frames = self.parser.return_cylindrical_coord_pars(
-            frame_list, type_model=self.type_model, liquid_indices=self.liquid_indices
+        xi_par, zi_par, len_frames = self.parser.get_profile_coordinates(
+            frame_indices=frame_list,
+            droplet_geometry=self.droplet_geometry,
+            atom_indices=self.atom_indices,
         )
         particles_number = len(xi_par) / max(len_frames, 1)
         print(
@@ -330,7 +332,7 @@ class ContactAngleBinning:
             angles.append(angle)
         if save_angles:
             np.save(
-                os.path.join(self.output_dir, f"all_angles_{self.type_model}.npy"),
+                os.path.join(self.output_dir, f"all_angles_{self.droplet_geometry}.npy"),
                 np.array(angles),
             )
         print("List of contact angles by batch:", angles)

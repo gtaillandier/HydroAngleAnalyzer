@@ -42,27 +42,27 @@ def test_parse_liquid_particles(ase_parser):
     assert liquid_positions.shape[1] == 3  # x, y, z coordinates
 
 
-# --- Test get_cylindrical_coordinates ---
+# --- Test get_profile_coordinates ---
 def test_get_cylindrical_coordinates(ase_parser, capsys):
-    frame_list = [0, 1]
-    xi_par, zi_par, frame_indexss = ase_parser.get_cylindrical_coordinates(frame_list)
-    assert isinstance(xi_par, np.ndarray)
-    assert isinstance(zi_par, np.ndarray)
-    assert frame_indexss == len(frame_list)
-    assert xi_par.shape == zi_par.shape
+    frame_indices = [0, 1]
+    r_values, z_values, n_frames = ase_parser.get_profile_coordinates(frame_indices)
+    assert isinstance(r_values, np.ndarray)
+    assert isinstance(z_values, np.ndarray)
+    assert n_frames == len(frame_indices)
+    assert r_values.shape == z_values.shape
 
-    # Test with liquid_indices
-    liquid_indices = [0, 1, 2]
-    xi_par, zi_par, _ = ase_parser.get_cylindrical_coordinates(
-        frame_list, liquid_indices=liquid_indices
+    # Test with atom_indices
+    atom_indices = [0, 1, 2]
+    r_values, z_values, _ = ase_parser.get_profile_coordinates(
+        frame_indices, atom_indices=atom_indices
     )
-    assert xi_par.size > 0
-    assert zi_par.size > 0
+    assert r_values.size > 0
+    assert z_values.size > 0
 
     # Check print output
     captured = capsys.readouterr()
-    assert "xi range:" in captured.out
-    assert "zi range:" in captured.out
+    assert "r range:" in captured.out
+    assert "z range:" in captured.out
 
 
 # --- Test box_size_x and box_size_y ---
@@ -95,11 +95,11 @@ def test_frame_count(ase_parser):
     assert total_frames > 0
 
 
-# --- Test type_model in get_cylindrical_coordinates ---
+# --- Test droplet_geometry in get_profile_coordinates ---
 def test_get_cylindrical_coordinates_type_model(ase_parser):
-    frame_list = [0]
-    xi_par, zi_par, _ = ase_parser.get_cylindrical_coordinates(
-        frame_list, type_model="spherical"
+    frame_indices = [0]
+    r_values, z_values, _ = ase_parser.get_profile_coordinates(
+        frame_indices, droplet_geometry="spherical"
     )
-    assert isinstance(xi_par, np.ndarray)
-    assert isinstance(zi_par, np.ndarray)
+    assert isinstance(r_values, np.ndarray)
+    assert isinstance(z_values, np.ndarray)

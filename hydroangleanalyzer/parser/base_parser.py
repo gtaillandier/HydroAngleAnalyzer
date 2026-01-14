@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Sequence, Optional
 
 import numpy as np
 
@@ -15,7 +15,7 @@ class BaseParser(ABC):
 
     Parameters
     ----------
-    in_path : str
+    filepath : str
         Path to trajectory / structure file.
     particle_type_wall : Any
         Identifier(s) for wall particles (type IDs for LAMMPS dump, symbols for
@@ -23,7 +23,7 @@ class BaseParser(ABC):
     """
 
     @abstractmethod
-    def __init__(self, in_path: str, particle_type_wall: Any):
+    def __init__(self, filepath: str, particle_type_wall: Any):
         pass
 
     @abstractmethod
@@ -78,25 +78,58 @@ class BaseParser(ABC):
         """Return the maximum box length for a frame. (override if available)."""
         raise NotImplementedError("box_length_max not implemented for this parser.")
 
-    def get_cylindrical_coordinates(
+    def get_profile_coordinates(
         self,
-        frame_list: List[int],
-        type_model: str = "cylinder_y",
-        liquid_indices: np.ndarray | None = None,
-    ) -> Tuple[np.ndarray, np.ndarray, int]:  # pragma: no cover - default
-        """Return cylindrical coordinate arrays for frames (override if available)."""
+        frame_indices: Sequence[int],
+        droplet_geometry: str = "cylinder_y",
+        atom_indices: Optional[Sequence[int]] = None,
+    ) -> Tuple[np.ndarray, np.ndarray, int]:
+        """
+        Compute 2D projection coordinates (r, z) for contact angle analysis.
+
+        Projects 3D atomic positions onto a 2D plane based on the assumed
+        droplet geometry and simulation box boundaries.
+
+        Parameters
+        ----------
+        frame_indices : Sequence[int]
+            List of frames to process.
+        droplet_geometry : str, default 'cylinder_y'
+            The physical shape of the water droplet in the simulation box:
+            * 'cylinder_y': A hemi-cylindrical droplet aligned along the Y-axis.
+               (Returns x as the radial coordinate).
+            * 'cylinder_x': A hemi-cylindrical droplet aligned along the X-axis.
+               (Returns y as the radial coordinate).
+            * 'spherical': A spherical cap droplet.
+               (Returns sqrt(x^2 + y^2) as the radial coordinate).
+        atom_indices : Sequence[int], optional
+            Subset of atom indices to include (e.g., only liquid atoms).
+
+        Returns
+        -------
+        r_values : np.ndarray
+            The lateral/radial distances from the droplet center/axis.
+        z_values : np.ndarray
+            The vertical coordinates (height) of the atoms.
+        n_frames : int
+            Number of frames processed.
+        """
         raise NotImplementedError(
-            "get_cylindrical_coordinates not implemented for this parser."
+            "get_profile_coordinates not implemented for this parser."
         )
 
     def return_cylindrical_coord_pars(self, *args, **kwargs):
-        """Return cylindrical coordinate arrays for frames. (Legacy name)."""
+        """Return cylindrical coordinate arrays for frames. (Legacy name).
+
+        .. deprecated:: 0.1.0
+            Use :meth:`get_profile_coordinates` instead.
+        """
         import warnings
 
         warnings.warn(
             "return_cylindrical_coord_pars is deprecated, "
-            "use get_cylindrical_coordinates instead.",
+            "use get_profile_coordinates instead.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.get_cylindrical_coordinates(*args, **kwargs)
+        return self.get_profile_coordinates(*args, **kwargs)

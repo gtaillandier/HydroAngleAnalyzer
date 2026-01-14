@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import List, Tuple
+from typing import List, Tuple, Sequence, Optional
 
 import numpy as np
 
@@ -13,12 +13,12 @@ class AseParser(BaseParser):
 
     Parameters
     ----------
-    in_path : str
+    filepath : str
         Path to any ASE-readable trajectory/file pattern (e.g. XYZ, extxyz,
         POSCAR, etc.).
     """
 
-    def __init__(self, in_path: str) -> None:
+    def __init__(self, filepath: str) -> None:
         try:
             from ase.io import read
         except ImportError as e:  # pragma: no cover - dependency guard
@@ -26,8 +26,8 @@ class AseParser(BaseParser):
                 "The 'ase' package is required to use AseParser. Install with "
                 "'pip install ase'."
             ) from e
-        self.in_path = in_path
-        self.trajectory = read(self.in_path, index=":")
+        self.filepath = filepath
+        self.trajectory = read(self.filepath, index=":")
 
     def parse(self, frame_index: int, indices: np.ndarray | None = None) -> np.ndarray:
         """Return Cartesian coordinates for selected atoms in a frame.
@@ -80,63 +80,77 @@ class AseParser(BaseParser):
         )
         return self.parse_liquid_particles(*args, **kwargs)
 
-    def get_cylindrical_coordinates(
+    def get_profile_coordinates(
         self,
-        frame_list: List[int],
-        type_model: str = "cylinder_y",
-        liquid_indices: np.ndarray | None = None,
+        frame_indices: Sequence[int],
+        droplet_geometry: str = "cylinder_y",
+        atom_indices: Optional[Sequence[int]] = None,
     ) -> Tuple[np.ndarray, np.ndarray, int]:
-        """Return cylindrical projection arrays for multiple frames.
+        """
+        Compute 2D projection coordinates (r, z) for contact angle analysis.
+
+        Projects 3D atomic positions onto a 2D plane based on the assumed
+        droplet geometry and simulation box boundaries.
 
         Parameters
         ----------
-        frame_list : sequence[int]
-            Frames to process.
-        type_model : str, default "cylinder_y"
-            One of {"cylinder_y", "cylinder_x", "spherical"}.
-        liquid_indices : sequence[int], optional
-            Subset indices of atoms to include.
+        frame_indices : Sequence[int]
+            List of frames to process.
+        droplet_geometry : str, default 'cylinder_y'
+            The physical shape of the water droplet in the simulation box:
+            * 'cylinder_y': A hemi-cylindrical droplet aligned along the Y-axis.
+               (Returns x as the radial coordinate).
+            * 'cylinder_x': A hemi-cylindrical droplet aligned along the X-axis.
+               (Returns y as the radial coordinate).
+            * 'spherical': A spherical cap droplet.
+               (Returns sqrt(x^2 + y^2) as the radial coordinate).
+        atom_indices : Sequence[int], optional
+            Subset of atom indices to include (e.g., only liquid atoms).
 
         Returns
         -------
-        tuple(ndarray, ndarray, int)
-            (xi_values, zi_values, n_frames) flattened over frames.
+        r_values : np.ndarray
+            The lateral/radial distances from the droplet center/axis.
+        z_values : np.ndarray
+            The vertical coordinates (height) of the atoms.
+        n_frames : int
+            Number of frames processed.
         """
-        xi_values = np.array([])
-        zi_values = np.array([])
-        for frame_idx in frame_list:
+        r_values = np.array([])
+        z_values = np.array([])
+        for frame_idx in frame_indices:
             frame = self.trajectory[frame_idx]
             x_par = frame.positions
-            if liquid_indices is not None:
-                liquid_indices = np.array(liquid_indices)
-                x_par = x_par[liquid_indices]
+            if atom_indices is not None:
+                atom_indices_arr = np.array(atom_indices)
+                x_par = x_par[atom_indices_arr]
             x_cm = np.mean(x_par, axis=0)
             x_0 = x_par - x_cm
             x_0[:, 2] = x_par[:, 2]
-            if type_model == "cylinder_y":
-                xi_frame = np.abs(x_0[:, 0] + 0.01)
-            elif type_model == "cylinder_x":
-                xi_frame = np.abs(x_0[:, 1] + 0.01)
+            if droplet_geometry == "cylinder_y":
+                r_frame = np.abs(x_0[:, 0] + 0.01)
+            elif droplet_geometry == "cylinder_x":
+                r_frame = np.abs(x_0[:, 1] + 0.01)
             else:
-                xi_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
-            zi_frame = x_0[:, 2]
-            xi_values = np.concatenate((xi_values, xi_frame))
-            zi_values = np.concatenate((zi_values, zi_frame))
+                r_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
+            z_frame = x_0[:, 2]
+            r_values = np.concatenate((r_values, r_frame))
+            z_values = np.concatenate((z_values, z_frame))
             if frame_idx % 10 == 0:
                 print(f"Frame: {frame_idx}\nCenter of Mass: {x_cm}")
-        print(f"\nxi range:\t({np.min(xi_values)},{np.max(xi_values)})")
-        print(f"zi range:\t({np.min(zi_values)},{np.max(zi_values)})")
-        return xi_values, zi_values, len(frame_list)
+        print(f"\nr range:\t({np.min(r_values)},{np.max(r_values)})")
+        print(f"z range:\t({np.min(z_values)},{np.max(z_values)})")
+        return r_values, z_values, len(frame_indices)
 
     def return_cylindrical_coord_pars(self, *args, **kwargs):
-        """Deprecated alias for get_cylindrical_coordinates."""
+        """Deprecated alias for get_profile_coordinates."""
         warnings.warn(
             "return_cylindrical_coord_pars is deprecated, "
-            "use get_cylindrical_coordinates instead.",
+            "use get_profile_coordinates instead.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.get_cylindrical_coordinates(*args, **kwargs)
+        return self.get_profile_coordinates(*args, **kwargs)
 
     def box_size_y(self, frame_index: int) -> float:
         """Return y-dimension (a2y) of simulation cell for frame."""
@@ -174,7 +188,7 @@ class AseWaterMoleculeFinder:
 
     Parameters
     ----------
-    in_path : str
+    filepath : str
         Path to ASE-readable trajectory.
     particle_type_wall : sequence[str]
         Symbols representing wall particles (unused presently, reserved for
@@ -189,7 +203,7 @@ class AseWaterMoleculeFinder:
 
     def __init__(
         self,
-        in_path: str,
+        filepath: str,
         particle_type_wall: List[str],
         oxygen_type: str = "O",
         hydrogen_type: str = "H",
@@ -205,7 +219,7 @@ class AseWaterMoleculeFinder:
             ) from e
         self._ase_read = read
         self._NeighborList = NeighborList
-        self.trajectory = self._ase_read(in_path, index=":")
+        self.trajectory = self._ase_read(filepath, index=":")
         self.particle_type_wall = particle_type_wall
         self.oxygen_type = oxygen_type
         self.hydrogen_type = hydrogen_type
@@ -262,13 +276,13 @@ class AseWallParser:
 
     Parameters
     ----------
-    in_path : str
+    filepath : str
         Path to trajectory file.
     liquid_particle_types : sequence[str]
         Symbols representing liquid particles to exclude.
     """
 
-    def __init__(self, in_path: str, liquid_particle_types: List[str]):
+    def __init__(self, filepath: str, liquid_particle_types: List[str]):
         try:
             from ase.io import read
         except ImportError as e:  # pragma: no cover
@@ -276,9 +290,9 @@ class AseWallParser:
                 "The 'ase' package is required to use AseWallParser. Install it "
                 "with: pip install ase"
             ) from e
-        self.in_path = in_path
+        self.filepath = filepath
         self.liquid_particle_types = liquid_particle_types
-        self.trajectory = read(self.in_path, index=":")
+        self.trajectory = read(self.filepath, index=":")
 
     def parse(self, frame_index: int) -> np.ndarray:
         """Return wall coordinates for the supplied frame index.
@@ -323,55 +337,77 @@ class AseWallParser:
         )
         return self.find_highest_wall_particle(*args, **kwargs)
 
-    def get_cylindrical_coordinates(
+    def get_profile_coordinates(
         self,
-        frame_list: List[int],
-        type_model: str = "cylinder",
+        frame_indices: Sequence[int],
+        droplet_geometry: str = "cylinder_y",
+        atom_indices: Optional[Sequence[int]] = None,
     ) -> Tuple[np.ndarray, np.ndarray, int]:
-        """Return cylindrical projections for wall particles across frames.
+        """
+        Compute 2D projection coordinates (r, z) for contact angle analysis.
+
+        Projects 3D atomic positions onto a 2D plane based on the assumed
+        droplet geometry and simulation box boundaries.
 
         Parameters
         ----------
-        frame_list : sequence[int]
-            Frame indices.
-        type_model : str, default "cylinder"
-            Either "cylinder" or "spherical".
+        frame_indices : Sequence[int]
+            List of frames to process.
+        droplet_geometry : str, default 'cylinder_y'
+            The physical shape of the water droplet in the simulation box:
+            * 'cylinder_y': A hemi-cylindrical droplet aligned along the Y-axis.
+               (Returns x as the radial coordinate).
+            * 'cylinder_x': A hemi-cylindrical droplet aligned along the X-axis.
+               (Returns y as the radial coordinate).
+            * 'spherical': A spherical cap droplet.
+               (Returns sqrt(x^2 + y^2) as the radial coordinate).
+        atom_indices : Sequence[int], optional
+            Subset of atom indices to include (e.g., only liquid atoms).
 
         Returns
         -------
-        tuple(ndarray, ndarray, int)
-            (xi_values, zi_values, n_frames).
+        r_values : np.ndarray
+            The lateral/radial distances from the droplet center/axis.
+        z_values : np.ndarray
+            The vertical coordinates (height) of the atoms.
+        n_frames : int
+            Number of frames processed.
         """
-        xi_values = np.array([])
-        zi_values = np.array([])
-        for frame_idx in frame_list:
+        r_values = np.array([])
+        z_values = np.array([])
+        for frame_idx in frame_indices:
             frame = self.trajectory[frame_idx]
             x_par = frame.positions
+            if atom_indices is not None:
+                atom_indices_arr = np.array(atom_indices)
+                x_par = x_par[atom_indices_arr]
             x_cm = np.mean(x_par, axis=0)
             x_0 = x_par - x_cm
             x_0[:, 2] = x_par[:, 2]
-            if type_model == "cylinder":
-                xi_frame = np.abs(x_0[:, 0] + 0.01)
-            else:  # spherical
-                xi_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
-            zi_frame = x_0[:, 2]
-            xi_values = np.concatenate((xi_values, xi_frame))
-            zi_values = np.concatenate((zi_values, zi_frame))
+            if droplet_geometry == "cylinder_y":
+                r_frame = np.abs(x_0[:, 0] + 0.01)
+            elif droplet_geometry == "cylinder_x":
+                r_frame = np.abs(x_0[:, 1] + 0.01)
+            else:
+                r_frame = np.sqrt(x_0[:, 0] ** 2 + x_0[:, 1] ** 2)
+            z_frame = x_0[:, 2]
+            r_values = np.concatenate((r_values, r_frame))
+            z_values = np.concatenate((z_values, z_frame))
             if frame_idx % 10 == 0:
                 print(f"Frame: {frame_idx}\nCenter of Mass: {x_cm}")
-        print(f"\nxi range:\t({np.min(xi_values)},{np.max(xi_values)})")
-        print(f"zi range:\t({np.min(zi_values)},{np.max(zi_values)})")
-        return xi_values, zi_values, len(frame_list)
+        print(f"\nr range:\t({np.min(r_values)},{np.max(r_values)})")
+        print(f"z range:\t({np.min(z_values)},{np.max(z_values)})")
+        return r_values, z_values, len(frame_indices)
 
     def return_cylindrical_coord_pars(self, *args, **kwargs):
-        """Deprecated alias for get_cylindrical_coordinates."""
+        """Deprecated alias for get_profile_coordinates."""
         warnings.warn(
             "return_cylindrical_coord_pars is deprecated, "
-            "use get_cylindrical_coordinates instead.",
+            "use get_profile_coordinates instead.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.get_cylindrical_coordinates(*args, **kwargs)
+        return self.get_profile_coordinates(*args, **kwargs)
 
     def box_size_y(self, frame_index: int) -> float:
         """Return y-dimension (a2y) of simulation cell for frame."""

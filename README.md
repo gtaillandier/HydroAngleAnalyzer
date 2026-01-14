@@ -55,11 +55,11 @@ traj = "traj.lammpstrj"
 parser = DumpParser(traj)  # requires ovito extra
 oxygen_ids = [/* obtain water oxygen IDs via Dump_WaterMoleculeFinder */]
 
-sliced = SlicedContactAngleAnalyzer(parser, output_repo="out_sliced", liquid_indices=oxygen_ids, type_model="spherical", delta_gamma=5)
+sliced = SlicedContactAngleAnalyzer(parser, output_repo="out_sliced", liquid_indices=oxygen_ids, droplet_geometry="spherical", delta_gamma=5)
 res = sliced.analyze(frame_range=range(0, 50))
 print(res["mean_angle"], res["std_angle"])  # per-frame distribution
 
-binned = BinnedContactAngleAnalyzer(parser, output_dir="out_binned", liquid_indices=oxygen_ids, type_model="spherical")
+binned = BinnedContactAngleAnalyzer(parser, output_dir="out_binned", liquid_indices=oxygen_ids, droplet_geometry="spherical")
 res_b = binned.analyze(frame_range=range(0, 200))
 print(res_b["mean_angle"], res_b["std_angle"])  # single or batched average
 ```

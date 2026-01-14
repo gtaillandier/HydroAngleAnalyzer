@@ -56,7 +56,7 @@ analyzer = contact_angle_analyzer(
     parser=parser,
     output_dir='result_dump_spherical_sliced',
     liquid_indices=oxygen_indices,
-    type_model='spherical',   # Geometry fitting model
+    droplet_geometry='spherical',   # Geometry fitting model
     delta_gamma=20            # Smoothing parameter
 )
 
@@ -83,7 +83,7 @@ If plotting is enabled, a visualization of the droplet profile and the fitted sp
 
 ## 5. Tips
 
-- Use `type_model='spherical'` for droplets and `type_model='cylinder_y'` for cylindrical droplet on the y axis or `'cylinder_x'`for cylinder on the x axis.
+- Use `droplet_geometry='spherical'` for droplets and `droplet_geometry='cylinder_y'` for cylindrical droplet on the y axis or `'cylinder_x'`for cylinder on the x axis.
 - Adjust `delta_gamma` for smoother or sharper slicing (larger = smoother).
 - To analyze multiple frames:
 ````python
@@ -131,7 +131,7 @@ analyzer = contact_angle_analyzer(
     parser=parser,
     output_dir='result_dump_spherical_sliced',
     liquid_indices=oxygen_indices,
-    type_model='spherical',  # Fitting model
+    droplet_geometry='spherical',  # Fitting model
     delta_gamma=20           # Smoothing parameter
 )
 

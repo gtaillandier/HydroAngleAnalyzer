@@ -114,7 +114,7 @@ def test_frame_tot(dump_parser):
     assert total_frames > 0
 
 
-# --- Test type_model in return_cylindrical_coord_pars ---
+# --- Test droplet_geometry in return_cylindrical_coord_pars ---
 def test_return_cylindrical_coord_pars_type_model(dump_parser):
     frame_list = [0]
     xi_par = np.array([])

@@ -36,14 +36,14 @@ class SlicedContactAngleAnalyzer(BaseContactAngleAnalyzer):
         self.parser = parser
         self.output_repo = output_repo
         self._processor = ContactAngleSlicedParallel(
-            filename=parser.in_path, output_repo=output_repo, **kwargs
+            filename=parser.filepath, output_repo=output_repo, **kwargs
         )
 
     def analyze(
         self, frame_range: Optional[List[int]] = None, **kwargs
     ) -> Dict[str, Any]:
         if frame_range is None:
-            frame_range = list(range(self.parser.frame_tot()))
+            frame_range = list(range(self.parser.frame_count()))
 
         frame_to_angle = self._processor.process_frames_parallel(
             frames_to_process=frame_range, **kwargs
@@ -77,7 +77,7 @@ class BinnedContactAngleAnalyzer(BaseContactAngleAnalyzer):
         **kwargs,
     ) -> Dict[str, Any]:
         if frame_range is None:
-            frame_range = list(range(self.parser.frame_tot()))
+            frame_range = list(range(self.parser.frame_count()))
         if split_factor is None:
             angle, _ = self._analyzer.process_batch(frame_range)
             angles = np.array([angle])

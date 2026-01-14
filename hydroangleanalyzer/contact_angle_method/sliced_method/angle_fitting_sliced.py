@@ -7,7 +7,7 @@ from .surface_defined import SurfaceDefinition
 class ContactAngleSliced:
     """Sliced radial line method to estimate contact angle via circle fitting.
 
-    Depending on ``type_model`` the droplet is analyzed by sweeping in y
+    Depending on ``droplet_geometry`` the droplet is analyzed by sweeping in y
     (cylinder modes) or by gamma inclination (spherical). For each slice / tilt
     a set of radial lines is sampled, a circle is fit to interface points, and
     the contact angle is derived from intersection with the lowest surface
@@ -22,7 +22,7 @@ class ContactAngleSliced:
     o_center_geom : ndarray, shape (3,)
         Geometric droplet center; y component overridden per slice in cylinder
         modes.
-    type_model : str, default 'cylinder_y'
+    droplet_geometry : str, default 'cylinder_y'
         One of {'cylinder_y', 'cylinder_x', 'spherical'} controlling slicing
         axis.
     delta_gamma : float, optional
@@ -40,7 +40,7 @@ class ContactAngleSliced:
         o_coords,
         max_dist,
         o_center_geom,
-        type_model="cylinder_y",
+        droplet_geometry="cylinder_y",
         delta_gamma=None,
         width_cylinder=None,
         delta_cylinder=None,
@@ -49,19 +49,19 @@ class ContactAngleSliced:
         self.o_coords = o_coords
         self.max_dist = max_dist
         self.o_center_geom = o_center_geom
-        self.type_model = type_model
+        self.droplet_geometry = droplet_geometry
         self.delta_gamma = delta_gamma
         self.width_cylinder = width_cylinder
         self.delta_cylinder = delta_cylinder
         self.surface_filter_offset = surface_filter_offset
-        if self.type_model in ["cylinder_y", "cylinder_x"] and (
+        if self.droplet_geometry in ["cylinder_y", "cylinder_x"] and (
             width_cylinder is None or delta_cylinder is None
         ):
             print(
                 "Warning: width_cylinder and delta_cylinder recommended for "
-                f"{self.type_model}"
+                f"{self.droplet_geometry}"
             )
-        if self.type_model == "spherical" and delta_gamma is None:
+        if self.droplet_geometry == "spherical" and delta_gamma is None:
             raise ValueError("delta_gamma must be provided for spherical analysis")
 
     def calculate_y_axis_list(self):
@@ -72,15 +72,15 @@ class ContactAngleSliced:
         list[float]
             Y (or X if 'cylinder_x') positions; spherical returns repeated center y.
         """
-        if self.type_model in ("cylinder_y", "cylinder_x"):
+        if self.droplet_geometry in ("cylinder_y", "cylinder_x"):
             return list(np.arange(0, self.width_cylinder, self.delta_cylinder))
-        if self.type_model == "spherical":
+        if self.droplet_geometry == "spherical":
             return [self.o_center_geom[1]] * int(180 / self.delta_gamma)
         return []
 
     def calculate_gammas_list(self):
         """Return gamma inclination list for the chosen model."""
-        if self.type_model in ("cylinder_y", "cylinder_x"):
+        if self.droplet_geometry in ("cylinder_y", "cylinder_x"):
             return [
                 0.0
                 for _ in np.arange(
@@ -89,7 +89,7 @@ class ContactAngleSliced:
                     self.delta_cylinder,
                 )
             ]
-        if self.type_model == "spherical":
+        if self.droplet_geometry == "spherical":
             return list(
                 np.linspace(
                     0.0,

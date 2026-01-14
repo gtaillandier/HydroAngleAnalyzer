@@ -14,11 +14,9 @@ Parser Module
 Contact Angle Methods
 ----------------------
 
-Base Analyzer
-^^^^^^^^^^^^^
-
-.. automodule:: hydroangleanalyzer.contact_angle_method.contact_angle_analyzer
+.. automodule:: hydroangleanalyzer.contact_angle_method
    :members:
+   :undoc-members:
    :show-inheritance:
 
 Sliced Method
@@ -28,21 +26,19 @@ Sliced Method
    :members:
    :undoc-members:
    :show-inheritance:
-   :exclude-members: ContactAngle_sliced, ContactAngle_sliced_parallel
 
 Binned Method
 ^^^^^^^^^^^^^
 
-.. automodule:: hydroangleanalyzer.contact_angle_method.binning_method
+.. automodule:: hydroangleanalyzer.contact_angle_method.binned_method
    :members:
    :undoc-members:
    :show-inheritance:
-   :exclude-members: ContactAngle_binning
 
 Visualization and Statistics
 -----------------------------
 
-.. automodule:: hydroangleanalyzer.visualization_angles
+.. automodule:: hydroangleanalyzer.visualization_statistics_angles
    :members:
    :undoc-members:
    :show-inheritance:
