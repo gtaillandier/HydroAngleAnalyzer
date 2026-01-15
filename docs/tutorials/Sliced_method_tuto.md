@@ -29,14 +29,14 @@ tests/trajectories/traj_spherical_drop_4k.lammpstrj
 
 ````python
 # Import necessary modules
-from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
+from hydroangleanalyzer.parser import DumpParser,     DumpWaterMoleculeFinder
 from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 
 # --- Step 1: Define the trajectory file ---
 filename = "../../tests/trajectories/traj_spherical_drop_4k.lammpstrj"
 
 # --- Step 2: Initialize the water molecule finder ---
-wat_find = Dump_WaterMoleculeFinder(
+wat_find =     DumpWaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # Wall particle types
     oxygen_type=1,           # Oxygen atom type
@@ -105,14 +105,14 @@ This example demonstrates how to perform a contact angle analysis
 using the 'sliced' method on a spherical droplet from a LAMMPS dump trajectory.
 """
 
-from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
+from hydroangleanalyzer.parser import DumpParser,     DumpWaterMoleculeFinder
 from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 
 # --- Step 1: Define input trajectory ---
 filename = "../../tests/trajectories/traj_spherical_drop_4k.lammpstrj"
 
 # --- Step 2: Identify water molecules ---
-wat_find = Dump_WaterMoleculeFinder(
+wat_find =     DumpWaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # Wall atom types
     oxygen_type=1,

@@ -53,7 +53,7 @@ from hydroangleanalyzer import (
 
 traj = "traj.lammpstrj"
 parser = DumpParser(traj)  # requires ovito extra
-oxygen_ids = [/* obtain water oxygen IDs via Dump_WaterMoleculeFinder */]
+oxygen_ids = [/* obtain water oxygen IDs via     DumpWaterMoleculeFinder */]
 
 sliced = SlicedContactAngleAnalyzer(parser, output_repo="out_sliced", liquid_indices=oxygen_ids, droplet_geometry="spherical", delta_gamma=5)
 res = sliced.analyze(frame_range=range(0, 50))
@@ -103,9 +103,9 @@ NumPy-style docstrings adopted across modules. Pre-commit enforces pydocstyle wi
 ## Oxygen ID Retrieval Example
 
 ```python
-from hydroangleanalyzer import Dump_WaterMoleculeFinder
+from hydroangleanalyzer import     DumpWaterMoleculeFinder
 
-finder = Dump_WaterMoleculeFinder("traj.lammpstrj", particle_type_wall={3}, oxygen_type=1, hydrogen_type=2)
+finder =     DumpWaterMoleculeFinder("traj.lammpstrj", particle_type_wall={3}, oxygen_type=1, hydrogen_type=2)
 oxygen_ids = finder.get_water_oxygen_ids(frame_indexs=0)
 ```
 

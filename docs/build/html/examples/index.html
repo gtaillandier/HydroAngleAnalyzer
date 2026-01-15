@@ -102,7 +102,7 @@
                   <div class="highlight-python notranslate">
                     <div class="highlight">
                       <pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 2</span><span class="sd">Example: Using DumpParser and Dump_WaterMoleculeFinder</span>
+<span class="linenos"> 2</span><span class="sd">Example: Using DumpParser and     DumpWaterMoleculeFinder</span>
 <span class="linenos"> 3</span>
 <span class="linenos"> 4</span><span class="sd">This example shows how to:</span>
 <span class="linenos"> 5</span><span class="sd">1. Identify water molecules in a LAMMPS dump file.</span>
@@ -112,16 +112,16 @@
 <span class="linenos"> 9</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <span class="linenos">10</span>    <span class="n">ASE_Parser</span><span class="p">,</span>
 <span class="linenos">11</span>    <span class="n">ASE_WaterMoleculeFinder</span><span class="p">,</span>
-<span class="linenos">12</span>    <span class="n">Dump_WaterMoleculeFinder</span><span class="p">,</span>
+<span class="linenos">12</span>    <span class="n">    DumpWaterMoleculeFinder</span><span class="p">,</span>
 <span class="linenos">13</span>    <span class="n">DumpParser</span><span class="p">,</span>
-<span class="linenos">14</span>    <span class="n">XYZ_Parser</span><span class="p">,</span>
+<span class="linenos">14</span>    <span class="n">XYZParser</span><span class="p">,</span>
 <span class="linenos">15</span><span class="p">)</span>
 <span class="linenos">16</span>
 <span class="linenos">17</span><span class="c1"># --- Define input file ---</span>
 <span class="linenos">18</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj&quot;</span>
 <span class="linenos">19</span>
 <span class="linenos">20</span><span class="c1"># --- Initialize water molecule finder ---</span>
-<span class="linenos">21</span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">(</span>
+<span class="linenos">21</span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">    DumpWaterMoleculeFinder</span><span class="p">(</span>
 <span class="linenos">22</span>    <span class="n">filename</span><span class="p">,</span>
 <span class="linenos">23</span>    <span class="n">particle_type_wall</span><span class="o">=</span><span class="p">{</span><span class="mi">3</span><span class="p">},</span>  <span class="c1"># atom type for wall</span>
 <span class="linenos">24</span>    <span class="n">oxygen_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># atom type for oxygen</span>
@@ -173,7 +173,7 @@
 <span class="linenos">70</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extracted oxygen coordinates shape:&quot;</span><span class="p">,</span> <span class="n">oxygen_positions</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="linenos">71</span>
 <span class="linenos">72</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos">73</span><span class="sd">Example: Using XYZ_Parser</span>
+<span class="linenos">73</span><span class="sd">Example: Using XYZParser</span>
 <span class="linenos">74</span>
 <span class="linenos">75</span><span class="sd">This example demonstrates how to:</span>
 <span class="linenos">76</span><span class="sd">1. Load atomic positions from an XYZ file.</span>
@@ -184,7 +184,7 @@
 <span class="linenos">81</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.xyz&quot;</span>
 <span class="linenos">82</span>
 <span class="linenos">83</span><span class="c1"># --- Initialize parser ---</span>
-<span class="linenos">84</span><span class="n">xyz_parser</span> <span class="o">=</span> <span class="n">XYZ_Parser</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="linenos">84</span><span class="n">xyz_parser</span> <span class="o">=</span> <span class="n">XYZParser</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 <span class="linenos">85</span>
 <span class="linenos">86</span><span class="c1"># --- Extract all atom coordinates for frame 0 ---</span>
 <span class="linenos">87</span><span class="n">positions</span> <span class="o">=</span> <span class="n">xyz_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">frame_indexs</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -206,14 +206,14 @@
                     <div class="highlight">
                       <pre><span></span><span class="linenos"> 1</span><span class="c1"># Import necessary modules</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">contact_angle_analyzer</span>
-<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">,</span> <span class="n">DumpParser</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">    DumpWaterMoleculeFinder</span><span class="p">,</span> <span class="n">DumpParser</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="c1"># --- Step 1: Define the trajectory file ---</span>
 <span class="linenos"> 6</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;../../tests/trajectories/traj_spherical_drop_4k.lammpstrj&quot;</span>
 <span class="linenos"> 7</span>
 <span class="linenos"> 8</span><span class="c1"># --- Step 2: Initialize the water molecule finder ---</span>
 <span class="linenos"> 9</span><span class="c1"># This identifies O and H atoms in water molecules</span>
-<span class="linenos">10</span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">(</span>
+<span class="linenos">10</span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">    DumpWaterMoleculeFinder</span><span class="p">(</span>
 <span class="linenos">11</span>    <span class="n">filename</span><span class="p">,</span>
 <span class="linenos">12</span>    <span class="n">particle_type_wall</span><span class="o">=</span><span class="p">{</span><span class="mi">3</span><span class="p">},</span>  <span class="c1"># Wall atom types</span>
 <span class="linenos">13</span>    <span class="n">oxygen_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># Oxygen atom type</span>
@@ -278,8 +278,8 @@
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngle_sliced</span>
 <span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-<span class="linenos"> 5</span>    <span class="n">Dump_WaterMoleculeFinder</span><span class="p">,</span>
-<span class="linenos"> 6</span>    <span class="n">DumpParse_wall</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">    DumpWaterMoleculeFinder</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="n">DumpWallParser</span><span class="p">,</span>
 <span class="linenos"> 7</span>    <span class="n">DumpParser</span><span class="p">,</span>
 <span class="linenos"> 8</span><span class="p">)</span>
 <span class="linenos"> 9</span><span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.visualization_statistics_angles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Droplet_sliced_Plotter</span>
@@ -291,7 +291,7 @@
 <span class="linenos">15</span><span class="p">)</span>
 <span class="linenos">16</span>
 <span class="linenos">17</span><span class="c1"># --- 2. Identify Water Molecules ---</span>
-<span class="linenos">18</span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">(</span>
+<span class="linenos">18</span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">    DumpWaterMoleculeFinder</span><span class="p">(</span>
 <span class="linenos">19</span>    <span class="n">filename</span><span class="p">,</span> <span class="n">particle_type_wall</span><span class="o">=</span><span class="p">{</span><span class="mi">3</span><span class="p">},</span> <span class="n">oxygen_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hydrogen_type</span><span class="o">=</span><span class="mi">2</span>
 <span class="linenos">20</span><span class="p">)</span>
 <span class="linenos">21</span>
@@ -302,7 +302,7 @@
 <span class="linenos">26</span><span class="n">parser</span> <span class="o">=</span> <span class="n">DumpParser</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
 <span class="linenos">27</span><span class="n">oxygen_position</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">frame_indexs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">oxygen_indices</span><span class="p">)</span>
 <span class="linenos">28</span>
-<span class="linenos">29</span><span class="n">coord_wall</span> <span class="o">=</span> <span class="n">DumpParse_wall</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">particule_liquid_type</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">})</span>
+<span class="linenos">29</span><span class="n">coord_wall</span> <span class="o">=</span> <span class="n">DumpWallParser</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">particule_liquid_type</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">})</span>
 <span class="linenos">30</span><span class="n">wall_coords</span> <span class="o">=</span> <span class="n">coord_wall</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">frame_indexs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="linenos">31</span>
 <span class="linenos">32</span><span class="c1"># --- 4. Compute Contact Angles ---</span>

@@ -434,9 +434,5 @@ class AseWallParser:
 
 
 # Example usage (commented for library import safety):
-# parser = Ase_Parser('traj.extxyz')
+# parser = AseParser('traj.extxyz')
 # coords = parser.parse(frame_indexs=0)
-
-Ase_Parser = AseParser
-Ase_WaterMoleculeFinder = AseWaterMoleculeFinder
-Ase_WallParser = AseWallParser

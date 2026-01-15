@@ -27,7 +27,7 @@ reading sources... [100%] tutorials/index
 /auto/home/users/g/t/gtaillan/lib_python_Hydro/HydroAngleAnalyzer/hydroangleanalyzer/contact_angle_method/sliced_method/__init__.py:docstring of hydroangleanalyzer.contact_angle_method.sliced_method.surface_defined.SurfaceDefinition.analyze_lines:6: WARNING: Block quote ends without a blank line; unexpected unindent. [docutils]
 WARNING: autodoc: failed to import module 'binned_method' from module 'hydroangleanalyzer.contact_angle_method'; the following exception was raised:
 ['Traceback (most recent call last):\n', '  File "/home/ucl/modl/gtaillan/miniconda3/lib/python3.12/site-packages/sphinx/ext/autodoc/importer.py", line 269, in import_object\n    module = import_module(modname, try_reload=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n', '  File "/home/ucl/modl/gtaillan/miniconda3/lib/python3.12/site-packages/sphinx/ext/autodoc/importer.py", line 172, in import_module\n    raise ModuleNotFoundError(msg, name=modname)  # NoQA: TRY301\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n', "ModuleNotFoundError: No module named 'hydroangleanalyzer.contact_angle_method.binned_method'\n"] [autodoc.import_object]
-/auto/home/users/g/t/gtaillan/lib_python_Hydro/HydroAngleAnalyzer/hydroangleanalyzer/parser/__init__.py:docstring of hydroangleanalyzer.parser.parser_xyz.XYZ_Parser.box_length_max:6: ERROR: Undefined substitution referenced: "a_i". [docutils]
+/auto/home/users/g/t/gtaillan/lib_python_Hydro/HydroAngleAnalyzer/hydroangleanalyzer/parser/__init__.py:docstring of hydroangleanalyzer.parser.parser_xyz.XYZParser.box_length_max:6: ERROR: Undefined substitution referenced: "a_i". [docutils]
 looking for now-outdated files... none found
 pickling environment... done
 checking consistency... done

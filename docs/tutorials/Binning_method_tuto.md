@@ -32,7 +32,7 @@ tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj
 
 ```python
 # Import necessary modules
-from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
+from hydroangleanalyzer.parser import DumpParser, DumpWaterMoleculeFinder
 from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 
 # --- Step 1: Define the trajectory file ---
@@ -40,7 +40,7 @@ filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
 
 # --- Step 2: Initialize the water molecule finder ---
 # This identifies O and H atoms in water molecules
-wat_find = Dump_WaterMoleculeFinder(
+wat_find = DumpWaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # Wall atom types
     oxygen_type=1,  # Oxygen atom type

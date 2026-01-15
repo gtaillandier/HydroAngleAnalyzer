@@ -11,7 +11,7 @@ TRAJECTORY_PATH = os.path.join(
 )
 
 
-# --- Fixture for XYZ_Parser ---
+# --- Fixture for XYZParser ---
 @pytest.fixture
 def xyz_parser():
     return XYZParser(TRAJECTORY_PATH)

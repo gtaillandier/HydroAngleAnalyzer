@@ -5,9 +5,9 @@ from matplotlib.ticker import AutoMinorLocator
 
 from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
 from hydroangleanalyzer.parser import (
-    Dump_WaterMoleculeFinder,
-    DumpParse_wall,
     DumpParser,
+    DumpWallParser,
+    DumpWaterMoleculeFinder,
 )
 
 plt.style.use("seaborn-v0_8-whitegrid")
@@ -571,14 +571,14 @@ class ContactAngleAnimator:
         self.width_cylinder = width_cylinder
 
         # Initialize objects
-        self.wat_find = Dump_WaterMoleculeFinder(
+        self.wat_find = DumpWaterMoleculeFinder(
             self.filename,
             particle_type_wall=self.particle_type_wall,
             oxygen_type=self.oxygen_type,
             hydrogen_type=self.hydrogen_type,
         )
         self.oxygen_indices = self.wat_find.get_water_oxygen_ids(frame_index=0)
-        self.coord_wall = DumpParse_wall(
+        self.coord_wall = DumpWallParser(
             self.filename, particule_liquid_type=self.particule_liquid_type
         )
         self.wall_coords = self.coord_wall.parse(frame_index=1)

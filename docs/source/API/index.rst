@@ -37,7 +37,7 @@ Binning Method
    :members:
    :undoc-members:
    :show-inheritance:
-   :exclude-members: ContactAngle_binning
+   :exclude-members: ContactAngleBinning
 
 Visualization and Statistics
 -----------------------------

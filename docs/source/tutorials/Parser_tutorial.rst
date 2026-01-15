@@ -5,9 +5,9 @@ This tutorial shows how to load different trajectory formats using the ``hydroan
 
 The parser provides a unified interface to read atomic coordinates from:
 
-- LAMMPS dump files (``DumpParser``, ``Dump_WaterMoleculeFinder``)
+- LAMMPS dump files (``DumpParser``, ``    DumpWaterMoleculeFinder``)
 - ASE ``.traj`` files (``ASE_Parser``, ``ASE_WaterMoleculeFinder``)
-- XYZ files (``XYZ_Parser``)
+- XYZ files (``XYZParser``)
 
 Each parser can extract atomic positions for selected frames and atoms, allowing efficient and flexible analysis of molecular simulations.
 
@@ -31,14 +31,14 @@ The ``.parse()`` method always returns a NumPy array of shape ``(N, 3)`` contain
 
 .. code-block:: python
 
-   from hydroangleanalyzer.parser import DumpParser, Dump_WaterMoleculeFinder
+   from hydroangleanalyzer.parser import DumpParser, DumpWaterMoleculeFinder
 
    # --- Step 1: Define the trajectory file ---
    filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
 
    # --- Step 2: Initialize the water molecule finder ---
    # Specify particle types for the wall and for water oxygens and hydrogens
-   wat_find = Dump_WaterMoleculeFinder(
+   wat_find = DumpWaterMoleculeFinder(
        filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
    )
 
@@ -97,13 +97,13 @@ The ``.parse()`` method always returns a NumPy array of shape ``(N, 3)`` contain
 
 .. code-block:: python
 
-   from hydroangleanalyzer.parser import XYZ_Parser
+   from hydroangleanalyzer.parser import XYZParser
 
    # --- Step 1: Define the trajectory file ---
    filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.xyz"
 
    # --- Step 2: Initialize the parser ---
-   xyz_parser = XYZ_Parser(filename)
+   xyz_parser = XYZParser(filename)
 
    # --- Step 3: Retrieve positions for the first frame ---
    positions = xyz_parser.parse(frame_indexs=0)

@@ -1,8 +1,5 @@
 from .base_parser import BaseParser
 from .parser_ase import (
-    Ase_Parser,
-    Ase_WallParser,
-    Ase_WaterMoleculeFinder,
     AseParser,
     AseWallParser,
     AseWaterMoleculeFinder,
@@ -15,8 +12,6 @@ from .parser_dump import (
     DumpWaterMoleculeFinder,
 )
 from .parser_xyz import (
-    XYZ_Parser,
-    XYZ_WaterMoleculeFinder,
     XYZParser,
     XYZWaterMoleculeFinder,
 )
@@ -24,18 +19,13 @@ from .parser_xyz import (
 __all__ = [
     "BaseParser",
     "AseParser",
-    "Ase_Parser",
     "AseWallParser",
-    "Ase_WallParser",
     "AseWaterMoleculeFinder",
-    "Ase_WaterMoleculeFinder",
-    "DumpWaterMoleculeFinder",
     "Dump_WaterMoleculeFinder",
+    "DumpWaterMoleculeFinder",
     "DumpWallParser",
     "DumpParse_wall",
     "DumpParser",
     "XYZParser",
-    "XYZ_Parser",
     "XYZWaterMoleculeFinder",
-    "XYZ_WaterMoleculeFinder",
 ]

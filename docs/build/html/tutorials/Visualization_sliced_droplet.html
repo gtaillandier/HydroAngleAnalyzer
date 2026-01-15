@@ -157,8 +157,8 @@
                       <pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DumpParser</span><span class="p">,</span>
-    <span class="n">Dump_WaterMoleculeFinder</span><span class="p">,</span>
-    <span class="n">DumpParse_wall</span><span class="p">,</span>
+    <span class="n">    DumpWaterMoleculeFinder</span><span class="p">,</span>
+    <span class="n">DumpWallParser</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngle_sliced</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.visualization_statistics_angles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Droplet_sliced_Plotter</span>
@@ -185,7 +185,7 @@
                       title="Link to this heading"></a></h2>
                   <div class="highlight-python notranslate">
                     <div class="highlight">
-                      <pre><span></span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">(</span>
+                      <pre><span></span><span class="n">wat_find</span> <span class="o">=</span> <span class="n">    DumpWaterMoleculeFinder</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span> <span class="n">particle_type_wall</span><span class="o">=</span><span class="p">{</span><span class="mi">3</span><span class="p">},</span> <span class="n">oxygen_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hydrogen_type</span><span class="o">=</span><span class="mi">2</span>
 <span class="p">)</span>
 
@@ -204,7 +204,7 @@
                       <pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">DumpParser</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
 <span class="n">oxygen_position</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">frame_indexs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">oxygen_indices</span><span class="p">)</span>
 
-<span class="n">coord_wall</span> <span class="o">=</span> <span class="n">DumpParse_wall</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">particule_liquid_type</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">})</span>
+<span class="n">coord_wall</span> <span class="o">=</span> <span class="n">DumpWallParser</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">particule_liquid_type</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">})</span>
 <span class="n">wall_coords</span> <span class="o">=</span> <span class="n">coord_wall</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">frame_indexs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre>
                     </div>

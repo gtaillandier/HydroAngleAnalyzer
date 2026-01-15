@@ -1,13 +1,13 @@
 # Import necessary modules
 from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
-from hydroangleanalyzer.parser import Dump_WaterMoleculeFinder, DumpParser
+from hydroangleanalyzer.parser import DumpParser, DumpWaterMoleculeFinder
 
 # --- Step 1: Define the trajectory file ---
 filename = "../../tests/trajectories/traj_spherical_drop_4k.lammpstrj"
 
 # --- Step 2: Initialize the water molecule finder ---
 # This identifies O and H atoms in water molecules
-wat_find = Dump_WaterMoleculeFinder(
+wat_find = DumpWaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # Wall atom types
     oxygen_type=1,  # Oxygen atom type

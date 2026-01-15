@@ -20,8 +20,8 @@ The visualization workflow involves the following steps:
 import numpy as np
 from hydroangleanalyzer.parser import (
     DumpParser,
-    Dump_WaterMoleculeFinder,
-    DumpParse_wall,
+    DumpWaterMoleculeFinder,
+    DumpWallParser,
 )
 from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
 from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
@@ -40,7 +40,7 @@ filename = (
 
 ## 4. Identify Water Molecules
 ```python
-wat_find = Dump_WaterMoleculeFinder(
+wat_find = DumpWaterMoleculeFinder(
     filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
 )
 
@@ -55,7 +55,7 @@ print("Number of water molecules detected:", len(oxygen_indices))
 parser = DumpParser(filepath=filename)
 oxygen_position = parser.parse(frame_indexs=10, indices=oxygen_indices)
 
-coord_wall = DumpParse_wall(filename, particule_liquid_type={1, 2})
+coord_wall = DumpWallParser(filename, particule_liquid_type={1, 2})
 wall_coords = coord_wall.parse(frame_indexs=1)
 ```
 

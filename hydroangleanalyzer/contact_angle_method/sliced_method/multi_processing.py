@@ -262,6 +262,3 @@ class ContactAngleSlicedParallel:
         except Exception as e:  # pragma: no cover
             logger.error(f"Error processing frame {frame_num}: {e}")
             return frame_num, None
-
-
-ContactAngle_sliced_parallel = ContactAngleSlicedParallel

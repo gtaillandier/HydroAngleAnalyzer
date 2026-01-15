@@ -12,7 +12,7 @@ TRAJECTORY_PATH = os.path.join(
 )
 
 
-# --- Fixture for Ase_Parser ---
+# --- Fixture for AseParser ---
 @pytest.fixture
 def ase_parser():
     return AseParser(TRAJECTORY_PATH)

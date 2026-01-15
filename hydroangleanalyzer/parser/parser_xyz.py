@@ -453,7 +453,3 @@ class XYZWaterMoleculeFinder(BaseParser):
             if h_count == 2:
                 water_oxygens.append(o_idx)
         return np.array(water_oxygens)
-
-
-XYZ_Parser = XYZParser
-XYZ_WaterMoleculeFinder = XYZWaterMoleculeFinder

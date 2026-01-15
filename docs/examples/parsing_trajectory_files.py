@@ -1,5 +1,5 @@
 """
-Example: Using DumpParser and Dump_WaterMoleculeFinder
+Example: Using DumpParser and     DumpWaterMoleculeFinder
 
 This example shows how to:
 1. Identify water molecules in a LAMMPS dump file.
@@ -9,16 +9,16 @@ This example shows how to:
 from hydroangleanalyzer.parser import (
     ASE_Parser,
     ASE_WaterMoleculeFinder,
-    Dump_WaterMoleculeFinder,
     DumpParser,
-    XYZ_Parser,
+    DumpWaterMoleculeFinder,
+    XYZParser,
 )
 
 # --- Define input file ---
 filename = "../../tests/trajectories/traj_10_3_330w_nve_4k_reajust.lammpstrj"
 
 # --- Initialize water molecule finder ---
-wat_find = Dump_WaterMoleculeFinder(
+wat_find = DumpWaterMoleculeFinder(
     filename,
     particle_type_wall={3},  # atom type for wall
     oxygen_type=1,  # atom type for oxygen
@@ -70,7 +70,7 @@ oxygen_positions = parser.parse(frame_indexs=0, indices=oxygen_indices)
 print("Extracted oxygen coordinates shape:", oxygen_positions.shape)
 
 """
-Example: Using XYZ_Parser
+Example: Using XYZParser
 
 This example demonstrates how to:
 1. Load atomic positions from an XYZ file.
@@ -81,7 +81,7 @@ This example demonstrates how to:
 filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.xyz"
 
 # --- Initialize parser ---
-xyz_parser = XYZ_Parser(filename)
+xyz_parser = XYZParser(filename)
 
 # --- Extract all atom coordinates for frame 0 ---
 positions = xyz_parser.parse(frame_indexs=0)

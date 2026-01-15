@@ -163,7 +163,7 @@
                   <div class="highlight-python notranslate">
                     <div class="highlight">
                       <pre><span></span><span class="c1"># Import necessary modules</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">DumpParser</span><span class="p">,</span> <span class="n">Dump_WaterMoleculeFinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">DumpParser</span><span class="p">,</span> <span class="n">    DumpWaterMoleculeFinder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">contact_angle_analyzer</span>
 
 <span class="c1"># --- Step 1: Define the trajectory file ---</span>
@@ -171,7 +171,7 @@
 
 <span class="c1"># --- Step 2: Initialize the water molecule finder ---</span>
 <span class="c1"># This identifies O and H atoms in water molecules</span>
-<span class="n">wat_find</span> <span class="o">=</span> <span class="n">Dump_WaterMoleculeFinder</span><span class="p">(</span>
+<span class="n">wat_find</span> <span class="o">=</span> <span class="n">    DumpWaterMoleculeFinder</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">particle_type_wall</span><span class="o">=</span><span class="p">{</span><span class="mi">3</span><span class="p">},</span>  <span class="c1"># Wall atom types</span>
     <span class="n">oxygen_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># Oxygen atom type</span>
