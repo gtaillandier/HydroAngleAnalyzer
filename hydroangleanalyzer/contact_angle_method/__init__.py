@@ -2,7 +2,7 @@ from .binning_method.angle_fitting_binning import ContactAngleBinning
 from .contact_angle_analyzer import (
     BaseContactAngleAnalyzer,
     BinnedContactAngleAnalyzer,
-    SlicedContactAngleAnalyzer
+    SlicedContactAngleAnalyzer,
 )
 from .factory import contact_angle_analyzer
 from .sliced_method.angle_fitting_sliced import ContactAngle_sliced
@@ -15,5 +15,5 @@ __all__ = [
     "contact_angle_analyzer",
     "ContactAngleBinning",
     "ContactAngle_sliced",
-    "ContactAngle_sliced_parallel"
+    "ContactAngle_sliced_parallel",
 ]
