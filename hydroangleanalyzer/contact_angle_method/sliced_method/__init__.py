@@ -3,9 +3,6 @@
 from .angle_fitting_sliced import (
     ContactAngleSliced as _ContactAngleSliced,
 )
-from .angle_fitting_sliced import (
-    ContactAngleSliced as _ContactAngleSliced,
-)
 from .multi_processing import (
     ContactAngleSlicedParallel as _ContactAngleSlicedParallel,
 )
