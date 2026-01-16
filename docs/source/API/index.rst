@@ -28,7 +28,7 @@ Sliced Method
    :members:
    :undoc-members:
    :show-inheritance:
-   :exclude-members: ContactAngle_sliced, ContactAngle_sliced_parallel
+   :exclude-members: ContactAngleSliced, ContactAngleSlicedParallel
 
 Binning Method
 ^^^^^^^^^^^^^

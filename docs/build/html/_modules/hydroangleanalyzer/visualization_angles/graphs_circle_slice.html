@@ -456,7 +456,7 @@ pre.mermaid > svg {
 <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.ticker</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoMinorLocator</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngle_sliced</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngleSliced</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.parser</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">    DumpWaterMoleculeFinder</span><span class="p">,</span>
     <span class="n">DumpWallParser</span><span class="p">,</span>
@@ -1075,7 +1075,7 @@ pre.mermaid > svg {
             <span class="n">oxygen_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
                 <span class="n">frame_index</span><span class="o">=</span><span class="n">frame_idx</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oxygen_indices</span>
             <span class="p">)</span>
-            <span class="n">processor</span> <span class="o">=</span> <span class="n">ContactAngle_sliced</span><span class="p">(</span>
+            <span class="n">processor</span> <span class="o">=</span> <span class="n">ContactAngleSliced</span><span class="p">(</span>
                 <span class="n">o_coords</span><span class="o">=</span><span class="n">oxygen_position</span><span class="p">,</span>
                 <span class="n">o_center_geom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">oxygen_position</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                 <span class="n">droplet_geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">droplet_geometry</span><span class="p">,</span>

@@ -23,7 +23,7 @@ from hydroangleanalyzer.parser import (
     DumpWaterMoleculeFinder,
     DumpWallParser,
 )
-from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngleSliced
 from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
 ```
 
@@ -63,7 +63,7 @@ wall_coords = coord_wall.parse(frame_indexs=1)
 
 ## 6. Compute Contact Angles
 ```python
-processor = ContactAngle_sliced(
+processor = ContactAngleSliced(
     o_coords=oxygen_position,
     o_center_geom=np.mean(oxygen_position, axis=0),
     droplet_geometry="cylinder_y",

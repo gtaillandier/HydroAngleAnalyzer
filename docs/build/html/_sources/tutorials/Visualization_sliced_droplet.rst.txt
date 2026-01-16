@@ -28,7 +28,7 @@ The visualization workflow involves the following steps:
            DumpWaterMoleculeFinder,
        DumpWallParser,
    )
-   from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
+   from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngleSliced
    from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
 
 ----
@@ -76,7 +76,7 @@ The visualization workflow involves the following steps:
 
 .. code-block:: python
 
-   processor = ContactAngle_sliced(
+   processor = ContactAngleSliced(
        o_coords=oxygen_position,
        o_center_geom=np.mean(oxygen_position, axis=0),
        droplet_geometry="cylinder_y",

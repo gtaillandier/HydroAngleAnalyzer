@@ -160,7 +160,7 @@
     <span class="n">    DumpWaterMoleculeFinder</span><span class="p">,</span>
     <span class="n">DumpWallParser</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngle_sliced</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.contact_angle_method.sliced_method</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactAngleSliced</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydroangleanalyzer.visualization_statistics_angles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Droplet_sliced_Plotter</span>
 </pre>
                     </div>
@@ -216,7 +216,7 @@
                       title="Link to this heading"></a></h2>
                   <div class="highlight-python notranslate">
                     <div class="highlight">
-                      <pre><span></span><span class="n">processor</span> <span class="o">=</span> <span class="n">ContactAngle_sliced</span><span class="p">(</span>
+                      <pre><span></span><span class="n">processor</span> <span class="o">=</span> <span class="n">ContactAngleSliced</span><span class="p">(</span>
     <span class="n">o_coords</span><span class="o">=</span><span class="n">oxygen_position</span><span class="p">,</span>
     <span class="n">o_center_geom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">oxygen_position</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="n">droplet_geometry</span><span class="o">=</span><span class="s2">&quot;cylinder_y&quot;</span><span class="p">,</span>

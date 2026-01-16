@@ -1,6 +1,6 @@
 import numpy as np
 
-from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngleSliced
 from hydroangleanalyzer.parser import (
     DumpParser,
     DumpWallParser,
@@ -33,7 +33,7 @@ wall_coords = coord_wall.parse(frame_indexs=1)
 #
 
 
-processor = ContactAngle_sliced(
+processor = ContactAngleSliced(
     o_coords=oxygen_position,
     o_center_geom=np.mean(oxygen_position, axis=0),
     droplet_geometry="cylinder_y",

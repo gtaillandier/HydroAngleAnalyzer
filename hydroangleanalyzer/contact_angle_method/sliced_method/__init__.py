@@ -1,24 +1,24 @@
 """Public exports for sliced contact angle method."""
 
 from .angle_fitting_sliced import (
-    ContactAngle_sliced as _ContactAngle_sliced,
+    ContactAngleSliced as _ContactAngleSliced,
 )
 from .angle_fitting_sliced import (
     ContactAngleSliced as _ContactAngleSliced,
 )
 from .multi_processing import (
-    ContactAngle_sliced_parallel as _ContactAngle_sliced_parallel,
+    ContactAngleSlicedParallel as _ContactAngleSlicedParallel,
 )
 from .surface_defined import SurfaceDefinition as _SurfaceDefinition
 
 __all__ = [
-    "ContactAngle_sliced",
     "ContactAngleSliced",
-    "ContactAngle_sliced_parallel",
+    "ContactAngleSliced",
+    "ContactAngleSlicedParallel",
     "SurfaceDefinition",
 ]
 
-ContactAngle_sliced = _ContactAngle_sliced
 ContactAngleSliced = _ContactAngleSliced
-ContactAngle_sliced_parallel = _ContactAngle_sliced_parallel
+ContactAngleSliced = _ContactAngleSliced
+ContactAngleSlicedParallel = _ContactAngleSlicedParallel
 SurfaceDefinition = _SurfaceDefinition

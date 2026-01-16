@@ -3,7 +3,7 @@ import numpy as np
 import plotly.graph_objects as go
 from matplotlib.ticker import AutoMinorLocator
 
-from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngle_sliced
+from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngleSliced
 from hydroangleanalyzer.parser import (
     DumpParser,
     DumpWallParser,
@@ -606,7 +606,7 @@ class ContactAngleAnimator:
             oxygen_position = self.parser.parse(
                 frame_index=frame_idx, indices=self.oxygen_indices
             )
-            processor = ContactAngle_sliced(
+            processor = ContactAngleSliced(
                 o_coords=oxygen_position,
                 o_center_geom=np.mean(oxygen_position, axis=0),
                 droplet_geometry=self.droplet_geometry,

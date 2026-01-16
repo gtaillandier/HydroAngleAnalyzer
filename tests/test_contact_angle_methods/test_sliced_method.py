@@ -35,7 +35,7 @@ def parser(filename):
     return DumpParser(filename)
 
 
-# --- Unit Tests for ContactAngle_sliced ---
+# --- Unit Tests for ContactAngleSliced ---
 def test_contact_angle_sliced_with_real_data(parser, oxygen_indices):
     # Parse liquid positions for frame 0
     liquid_positions = parser.parse(frame_index=0, indices=oxygen_indices)
@@ -49,7 +49,7 @@ def test_contact_angle_sliced_with_real_data(parser, oxygen_indices):
     )
     mean_liquid_position = np.mean(liquid_positions, axis=0)
 
-    # Initialize ContactAngle_sliced
+    # Initialize ContactAngleSliced
     from hydroangleanalyzer.contact_angle_method.sliced_method import (
         ContactAngleSliced,
     )

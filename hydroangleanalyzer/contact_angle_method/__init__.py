@@ -5,8 +5,8 @@ from .contact_angle_analyzer import (
     SlicedContactAngleAnalyzer,
 )
 from .factory import contact_angle_analyzer
-from .sliced_method.angle_fitting_sliced import ContactAngle_sliced
-from .sliced_method.multi_processing import ContactAngle_sliced_parallel
+from .sliced_method.angle_fitting_sliced import ContactAngleSliced
+from .sliced_method.multi_processing import ContactAngleSlicedParallel
 
 __all__ = [
     "BaseContactAngleAnalyzer",
@@ -14,6 +14,6 @@ __all__ = [
     "BinnedContactAngleAnalyzer",
     "contact_angle_analyzer",
     "ContactAngleBinning",
-    "ContactAngle_sliced",
-    "ContactAngle_sliced_parallel",
+    "ContactAngleSliced",
+    "ContactAngleSlicedParallel",
 ]
