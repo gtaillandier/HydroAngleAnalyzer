@@ -49,7 +49,7 @@ Example trajectory::
    )  # Hydrogen atom type
 
    # --- Step 3: Identify oxygen atom indices ---
-   oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+   oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
    print("Number of water molecules:", len(oxygen_indices))
 
    # --- Step 4: Initialize the parser ---
@@ -126,7 +126,7 @@ If plotting is enabled, a visualization of the droplet profile and the fitted sp
        filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2  # Wall atom types
    )
 
-   oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+   oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
    print(f"Number of water molecules: {len(oxygen_indices)}")
 
    # --- Step 3: Initialize parser ---

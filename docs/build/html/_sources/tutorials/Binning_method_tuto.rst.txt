@@ -38,7 +38,7 @@ Example trajectory::
 .. code-block:: python
 
    # Import necessary modules
-   from hydroangleanalyzer.parser import DumpParser,     DumpWaterMoleculeFinder
+   from hydroangleanalyzer.parser import DumpParser, DumpWaterMoleculeFinder
    from hydroangleanalyzer.contact_angle_method import contact_angle_analyzer
 
    # --- Step 1: Define the trajectory file ---
@@ -46,7 +46,7 @@ Example trajectory::
 
    # --- Step 2: Initialize the water molecule finder ---
    # This identifies O and H atoms in water molecules
-   wat_find =     DumpWaterMoleculeFinder(
+   wat_find = DumpWaterMoleculeFinder(
        filename,
        particle_type_wall={3},  # Wall atom types
        oxygen_type=1,  # Oxygen atom type
@@ -54,7 +54,7 @@ Example trajectory::
    )
 
    # --- Step 3: Get oxygen atom indices for the first frame ---
-   oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+   oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
    print("Number of water molecules:", len(oxygen_indices))
 
    # --- Step 4: Define binning parameters ---

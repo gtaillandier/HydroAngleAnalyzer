@@ -1,7 +1,7 @@
 Visualization Tutorial — Droplet Surface and Contact Angle
 ===========================================================
 
-This tutorial demonstrates how to visualize a droplet and compute its contact angle using the **HydroAngleAnalyzer** package. We'll use the ``sliced`` contact angle method and visualize the resulting droplet with the ``Droplet_sliced_Plotter`` class.
+This tutorial demonstrates how to visualize a droplet and compute its contact angle using the **HydroAngleAnalyzer** package. We'll use the ``sliced`` contact angle method and visualize the resulting droplet with the ``DropletSlicedPlotter`` class.
 
 ----
 
@@ -29,7 +29,7 @@ The visualization workflow involves the following steps:
        DumpWallParser,
    )
    from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngleSliced
-   from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
+   from hydroangleanalyzer.visualization_angles import DropletSlicedPlotter
 
 ----
 
@@ -53,7 +53,7 @@ The visualization workflow involves the following steps:
        filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
    )
 
-   oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+   oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
    print("Number of water molecules detected:", len(oxygen_indices))
 
 ----
@@ -64,10 +64,10 @@ The visualization workflow involves the following steps:
 .. code-block:: python
 
    parser = DumpParser(filepath=filename)
-   oxygen_position = parser.parse(frame_indexs=10, indices=oxygen_indices)
+   oxygen_position = parser.parse(frame_index=10, indices=oxygen_indices)
 
    coord_wall = DumpWallParser(filename, particule_liquid_type={1, 2})
-   wall_coords = coord_wall.parse(frame_indexs=1)
+   wall_coords = coord_wall.parse(frame_index=1)
 
 ----
 
@@ -95,7 +95,7 @@ The visualization workflow involves the following steps:
 
 .. code-block:: python
 
-   plotter = Droplet_sliced_Plotter(center=True, show_wall=True, molecule_view=True)
+   plotter = DropletSlicedPlotter(center=True, show_wall=True, molecule_view=True)
 
    plotter.plot_surface_points(
        oxygen_position=oxygen_position,

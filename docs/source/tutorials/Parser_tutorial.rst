@@ -6,7 +6,7 @@ This tutorial shows how to load different trajectory formats using the ``hydroan
 The parser provides a unified interface to read atomic coordinates from:
 
 - LAMMPS dump files (``DumpParser``, ``    DumpWaterMoleculeFinder``)
-- ASE ``.traj`` files (``ASE_Parser``, ``ASE_WaterMoleculeFinder``)
+- ASE ``.traj`` files (``AseParser``, ``AseWaterMoleculeFinder``)
 - XYZ files (``XYZParser``)
 
 Each parser can extract atomic positions for selected frames and atoms, allowing efficient and flexible analysis of molecular simulations.
@@ -20,7 +20,7 @@ Every parser follows the same pattern:
 
 1. Initialize the parser with your trajectory file.
 2. (Optional) Use a ``WaterMoleculeFinder`` class to locate oxygen atoms belonging to water molecules.
-3. Extract coordinates of all atoms or only selected indices using ``.parse(frame_indexs, indices)``.
+3. Extract coordinates of all atoms or only selected indices using ``.parse(frame_index, indices)``.
 
 The ``.parse()`` method always returns a NumPy array of shape ``(N, 3)`` containing the atomic coordinates.
 
@@ -43,14 +43,14 @@ The ``.parse()`` method always returns a NumPy array of shape ``(N, 3)`` contain
    )
 
    # --- Step 3: Identify oxygen atoms for frame 0 ---
-   oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+   oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
    print("Number of water molecules:", len(oxygen_indices))
 
    # --- Step 4: Initialize the parser ---
    parser = DumpParser(filename)
 
    # --- Step 5: Extract coordinates of only the water oxygens ---
-   oxygen_positions = parser.parse(frame_indexs=0, indices=oxygen_indices)
+   oxygen_positions = parser.parse(frame_index=0, indices=oxygen_indices)
    print("Extracted positions for", len(oxygen_positions), "oxygen atoms.")
 
 **Notes:**
@@ -65,27 +65,27 @@ The ``.parse()`` method always returns a NumPy array of shape ``(N, 3)`` contain
 
 .. code-block:: python
 
-   from hydroangleanalyzer.parser import ASE_Parser, ASE_WaterMoleculeFinder
+   from hydroangleanalyzer.parser import AseParser, AseWaterMoleculeFinder
 
    # --- Step 1: Define the trajectory file ---
    filename = "../../tests/trajectories/slice_10_mace_mlips_cylindrical_2_5.traj"
 
    # --- Step 2: Initialize the water molecule finder ---
-   wat_find = ASE_WaterMoleculeFinder(
+   wat_find = AseWaterMoleculeFinder(
        filename,
        particle_type_wall=["C"],  # Wall elements (e.g., carbon)
        oh_cutoff=0.4,  # O–H bond cutoff distance
    )
 
    # --- Step 3: Identify water oxygens for frame 0 ---
-   oxygen_indices = wat_find.get_water_oxygen_indices(frame_indexs=0)
+   oxygen_indices = wat_find.get_water_oxygen_indices(frame_index=0)
    print("Number of water molecules:", len(oxygen_indices))
 
    # --- Step 4: Initialize the parser ---
-   parser = ASE_Parser(filename)
+   parser = AseParser(filename)
 
    # --- Step 5: Extract oxygen atom positions only ---
-   oxygen_positions = parser.parse(frame_indexs=0, indices=oxygen_indices)
+   oxygen_positions = parser.parse(frame_index=0, indices=oxygen_indices)
    print("Extracted positions for", len(oxygen_positions), "oxygen atoms.")
 
 **Tip:** The ASE parser works for any ASE-compatible trajectory (e.g., ``.traj``, ``.extxyz``, etc.).
@@ -106,12 +106,12 @@ The ``.parse()`` method always returns a NumPy array of shape ``(N, 3)`` contain
    xyz_parser = XYZParser(filename)
 
    # --- Step 3: Retrieve positions for the first frame ---
-   positions = xyz_parser.parse(frame_indexs=0)
+   positions = xyz_parser.parse(frame_index=0)
    print("Loaded frame with", len(positions), "atoms.")
 
    # --- Step 4 (Optional): Parse only a subset of atoms ---
    # For example, extract the first 50 atoms
-   subset_positions = xyz_parser.parse(frame_indexs=0, indices=list(range(50)))
+   subset_positions = xyz_parser.parse(frame_index=0, indices=list(range(50)))
    print("Subset of 50 atoms extracted successfully.")
 
 ----

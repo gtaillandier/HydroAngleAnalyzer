@@ -22,13 +22,13 @@ Ensure you have the required classes imported:
 
 .. code-block:: python
 
-   from hydroangleanalyzer.visualization_statistics_angles.binning_analyzer import (
+   from hydroangleanalyzer.visualization_angles.binning_analyzer import (
        BinningTrajectoryAnalyzer,
    )
-   from hydroangleanalyzer.visualization_statistics_angles.sliced_analyzer import (
+   from hydroangleanalyzer.visualization_angles.sliced_analyzer import (
        SlicedTrajectoryAnalyzer,
    )
-   from hydroangleanalyzer.visualization_statistics_angles.comparison_methods import (
+   from hydroangleanalyzer.visualization_angles.comparison_methods import (
        MethodComparison,
    )
 
