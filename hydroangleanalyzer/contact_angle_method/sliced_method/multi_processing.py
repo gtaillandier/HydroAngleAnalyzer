@@ -190,7 +190,7 @@ class ContactAngleSlicedParallel:
                 batch_results.append(result)
             except Exception as e:  # pragma: no cover
                 logger.error(f"Error processing frame {frame_num}: {e}")
-                batch_results.append((frame_num, None))
+                batch_results.append((frame_num, None, [], [], []))
         return batch_results
 
     def _process_single_frame_with_parsers(
