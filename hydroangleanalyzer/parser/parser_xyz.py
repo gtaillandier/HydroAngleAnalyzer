@@ -74,8 +74,8 @@ class XYZParser(BaseParser):
             Coordinates of requested atoms.
         """
         frame = self.frames[frame_index]
-        if indices is not None:
-            indices = np.array(indices)
+        if indices is not None and len(indices) > 0:
+            indices = np.array(indices, dtype=int)
             return frame["positions"][indices]
         return frame["positions"]
 
