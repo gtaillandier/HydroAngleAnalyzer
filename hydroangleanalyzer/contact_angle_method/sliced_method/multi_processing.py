@@ -210,7 +210,7 @@ class ContactAngleSlicedParallel:
 
         except ImportError as e:  # pragma: no cover
             logger.error(f"Missing sliced predictor dependency: {e}")
-            return frame_num, None
+            return frame_num, None, [], [], []
         logger.info(f"START processing frame {frame_num}")
         try:
             liquid_positions = parser.parse(
@@ -261,4 +261,4 @@ class ContactAngleSlicedParallel:
             return frame_num, mean_alpha, list_alfas, list_surfaces, list_popt
         except Exception as e:  # pragma: no cover
             logger.error(f"Error processing frame {frame_num}: {e}")
-            return frame_num, None
+            return frame_num, None, [], [], []

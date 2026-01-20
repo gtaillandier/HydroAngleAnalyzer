@@ -46,8 +46,8 @@ class DropletSlicedPlotter:
         oxygen_position,
         surface_data,
         popt,
-        wall_coords,
-        output_filename,
+        wall_coords=None,
+        output_filename=None,
         y_com=None,
         pbc_y=None,
         alpha=None,
@@ -106,11 +106,14 @@ class DropletSlicedPlotter:
             np.min(oxygen_selected[:, 0]) - 5,
             np.max(oxygen_selected[:, 0]) + 5,
         )
-        wall_mask = (wall_coords[:, 0] >= x_min) & (wall_coords[:, 0] <= x_max)
-        wall_coords = wall_coords[wall_mask]
+
+        # Only process wall_coords if needed
+        if self.show_wall and wall_coords is not None:
+            wall_mask = (wall_coords[:, 0] >= x_min) & (wall_coords[:, 0] <= x_max)
+            wall_coords = wall_coords[wall_mask]
 
         # --- Optional recentring ---
-        if self.center:
+        if self.center and wall_coords is not None:
             z_shift = np.mean(wall_coords[:, 2])
             oxygen_selected[:, 2] -= z_shift
             wall_coords[:, 2] -= z_shift
