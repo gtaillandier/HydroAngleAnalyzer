@@ -125,7 +125,10 @@ class SlicedTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
 
     def get_contact_angles(self, directory):
         """Get contact angles (median alfas) for a directory."""
-        return np.array(self.data[directory]["median_alfas"])
+        data = np.array(self.data[directory]["median_alfas"])
+        if data.ndim == 2 and data.shape[1] >= 2:
+            return data[:, 1]
+        return data
 
     def plot_median_alfas_evolution(self, save_path, labels=None, plot_std=True):
         """Plot evolution of median angle (Alfas) with standard deviation.

@@ -7,3 +7,4 @@ Learn about HydroAngleAnalyzer's theoretical foundations and package architectur
    :maxdepth: 1
 
    Introduction
+   Installation
