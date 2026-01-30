@@ -214,9 +214,15 @@ class BaseTrajectoryAnalyzer(ABC):
                 )
 
             # Use the data for plotting
-            x = 1 / np.sqrt(mean_surface_area)  # Example transformation
-            y = mean_contact_angle
-            yerr = std_contact_angle / 5  # Placeholder for error; adjust as needed
+            x = 1 / np.sqrt(mean_surface_area)
+            # Convert angle to radians for cosine calculation
+            mean_angle_rad = np.radians(mean_contact_angle)
+            y = np.cos(mean_angle_rad)
+            
+            # Propagate error: d(cos(theta)) = |-sin(theta)| * d(theta)
+            # d(theta) must be in radians
+            std_angle_rad = np.radians(std_contact_angle)
+            yerr = np.abs(np.sin(mean_angle_rad)) * (std_angle_rad / 5)
 
             ax.errorbar(
                 x, y, yerr=yerr, fmt="o", color=color, markersize=6, capsize=3, lw=1.2
@@ -235,27 +241,40 @@ class BaseTrajectoryAnalyzer(ABC):
             yvals.append(y)
 
         # Linear fit
-        xvals, yvals = np.array(xvals), np.array(yvals)
-        coeffs = np.polyfit(xvals, yvals, 1)
-        fit_line = np.poly1d(coeffs)
-        x_fit = np.linspace(0, max(xvals) * 1.1, 100)
-        ax.plot(
-            x_fit,
-            fit_line(x_fit),
-            "--",
-            color="gray",
-            lw=1.5,
-            label=f"Linear Fit (y = {fit_line(0):.2f}°)",
-        )
+        if len(xvals) >= 2:
+            xvals, yvals = np.array(xvals), np.array(yvals)
+            coeffs = np.polyfit(xvals, yvals, 1)
+            fit_line = np.poly1d(coeffs)
+            
+            # Calculate theta_infinity from intercept (x=0)
+            # intercept = cos(theta_inf) -> theta_inf = arccos(intercept)
+            intercept = coeffs[1]
+            # Clip to valid domain [-1, 1] just in case fit goes wild, though unlikely for physical data
+            intercept_clipped = np.clip(intercept, -1.0, 1.0)
+            theta_inf_deg = np.degrees(np.arccos(intercept_clipped))
+            
+            x_fit = np.linspace(0, max(xvals) * 1.1, 100)
+            ax.plot(
+                x_fit,
+                fit_line(x_fit),
+                "--",
+                color="gray",
+                lw=1.5,
+                label=f"Fit: $\\cos(\\theta) = {coeffs[0]:.2f}x + {coeffs[1]:.2f}$\n$\\theta_\\infty = {theta_inf_deg:.1f}^\\circ$",
+            )
 
         # Set plot labels and title
-        ax.set_xlabel(r"$1 / \sqrt{\text{Surface Area}} \; (\mathrm{\AA^{-1}})$")
-        ax.set_ylabel("Mean Angle (°)")
-        ax.set_title(f"{self.get_method_name()} - Mean Angle vs Surface Area", pad=10)
-        ax.legend(frameon=False, loc="upper left")
+        ax.set_xlabel(r"$1 / \sqrt{A} \; (\mathrm{\AA^{-1}})$")
+        ax.set_ylabel(r"$\cos(\theta)$")
+        ax.set_title(f"{self.get_method_name()} - Modified Young's Eq Plot", pad=10)
+        ax.legend(frameon=False, loc="best")
         ax.grid(False)
         ax.set_xlim(left=-0.001)
-        ax.set_ylim(bottom=min(yvals) - 2, top=max(yvals) + 2)
+        # Adjust ylim for cosine values (typically -1 to 1, but zoom in on data)
+        if yvals:
+             margin = (max(yvals) - min(yvals)) * 0.2 if len(yvals) > 1 else 0.1
+             if margin == 0: margin = 0.1
+             ax.set_ylim(bottom=min(yvals) - margin, top=max(yvals) + margin)
         plt.tight_layout()
 
         # Save the plot if a path is provided
