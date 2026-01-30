@@ -218,7 +218,7 @@ class BaseTrajectoryAnalyzer(ABC):
             # Convert angle to radians for cosine calculation
             mean_angle_rad = np.radians(mean_contact_angle)
             y = np.cos(mean_angle_rad)
-            
+
             # Propagate error: d(cos(theta)) = |-sin(theta)| * d(theta)
             # d(theta) must be in radians
             std_angle_rad = np.radians(std_contact_angle)
@@ -245,14 +245,15 @@ class BaseTrajectoryAnalyzer(ABC):
             xvals, yvals = np.array(xvals), np.array(yvals)
             coeffs = np.polyfit(xvals, yvals, 1)
             fit_line = np.poly1d(coeffs)
-            
+
             # Calculate theta_infinity from intercept (x=0)
             # intercept = cos(theta_inf) -> theta_inf = arccos(intercept)
             intercept = coeffs[1]
-            # Clip to valid domain [-1, 1] just in case fit goes wild, though unlikely for physical data
+            # Clip to valid domain [-1, 1] just in case fit goes wild,
+            # though unlikely for physical data
             intercept_clipped = np.clip(intercept, -1.0, 1.0)
             theta_inf_deg = np.degrees(np.arccos(intercept_clipped))
-            
+
             x_fit = np.linspace(0, max(xvals) * 1.1, 100)
             ax.plot(
                 x_fit,
@@ -260,7 +261,10 @@ class BaseTrajectoryAnalyzer(ABC):
                 "--",
                 color="gray",
                 lw=1.5,
-                label=f"Fit: $\\cos(\\theta) = {coeffs[0]:.2f}x + {coeffs[1]:.2f}$\n$\\theta_\\infty = {theta_inf_deg:.1f}^\\circ$",
+                label=(
+                    f"Fit: $\\cos(\\theta) = {coeffs[0]:.2f}x + {coeffs[1]:.2f}$\n"
+                    f"$\\theta_\\infty = {theta_inf_deg:.1f}^\\circ$"
+                ),
             )
 
         # Set plot labels and title
@@ -272,9 +276,10 @@ class BaseTrajectoryAnalyzer(ABC):
         ax.set_xlim(left=-0.001)
         # Adjust ylim for cosine values (typically -1 to 1, but zoom in on data)
         if yvals:
-             margin = (max(yvals) - min(yvals)) * 0.2 if len(yvals) > 1 else 0.1
-             if margin == 0: margin = 0.1
-             ax.set_ylim(bottom=min(yvals) - margin, top=max(yvals) + margin)
+            margin = (max(yvals) - min(yvals)) * 0.2 if len(yvals) > 1 else 0.1
+            if margin == 0:
+                margin = 0.1
+            ax.set_ylim(bottom=min(yvals) - margin, top=max(yvals) + margin)
         plt.tight_layout()
 
         # Save the plot if a path is provided
