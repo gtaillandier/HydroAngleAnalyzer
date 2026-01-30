@@ -275,7 +275,7 @@ class BaseTrajectoryAnalyzer(ABC):
         ax.grid(False)
         ax.set_xlim(left=-0.001)
         # Adjust ylim for cosine values (typically -1 to 1, but zoom in on data)
-        if yvals:
+        if len(yvals) > 0:
             margin = (max(yvals) - min(yvals)) * 0.2 if len(yvals) > 1 else 0.1
             if margin == 0:
                 margin = 0.1
