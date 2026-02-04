@@ -44,46 +44,6 @@ def test_parse(dump_parser):
     positions_subset = dump_parser.parse(frame_indexs, indices)
     assert positions_subset.shape[0] <= positions.shape[0]
 
-
-# --- Test return_cylindrical_coord_pars ---
-def test_return_cylindrical_coord_pars(dump_parser, capsys):
-    frame_list = [0, 1]
-    xi_par = np.array([])
-    zi_par = np.array([])
-
-    for frame in frame_list:
-        X_par = dump_parser.parse(frame)
-        # Simulate particle_ids for testing purposes
-        np.arange(X_par.shape[0])
-        dim = len(X_par[0, :])
-        X_cm = np.array([(X_par[:, i]).sum() / len(X_par[:, i]) for i in range(dim)])
-        X_0 = np.array([X_par[:, i] - X_cm[i] * (i < 2) for i in range(dim)])
-
-        xi_par_frame = np.abs(X_0[0] + 0.01)
-        zi_par_frame = X_0[2]
-
-        xi_par = np.concatenate((xi_par, xi_par_frame))
-        zi_par = np.concatenate((zi_par, zi_par_frame))
-
-        if frame % 10 == 0:
-            print(f"Frame: {frame}")
-            print(f"Center of Mass: {X_cm}")
-
-    frame_indexss = len(frame_list)
-    assert isinstance(xi_par, np.ndarray)
-    assert isinstance(zi_par, np.ndarray)
-    assert frame_indexss == len(frame_list)
-    assert xi_par.shape == zi_par.shape
-
-    print("\nxi range:\t({},{})".format(np.min(xi_par), np.max(xi_par)))
-    print("zi range:\t({},{})".format(np.min(zi_par), np.max(zi_par)))
-
-    # Check print output
-    captured = capsys.readouterr()
-    assert "xi range:" in captured.out
-    assert "zi range:" in captured.out
-
-
 # --- Test box_size_x and box_size_y ---
 def test_box_size_x(dump_parser):
     frame_indexs = 0
@@ -114,25 +74,4 @@ def test_frame_tot(dump_parser):
     assert total_frames > 0
 
 
-# --- Test droplet_geometry in return_cylindrical_coord_pars ---
-def test_return_cylindrical_coord_pars_type_model(dump_parser):
-    frame_list = [0]
-    xi_par = np.array([])
-    zi_par = np.array([])
 
-    for frame in frame_list:
-        X_par = dump_parser.parse(frame)
-        # Simulate particle_ids for testing purposes
-        np.arange(X_par.shape[0])
-        dim = len(X_par[0, :])
-        X_cm = np.array([(X_par[:, i]).sum() / len(X_par[:, i]) for i in range(dim)])
-        X_0 = np.array([X_par[:, i] - X_cm[i] * (i < 2) for i in range(dim)])
-
-        xi_par_frame = np.sqrt(X_0[0] ** 2 + X_0[1] ** 2)  # Spherical model
-        zi_par_frame = X_0[2]
-
-        xi_par = np.concatenate((xi_par, xi_par_frame))
-        zi_par = np.concatenate((zi_par, zi_par_frame))
-
-    assert isinstance(xi_par, np.ndarray)
-    assert isinstance(zi_par, np.ndarray)

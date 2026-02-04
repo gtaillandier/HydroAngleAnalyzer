@@ -5,8 +5,6 @@ from .parser_ase import (
     AseWaterMoleculeFinder,
 )
 from .parser_dump import (
-    Dump_WaterMoleculeFinder,
-    DumpParse_wall,
     DumpParser,
     DumpWallParser,
     DumpWaterMoleculeFinder,
@@ -21,10 +19,8 @@ __all__ = [
     "AseParser",
     "AseWallParser",
     "AseWaterMoleculeFinder",
-    "Dump_WaterMoleculeFinder",
     "DumpWaterMoleculeFinder",
     "DumpWallParser",
-    "DumpParse_wall",
     "DumpParser",
     "XYZParser",
     "XYZWaterMoleculeFinder",

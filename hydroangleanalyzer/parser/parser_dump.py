@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import warnings
 from typing import List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -12,6 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 class DumpParser(BaseParser):
+    """LAMMPS dump trajectory parser.
+
+    Parameters
+    ----------
+    filepath : str
+        Path to LAMMPS dump file.
+    """
+
     def __init__(self, filepath: str):
         """Initialize LAMMPS dump parser via OVITO pipeline."""
         try:
@@ -31,7 +38,8 @@ class DumpParser(BaseParser):
         self.num_frames = self.pipeline.source.num_frames
 
     def parse(self, frame_index: int, indices: np.ndarray | None = None) -> np.ndarray:
-        """Compute and return particle positions for a single frame.
+        """Compute and return particle positions for a single frame,
+        with optional filtering by particle indices.
 
         Parameters
         ----------
@@ -155,7 +163,7 @@ class DumpParser(BaseParser):
 
 
 class DumpWallParser:
-    """Parser for extracting wall particle coordinates from LAMMPS dump files.
+    """LAMMPS dump file parser for extracting wall particle coordinates.
 
     Parameters
     ----------
@@ -195,6 +203,18 @@ class DumpWallParser:
         return pipeline
 
     def parse(self, frame_index):
+        """Compute and return wall particle positions for a single frame.
+
+        Parameters
+        ----------
+        frame_index : int
+            Frame index.
+
+        Returns
+        -------
+        np.ndarray
+            Array of wall particle positions.
+        """
         data = self.pipeline.compute(frame_index)
         return np.asarray(data.particles["Position"])
 
@@ -214,16 +234,6 @@ class DumpWallParser:
         data = self.pipeline.compute(frame_index)
         x_wall = np.asarray(data.particles["Position"])
         return float(np.max(x_wall[:, 2]))
-
-    def find_highest_wall_part(self, *args, **kwargs):
-        """Deprecated alias for find_highest_wall_particle."""
-        warnings.warn(
-            "find_highest_wall_part is deprecated, "
-            "use find_highest_wall_particle instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_highest_wall_particle(*args, **kwargs)
 
     def get_profile_coordinates(
         self,
@@ -332,6 +342,7 @@ class DumpWaterMoleculeFinder:
         self.pipeline = self._setup_pipeline()
 
     def _setup_pipeline(self):
+        """Setup OVITO pipeline for water molecule detection."""
         try:
             from ovito.io import import_file
             from ovito.modifiers import (

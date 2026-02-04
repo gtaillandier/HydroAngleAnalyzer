@@ -9,7 +9,7 @@ from .base_parser import BaseParser
 
 
 class AseParser(BaseParser):
-    """ASE-backed trajectory parser exposing minimal interface for analyzers.
+    """ASE trajectory parser.
 
     Parameters
     ----------
@@ -30,7 +30,8 @@ class AseParser(BaseParser):
         self.trajectory = read(self.filepath, index=":")
 
     def parse(self, frame_index: int, indices: np.ndarray | None = None) -> np.ndarray:
-        """Return Cartesian coordinates for selected atoms in a frame.
+        """Return Cartesian coordinates for selected atoms in a frame from there index
+        or the all frame if no index is provided.
 
         Parameters
         ----------
@@ -70,15 +71,6 @@ class AseParser(BaseParser):
         frame = self.trajectory[frame_index]
         mask = np.isin(frame.symbols, liquid_particle_types)
         return frame.positions[mask]
-
-    def parse_liquid(self, *args, **kwargs):
-        """Deprecated alias for parse_liquid_particles."""
-        warnings.warn(
-            "parse_liquid is deprecated, use parse_liquid_particles instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.parse_liquid_particles(*args, **kwargs)
 
     def get_profile_coordinates(
         self,
@@ -142,16 +134,6 @@ class AseParser(BaseParser):
         print(f"z range:\t({np.min(z_values)},{np.max(z_values)})")
         return r_values, z_values, len(frame_indices)
 
-    def return_cylindrical_coord_pars(self, *args, **kwargs):
-        """Deprecated alias for get_profile_coordinates."""
-        warnings.warn(
-            "return_cylindrical_coord_pars is deprecated, "
-            "use get_profile_coordinates instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_profile_coordinates(*args, **kwargs)
-
     def box_size_y(self, frame_index: int) -> float:
         """Return y-dimension (a2y) of simulation cell for frame."""
         frame = self.trajectory[frame_index]
@@ -170,16 +152,6 @@ class AseParser(BaseParser):
     def frame_count(self) -> int:
         """Return total number of frames in trajectory."""
         return len(self.trajectory)
-
-    def frame_tot(self) -> int:
-        """Deprecated alias for frame_count."""
-        warnings.warn(
-            "frame_tot is deprecated, use frame_count instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.frame_count()
-
 
 class AseWaterMoleculeFinder:
     """Identify water oxygen atoms by counting hydrogen neighbors.
@@ -399,16 +371,6 @@ class AseWallParser:
         print(f"z range:\t({np.min(z_values)},{np.max(z_values)})")
         return r_values, z_values, len(frame_indices)
 
-    def return_cylindrical_coord_pars(self, *args, **kwargs):
-        """Deprecated alias for get_profile_coordinates."""
-        warnings.warn(
-            "return_cylindrical_coord_pars is deprecated, "
-            "use get_profile_coordinates instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_profile_coordinates(*args, **kwargs)
-
     def box_size_y(self, frame_index: int) -> float:
         """Return y-dimension (a2y) of simulation cell for frame."""
         frame = self.trajectory[frame_index]
@@ -431,8 +393,3 @@ class AseWallParser:
             stacklevel=2,
         )
         return self.frame_count()
-
-
-# Example usage (commented for library import safety):
-# parser = AseParser('traj.extxyz')
-# coords = parser.parse(frame_indexs=0)

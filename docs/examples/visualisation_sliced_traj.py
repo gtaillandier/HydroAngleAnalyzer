@@ -34,8 +34,8 @@ wall_coords = coord_wall.parse(frame_indexs=1)
 
 
 processor = ContactAngleSliced(
-    o_coords=oxygen_position,
-    o_center_geom=np.mean(oxygen_position, axis=0),
+    liquid_coordinates=oxygen_position,
+    liquid_geom_center=np.mean(oxygen_position, axis=0),
     droplet_geometry="cylinder_y",
     delta_cylinder=5,
     max_dist=100,

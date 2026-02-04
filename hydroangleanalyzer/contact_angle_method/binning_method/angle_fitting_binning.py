@@ -23,7 +23,7 @@ class ContactAngleBinning:
         parser,
         atom_indices,
         droplet_geometry="spherical",
-        width_cylinder=21,
+        width_cylinder=None,
         binning_params=None,
         output_dir="output_analysis/",
         plot_graphs=True,
@@ -57,6 +57,10 @@ class ContactAngleBinning:
         else:
             self.binning_params = binning_params
         self._initialize_grid()
+        if self.droplet_geometry == "cylinder_x":
+            self.width_cylinder = parser.box_size_x(frame_index=1)
+        elif self.droplet_geometry == "cylinder_y":
+            self.width_cylinder = parser.box_size_y(frame_index=1)
         os.makedirs(self.output_dir, exist_ok=True)
         matplotlib.use("Agg")
 

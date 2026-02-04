@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 class SurfaceDefinition:
     """Radial line sampling interface estimator for sliced contact angle.
 
-    For each azimuthal angle beta the density is sampled along a ray emerging
+    For each attitudinal angle beta the density is sampled along a ray emerging
     from the droplet geometric center. A simple tanh profile is fitted to obtain
     the interface position ("re") which is then projected back to XZ plane.
 
@@ -155,9 +155,3 @@ class SurfaceDefinition:
                 ]
             )
         return list_rbeta, list_xz
-
-
-# Example usage (not executed during import):
-# surface_def = SurfaceDefinition(atom_coords, delta_angle=10, max_dist=50,
-# center_geom=np.array([0,0,0]), gamma=30)
-# list_rbeta, list_xz = surface_def.analyze_lines()

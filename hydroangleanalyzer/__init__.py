@@ -2,7 +2,7 @@
 # Contact angle analyzers
 from .contact_angle_method import (
     BaseContactAngleAnalyzer,
-    BinnedContactAngleAnalyzer,
+    BinningContactAngleAnalyzer,
     SlicedContactAngleAnalyzer,
     contact_angle_analyzer,
 )

@@ -9,7 +9,7 @@ from .base_parser import BaseParser
 
 
 class XYZParser(BaseParser):
-    """Simple in-memory XYZ trajectory parser with lattice extraction.
+    """XYZ trajectory parser.
 
     Parameters
     ----------
@@ -99,15 +99,6 @@ class XYZParser(BaseParser):
         frame = self.frames[frame_index]
         mask = np.isin(frame["symbols"], liquid_particle_types)
         return frame["positions"][mask]
-
-    def parse_liquid(self, *args, **kwargs):
-        """Deprecated alias for parse_liquid_particles."""
-        warnings.warn(
-            "parse_liquid is deprecated, use parse_liquid_particles instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.parse_liquid_particles(*args, **kwargs)
 
     def get_profile_coordinates(
         self,
@@ -296,15 +287,6 @@ class XYZWaterMoleculeFinder(BaseParser):
         frame = self.frames[frame_index]
         mask = np.isin(frame["symbols"], liquid_particle_types)
         return frame["positions"][mask]
-
-    def parse_liquid(self, *args, **kwargs):
-        """Deprecated alias for parse."""
-        warnings.warn(
-            "parse_liquid is deprecated, use parse instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.parse(*args, **kwargs)
 
     def get_profile_coordinates(
         self,

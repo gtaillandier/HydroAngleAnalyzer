@@ -55,8 +55,8 @@ def test_contact_angle_sliced_with_real_data(parser, oxygen_indices):
     )
 
     predictor = ContactAngleSliced(
-        o_coords=liquid_positions,
-        o_center_geom=mean_liquid_position,
+        liquid_coordinates=liquid_positions,
+        liquid_geom_center=mean_liquid_position,
         droplet_geometry="spherical",
         delta_gamma=20,
         max_dist=max_dist,

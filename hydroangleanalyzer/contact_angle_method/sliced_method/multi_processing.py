@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 class ContactAngleSlicedParallel:
     """Batch-parallel contact angle analyzer for sliced method.
-
     Frames are grouped into batches to mitigate parser pickling issues and to
     amortize object construction cost. Each batch is processed in a separate
     process using ``ProcessPoolExecutor``.
@@ -242,9 +241,9 @@ class ContactAngleSlicedParallel:
                 box_dimensions = None
             mean_liquid_position = np.mean(liquid_positions, axis=0)
             predictor = ContactAngleSliced(
-                o_coords=liquid_positions,
+                liquid_coordinates=liquid_positions,
                 max_dist=max_dist,
-                o_center_geom=mean_liquid_position,
+                liquid_geom_center=mean_liquid_position,
                 droplet_geometry=self.droplet_geometry,
                 delta_gamma=self.delta_gamma,
                 width_cylinder=box_dimensions,

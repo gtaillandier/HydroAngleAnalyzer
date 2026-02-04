@@ -8,27 +8,28 @@ class ContactAngleSliced:
     """Sliced radial line method to estimate contact angle via circle fitting.
 
     Depending on ``droplet_geometry`` the droplet is analyzed by sweeping in y
-    (cylinder modes) or by gamma inclination (spherical). For each slice / tilt
+    (cylinder modes) or by gamma azimuthal angle (spherical). For each slice / tilt
     a set of radial lines is sampled, a circle is fit to interface points, and
     the contact angle is derived from intersection with the lowest surface
     level.
 
     Parameters
     ----------
-    o_coords : ndarray, shape (N, 3)
+    liquid_coordinates : ndarray, shape (N, 3)
         Oxygen (or liquid marker) coordinates.
     max_dist : float
         Maximum radial distance for line sampling.
-    o_center_geom : ndarray, shape (3,)
+    liquid_geom_center : ndarray, shape (3,)
         Geometric droplet center; y component overridden per slice in cylinder
         modes.
     droplet_geometry : str, default 'cylinder_y'
         One of {'cylinder_y', 'cylinder_x', 'spherical'} controlling slicing
         axis.
     delta_gamma : float, optional
-        Angular increment (degrees) for spherical mode (required if spherical).
+        Angular increment (degrees) for spherical droplet geometry
+        (required if spherical).
     width_cylinder : float, optional
-        Extent in slicing axis direction (y or x) for cylindrical modes.
+        Extent in slicing axis direction (y or x) for cylindrical droplet geometry.
     delta_cylinder : float, optional
         Step size along slicing axis.
     surface_filter_offset : float, default 2.0
@@ -37,18 +38,18 @@ class ContactAngleSliced:
 
     def __init__(
         self,
-        o_coords,
+        liquid_coordinates,
         max_dist,
-        o_center_geom,
+        liquid_geom_center,
         droplet_geometry="cylinder_y",
         delta_gamma=None,
         width_cylinder=None,
         delta_cylinder=None,
         surface_filter_offset: float = 2.0,
     ):
-        self.o_coords = o_coords
+        self.liquid_coordinates = liquid_coordinates
         self.max_dist = max_dist
-        self.o_center_geom = o_center_geom
+        self.liquid_geom_center = liquid_geom_center
         self.droplet_geometry = droplet_geometry
         self.delta_gamma = delta_gamma
         self.width_cylinder = width_cylinder
@@ -65,7 +66,7 @@ class ContactAngleSliced:
             raise ValueError("delta_gamma must be provided for spherical analysis")
 
     def calculate_y_axis_list(self):
-        """Return axis position list for slicing mode.
+        """Return axis position list for the chosen droplet geometry.
 
         Returns
         -------
@@ -75,11 +76,11 @@ class ContactAngleSliced:
         if self.droplet_geometry in ("cylinder_y", "cylinder_x"):
             return list(np.arange(0, self.width_cylinder, self.delta_cylinder))
         if self.droplet_geometry == "spherical":
-            return [self.o_center_geom[1]] * int(180 / self.delta_gamma)
+            return [self.liquid_geom_center[1]] * int(180 / self.delta_gamma)
         return []
 
     def calculate_gammas_list(self):
-        """Return gamma inclination list for the chosen model."""
+        """Return gamma inclination list for the chosen droplet geometry."""
         if self.droplet_geometry in ("cylinder_y", "cylinder_x"):
             return [
                 0.0
@@ -114,7 +115,7 @@ class ContactAngleSliced:
         """
         delta_angle = 8  # degrees between radial lines
         surface_def = SurfaceDefinition(
-            self.o_coords, delta_angle, self.max_dist, self.o_center_geom, v_gamma
+            self.liquid_coordinates, delta_angle, self.max_dist, self.liquid_geom_center, v_gamma
         )
         list_rr, list_xz = surface_def.analyze_lines()
         return np.array(list_xz), np.array(list_rr)
@@ -162,7 +163,7 @@ class ContactAngleSliced:
         return popt
 
     def find_intersection(self, popt, y_line):
-        """Compute contact angle from circle intersection with baseline.
+        """Compute contact angle from circle intersection with a baseline.
 
         Parameters
         ----------
@@ -225,7 +226,7 @@ class ContactAngleSliced:
         array_popt: list[np.ndarray] = []
         counter = 0
         for value_gamma in gammas:
-            self.o_center_geom[1] = y_axis_list[counter]
+            self.liquid_geom_center[1] = y_axis_list[counter]
             counter += 1
             surf, list_rr = self.surface_definition(value_gamma)
             array_surfaces.append(surf)
@@ -241,7 +242,7 @@ class ContactAngleSliced:
             mean_rr = (
                 float(np.mean(list_rr[:, 0])) if list_rr.size else self.max_dist / 2
             )
-            initial_guess = [self.o_center_geom[0], self.o_center_geom[2], mean_rr]
+            initial_guess = [self.liquid_geom_center[0], self.liquid_geom_center[2], mean_rr]
             try:
                 popt = self.fit_circle(X_data, Y_data, initial_guess)
             except Exception:  # pragma: no cover - rare convergence failures

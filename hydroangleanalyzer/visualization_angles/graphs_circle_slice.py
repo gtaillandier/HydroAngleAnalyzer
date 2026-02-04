@@ -610,8 +610,8 @@ class ContactAngleAnimator:
                 frame_index=frame_idx, indices=self.oxygen_indices
             )
             processor = ContactAngleSliced(
-                o_coords=oxygen_position,
-                o_center_geom=np.mean(oxygen_position, axis=0),
+                liquid_coordinates=oxygen_position,
+                liquid_geom_center=np.mean(oxygen_position, axis=0),
                 droplet_geometry=self.droplet_geometry,
                 delta_cylinder=self.delta_cylinder,
                 max_dist=self.max_dist,
