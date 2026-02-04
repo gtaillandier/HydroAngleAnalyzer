@@ -47,7 +47,7 @@ conda install --strict-channel-priority -c https://conda.ovito.org -c conda-forg
 
 ```python
 from hydroangleanalyzer import (
-    DumpParser, SlicedContactAngleAnalyzer, BinnedContactAngleAnalyzer,
+    DumpParser, SlicedContactAngleAnalyzer, BinningContactAngleAnalyzer,
     detect_parser_type, contact_angle_analyzer
 )
 
@@ -59,7 +59,7 @@ sliced = SlicedContactAngleAnalyzer(parser, output_repo="out_sliced", liquid_ind
 res = sliced.analyze(frame_range=range(0, 50))
 print(res["mean_angle"], res["std_angle"])  # per-frame distribution
 
-binning = BinnedContactAngleAnalyzer(parser, output_dir="out_binned", liquid_indices=oxygen_ids, droplet_geometry="spherical")
+binning = BinningContactAngleAnalyzer(parser, output_dir="out_binned", liquid_indices=oxygen_ids, droplet_geometry="spherical")
 res_b = binning.analyze(frame_range=range(0, 200))
 print(res_b["mean_angle"], res_b["std_angle"])  # single or batched average
 ```

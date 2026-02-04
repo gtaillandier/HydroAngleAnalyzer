@@ -120,7 +120,7 @@ class BaseTrajectoryAnalyzer(ABC):
         """
         return (
             directory.replace("_reduce_sliced", "")
-            .replace("_reduce_binned", "")
+            .replace("_reduce_binning", "")
             .replace("result_dump_", "")
         )
 

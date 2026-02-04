@@ -50,7 +50,7 @@ __all__ = [
     # Contact angle analyzers
     "BaseContactAngleAnalyzer",
     "SlicedContactAngleAnalyzer",
-    "BinnedContactAngleAnalyzer",
+    "BinningContactAngleAnalyzer",
     "contact_angle_analyzer",
     # Parsers
     "BaseParser",

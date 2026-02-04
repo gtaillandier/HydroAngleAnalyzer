@@ -117,19 +117,3 @@ class BaseParser(ABC):
         raise NotImplementedError(
             "get_profile_coordinates not implemented for this parser."
         )
-
-    def return_cylindrical_coord_pars(self, *args, **kwargs):
-        """Return cylindrical coordinate arrays for frames. (Legacy name).
-
-        .. deprecated:: 0.1.0
-            Use :meth:`get_profile_coordinates` instead.
-        """
-        import warnings
-
-        warnings.warn(
-            "return_cylindrical_coord_pars is deprecated, "
-            "use get_profile_coordinates instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_profile_coordinates(*args, **kwargs)

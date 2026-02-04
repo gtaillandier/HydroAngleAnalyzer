@@ -153,6 +153,7 @@ class AseParser(BaseParser):
         """Return total number of frames in trajectory."""
         return len(self.trajectory)
 
+
 class AseWaterMoleculeFinder:
     """Identify water oxygen atoms by counting hydrogen neighbors.
 

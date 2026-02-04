@@ -1,6 +1,6 @@
 from .contact_angle_analyzer import (
     BaseContactAngleAnalyzer,
-    BinnedContactAngleAnalyzer,
+    BinningContactAngleAnalyzer,
     SlicedContactAngleAnalyzer,
 )
 
@@ -13,7 +13,7 @@ def contact_angle_analyzer(
             parser=parser, output_repo=output_dir, **kwargs
         )
     elif method == "binning":
-        return BinnedContactAngleAnalyzer(
+        return BinningContactAngleAnalyzer(
             parser=parser, output_dir=output_dir, **kwargs
         )
     else:

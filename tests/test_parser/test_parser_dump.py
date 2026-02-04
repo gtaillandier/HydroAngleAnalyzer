@@ -44,6 +44,7 @@ def test_parse(dump_parser):
     positions_subset = dump_parser.parse(frame_indexs, indices)
     assert positions_subset.shape[0] <= positions.shape[0]
 
+
 # --- Test box_size_x and box_size_y ---
 def test_box_size_x(dump_parser):
     frame_indexs = 0
@@ -72,6 +73,3 @@ def test_frame_tot(dump_parser):
     total_frames = dump_parser.frame_tot()
     assert isinstance(total_frames, int)
     assert total_frames > 0
-
-
-

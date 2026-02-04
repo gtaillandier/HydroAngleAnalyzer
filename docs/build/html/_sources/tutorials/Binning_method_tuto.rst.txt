@@ -74,7 +74,7 @@ Example trajectory::
    analyzer = contact_angle_analyzer(
        method="binning",
        parser=parser,
-       output_dir="results_binned_example",
+       output_dir="results_binning_example",
        liquid_indices=oxygen_indices,
        droplet_geometry="cylinder_y",  # Interface fitting model
        width_cylinder=21,  # Width parameter for interface fit
@@ -95,7 +95,7 @@ Running this example will:
 
 - Parse the trajectory
 - Compute the interface shape and local contact angle
-- Save results (if enabled) under ``results_binned_example/``
+- Save results (if enabled) under ``results_binning_example/``
 
 Example printed output::
 

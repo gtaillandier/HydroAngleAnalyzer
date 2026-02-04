@@ -47,8 +47,8 @@ def binning_params():
     }
 
 
-# --- Unit Test for BinnedContactAngleAnalyzer ---
-def test_binned_contact_angle_analyzer_with_real_data(
+# --- Unit Test for BinningContactAngleAnalyzer ---
+def test_binning_contact_angle_analyzer_with_real_data(
     filename, oxygen_indices, binning_params, tmp_path
 ):
     # Use a temporary directory for output
@@ -79,7 +79,7 @@ def test_binned_contact_angle_analyzer_with_real_data(
 
 
 # --- Optional: Test for multiple frames ---
-def test_binned_contact_angle_analyzer_multiple_frames(
+def test_binning_contact_angle_analyzer_multiple_frames(
     filename, oxygen_indices, binning_params, tmp_path
 ):
     output_dir = tmp_path / "result_dump_masspain_noplot_multiple"

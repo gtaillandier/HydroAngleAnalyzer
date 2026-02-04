@@ -32,6 +32,10 @@ class BaseContactAngleAnalyzer(ABC):
 
 
 class SlicedContactAngleAnalyzer(BaseContactAngleAnalyzer):
+    """
+    This class is a wrapper around the ContactAngleSlicedParallel class.
+    It is used to analyze the contact angle of a liquid on a solid surface.
+    """
     def __init__(self, parser, output_repo: str, **kwargs):
         self.parser = parser
         self.output_repo = output_repo
@@ -62,7 +66,11 @@ class SlicedContactAngleAnalyzer(BaseContactAngleAnalyzer):
         return "sliced_parallel"
 
 
-class BinnedContactAngleAnalyzer(BaseContactAngleAnalyzer):
+class BinningContactAngleAnalyzer(BaseContactAngleAnalyzer):
+    """
+    This class is a wrapper around the ContactAngleBinning class.
+    It is used to analyze the contact angle of a liquid on a solid surface.
+    """
     def __init__(self, parser, output_dir: str, **kwargs):
         self.parser = parser
         self.output_dir = output_dir
@@ -102,4 +110,4 @@ class BinnedContactAngleAnalyzer(BaseContactAngleAnalyzer):
         }
 
     def get_method_name(self) -> str:
-        return "binned_density"
+        return "binning_density"

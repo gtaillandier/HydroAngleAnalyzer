@@ -115,7 +115,11 @@ class ContactAngleSliced:
         """
         delta_angle = 8  # degrees between radial lines
         surface_def = SurfaceDefinition(
-            self.liquid_coordinates, delta_angle, self.max_dist, self.liquid_geom_center, v_gamma
+            self.liquid_coordinates,
+            delta_angle,
+            self.max_dist,
+            self.liquid_geom_center,
+            v_gamma,
         )
         list_rr, list_xz = surface_def.analyze_lines()
         return np.array(list_xz), np.array(list_rr)
@@ -242,7 +246,11 @@ class ContactAngleSliced:
             mean_rr = (
                 float(np.mean(list_rr[:, 0])) if list_rr.size else self.max_dist / 2
             )
-            initial_guess = [self.liquid_geom_center[0], self.liquid_geom_center[2], mean_rr]
+            initial_guess = [
+                self.liquid_geom_center[0],
+                self.liquid_geom_center[2],
+                mean_rr,
+            ]
             try:
                 popt = self.fit_circle(X_data, Y_data, initial_guess)
             except Exception:  # pragma: no cover - rare convergence failures

@@ -105,7 +105,7 @@ The binning method adopts a global approach by aggregating particle coordinates 
 
 Together, these methods offer flexibility and precision. The package offers two complementary methods for contact angle analysis, each with distinct advantages and trade-offs. The SlicedContactAngleAnalyzer is ideal for high-precision, frame-by-frame analysis, particularly for complex or asymmetric droplets. However, its computational expense may not be suitable for large-scale simulations.
 
-The BinnedContactAngleAnalyzer, on the other hand, is fast and efficient, making it well-suited for symmetric droplets and large datasets. However, it requires a sufficiently large sample size and may lack precision for irregular geometries.
+The BinningContactAngleAnalyzer, on the other hand, is fast and efficient, making it well-suited for symmetric droplets and large datasets. However, it requires a sufficiently large sample size and may lack precision for irregular geometries.
 
 These methods enable researchers to select the most suitable approach based on their specific requirements, considering trade-offs between precision, computational efficiency, and system complexity.
 
