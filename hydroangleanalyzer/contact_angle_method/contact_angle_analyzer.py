@@ -36,6 +36,7 @@ class SlicedContactAngleAnalyzer(BaseContactAngleAnalyzer):
     This class is a wrapper around the ContactAngleSlicedParallel class.
     It is used to analyze the contact angle of a liquid on a solid surface.
     """
+
     def __init__(self, parser, output_repo: str, **kwargs):
         self.parser = parser
         self.output_repo = output_repo
@@ -71,6 +72,7 @@ class BinningContactAngleAnalyzer(BaseContactAngleAnalyzer):
     This class is a wrapper around the ContactAngleBinning class.
     It is used to analyze the contact angle of a liquid on a solid surface.
     """
+
     def __init__(self, parser, output_dir: str, **kwargs):
         self.parser = parser
         self.output_dir = output_dir

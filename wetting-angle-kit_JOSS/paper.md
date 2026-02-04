@@ -95,46 +95,46 @@ SlicedContactAngleAnalyzer: Best for high-precision, temporal analysis of comple
 
 BinnedContactAngleAnalyzer: Best for rapid, computationally efficient analysis of symmetric systems and large datasets.
 
-## The visualization modules 
+## The visualization modules
 
-The Visualization and Statistics module is designed to facilitate the interpretation of simulation results. Built upon the BaseTrajectoryAnalyzer ABC, this module defines standard methods for computing statistics, extracting surface areas of the droplets, and generating visual outputs. 
-Derived classes, such as BinningTrajectoryAnalyzer and SlicedTrajectoryAnalyzer, implement specific logic for their respective methods. Key visualization features include:  Static and Interactive Plotting: Classes such as DropletSlicedPlotter and DropletSlicedPlotterPlotly generate plots of droplet slices, visualizing surface contours, tangent lines, and fitted circles. 
+The Visualization and Statistics module is designed to facilitate the interpretation of simulation results. Built upon the BaseTrajectoryAnalyzer ABC, this module defines standard methods for computing statistics, extracting surface areas of the droplets, and generating visual outputs.
+Derived classes, such as BinningTrajectoryAnalyzer and SlicedTrajectoryAnalyzer, implement specific logic for their respective methods. Key visualization features include:  Static and Interactive Plotting: Classes such as DropletSlicedPlotter and DropletSlicedPlotterPlotly generate plots of droplet slices, visualizing surface contours, tangent lines, and fitted circles.
 
-Animation: The ContactAngleAnimator class creates interactive animations of the contact angle evolution, offering a dynamic view of droplet behavior throughout the simulation. 
+Animation: The ContactAngleAnimator class creates interactive animations of the contact angle evolution, offering a dynamic view of droplet behavior throughout the simulation.
 
-Method Comparison: The MethodComparison utility allows users to overlay and juxtapose statistical results from different analyzers, essential for validating new methods against established baselines. 
+Method Comparison: The MethodComparison utility allows users to overlay and juxtapose statistical results from different analyzers, essential for validating new methods against established baselines.
 
- 
 
-The BaseTrajectoryAnalyzer abstract base class serves as the foundation for trajectory analysis, defining methods for computing statistics, generating visualizations, and extracting contact angles and surface areas. Derived classes, such as BinningTrajectoryAnalyzer and SlicedTrajectoryAnalyzer, implement these methods for specific analysis techniques. 
 
-For visualization, the module includes classes like DropletSlicedPlotter and DropletSlicedPlotterPlotly, which generate static and interactive plots of droplet slices, respectively. These tools allow users to visualize surface contours, fitted circles, and tangent lines, enhancing the interpretability of contact angle measurements. Additionally, the ContactAngleAnimator class generates interactive animations of  contact angles per frame, providing a dynamic view of droplet behavior over the simulation timeline. 
+The BaseTrajectoryAnalyzer abstract base class serves as the foundation for trajectory analysis, defining methods for computing statistics, generating visualizations, and extracting contact angles and surface areas. Derived classes, such as BinningTrajectoryAnalyzer and SlicedTrajectoryAnalyzer, implement these methods for specific analysis techniques.
 
-The MethodComparison utility enables comparative analysis across multiple trajectory analyzers, offering functions to overlay and juxtapose statistical results. This feature is particularly useful for validating results across different methods or simulation setups. 
+For visualization, the module includes classes like DropletSlicedPlotter and DropletSlicedPlotterPlotly, which generate static and interactive plots of droplet slices, respectively. These tools allow users to visualize surface contours, fitted circles, and tangent lines, enhancing the interpretability of contact angle measurements. Additionally, the ContactAngleAnimator class generates interactive animations of  contact angles per frame, providing a dynamic view of droplet behavior over the simulation timeline.
 
-Overall, the visualization and statistics module add tools to analyze, visualize, and compare contact angle data, fostering a deeper understanding of wettability phenomena in MD simulations. 
+The MethodComparison utility enables comparative analysis across multiple trajectory analyzers, offering functions to overlay and juxtapose statistical results. This feature is particularly useful for validating results across different methods or simulation setups.
 
- 
+Overall, the visualization and statistics module add tools to analyze, visualize, and compare contact angle data, fostering a deeper understanding of wettability phenomena in MD simulations.
 
-# Examples and Applications 
 
-To validate the capabilities of wetting-angle-kit, molecular dynamics simulations were conducted using LAMMPS. The study focused on the wetting behavior of water droplets on two distinct substrates: a multi-layer graphene sheet (representing graphite) and a crystalline polymer surface (approximating PTFE). 
 
-Simulation Setup : To ensure geometric consistency and isolate the effect of droplet size, the substrate atoms were fixed (frozen) to create a rigid, atomically flat surface. This simplification minimizes thermal fluctuations of the substrate, which is a common approximation in nanoscale wetting studies. 
+# Examples and Applications
 
-For each substrate, four independent simulations were performed with varying droplet sizes to assess size-dependence. The systems contained 500, 1000, 2000, and 6000 water molecules, respectively. Water interactions were modeled using the SPC/E potential [Citation], which has been identified in previous studies as highly suitable for wetting applications. Carbon-water interactions for the graphite surface were described using Lennard-Jones (LJ) potentials, while polymer interactions were derived from the OPLS-AA force field. 
+To validate the capabilities of wetting-angle-kit, molecular dynamics simulations were conducted using LAMMPS. The study focused on the wetting behavior of water droplets on two distinct substrates: a multi-layer graphene sheet (representing graphite) and a crystalline polymer surface (approximating PTFE).
 
-##Theoretical Framework: Modified Young’s Equation 
+Simulation Setup : To ensure geometric consistency and isolate the effect of droplet size, the substrate atoms were fixed (frozen) to create a rigid, atomically flat surface. This simplification minimizes thermal fluctuations of the substrate, which is a common approximation in nanoscale wetting studies.
 
-To extract the macroscopic contact angle from nanoscale measurements, the relationship between the measured contact angle ($\theta$) and the droplet size is analyzed using the Modified Young’s Equation. This relationship accounts for line tension effects, which are significant at the nanoscale. The equation is linearized to facilitate extrapolation: 
+For each substrate, four independent simulations were performed with varying droplet sizes to assess size-dependence. The systems contained 500, 1000, 2000, and 6000 water molecules, respectively. Water interactions were modeled using the SPC/E potential [Citation], which has been identified in previous studies as highly suitable for wetting applications. Carbon-water interactions for the graphite surface were described using Lennard-Jones (LJ) potentials, while polymer interactions were derived from the OPLS-AA force field.
 
-$$\cos\theta = \cos\theta_\infty - \frac{\tau}{\gamma_{LV}} \cdot \frac{1}{r_B}$$ 
+##Theoretical Framework: Modified Young’s Equation
 
- 
+To extract the macroscopic contact angle from nanoscale measurements, the relationship between the measured contact angle ($\theta$) and the droplet size is analyzed using the Modified Young’s Equation. This relationship accounts for line tension effects, which are significant at the nanoscale. The equation is linearized to facilitate extrapolation:
 
-By plotting $\cos\theta$ against the inverse of the contact radius (or an equivalent geometric parameter derived from contact area $A$), the data yields a linear trend. The slope of this line corresponds to the influence of line tension ($\tau$) and surface tension ($\gamma_{LV}$), while the intercept provides the contact angle of an infinite droplet ($\cos\theta_\infty$). This regression allows for the extrapolation of fundamental wettability properties from finite-sized nanodroplets. 
+$$\cos\theta = \cos\theta_\infty - \frac{\tau}{\gamma_{LV}} \cdot \frac{1}{r_B}$$
 
-##Validation Results 
+
+
+By plotting $\cos\theta$ against the inverse of the contact radius (or an equivalent geometric parameter derived from contact area $A$), the data yields a linear trend. The slope of this line corresponds to the influence of line tension ($\tau$) and surface tension ($\gamma_{LV}$), while the intercept provides the contact angle of an infinite droplet ($\cos\theta_\infty$). This regression allows for the extrapolation of fundamental wettability properties from finite-sized nanodroplets.
+
+##Validation Results
 ![Mean cos angle vs surface for graphite](menscosnalge_vs_surface_graphite.pdf){width=50%}
 
 ![Mean cos angle vs surface for PTFE](menscosnalge_vs_surface_ptfe.pdf){width=50%}
