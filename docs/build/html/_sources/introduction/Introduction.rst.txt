@@ -63,7 +63,7 @@ Once the trajectory is parsed, the core analysis is performed. Two main theoreti
 Both methods are capable of analyzing:
 
 *   **Spherical Droplets**: Standard spherical cap shapes.
-*   **Cylindrical Droplets**: Filament-like droplets (e.g., water on a nanowire or with periodic boundary conditions), analyzed along the cylinder's axis (x or y).
+*   **Cylindrical Droplets**: Cylindrical droplets (e.g., water on a nanowire or with periodic boundary conditions), analyzed along the cylinder's axis (x or y).
 
 **Sliced Method**
 ^^^^^^^^^^^^^^^^^
@@ -86,6 +86,11 @@ Finally, the entire procedure is repeated for multiple azimuthal angles (rotatin
 **Binning Method**
 ^^^^^^^^^^^^^^^^^^
 
+.. warning::
+    For the binning method, it is crucial that the droplet remains centered in the simulation box. We recommend using a recentering command during the simulation, such as:
+
+    ``fix recenter group_id INIT INIT NULL``
+
 The **Binning Method** uses a spatial discretization approach, suitable for averaging over multiple frames to get a smooth density profile.
 
 *   **Theory**: The simulation box is divided into a grid (bins) in the plane of interest (e.g., x-z).
@@ -104,10 +109,10 @@ Examples of these visualizations can be found in the respective tutorials for ea
 
 ## Troubleshooting
 
-NaN angles: Usually occur when the surface filter removes too many points (empty slice). Adjust `surface_filter_offset` (default 2.0) in `ContactAngleSliced` or relax slice width. Ensure enough atoms remain after filtering (>=3) for circle fitting.
+NaN angles: Usually occur when the surface filter removes too many points (empty slice). Adjust ``surface_filter_offset`` (default 2.0) in ``ContactAngleSliced`` or relax slice width. Ensure enough atoms remain after filtering (>=3) for circle fitting.
 
-Empty outputs / NoneType failures: Confirm `width_cylinder` and `delta_cylinder` are passed for cylindrical models and `delta_gamma` for spherical model. Parser must supply box dimensions for automatic max distance estimation.
+Empty outputs / NoneType failures: Confirm ``width_cylinder`` and ``delta_cylinder`` are passed for cylindrical models and ``delta_gamma`` for spherical model. Parser must supply box dimensions for automatic max distance estimation.
 
-Multiprocessing hangs: Use the batch-parallel wrapper (`ContactAngleSlicedParallel.process_frames_parallel`) which employs spawn start method; avoid invoking OVITO parsers inside global contexts before multiprocessing starts.
+Multiprocessing hangs: Use the batch-parallel wrapper (``ContactAngleSlicedParallel.process_frames_parallel``) which employs spawn start method; avoid invoking OVITO parsers inside global contexts before multiprocessing starts.
 
 OVITO ImportError: Install with the ovito extra or via the Conda command listed above. Verify channel priority and version pin if dependency resolution fails.

@@ -516,7 +516,7 @@ window.addEventListener("load", load);
 <p>Both methods are capable of analyzing:</p>
 <ul class="simple">
 <li><p><strong>Spherical Droplets</strong>: Standard spherical cap shapes.</p></li>
-<li><p><strong>Cylindrical Droplets</strong>: Filament-like droplets (e.g., water on a nanowire or with periodic boundary conditions), analyzed along the cylinder’s axis (x or y).</p></li>
+<li><p><strong>Cylindrical Droplets</strong>: Cylindrical droplets (e.g., water on a nanowire or with periodic boundary conditions), analyzed along the cylinder’s axis (x or y).</p></li>
 </ul>
 </section>
 <section id="sliced-method">
@@ -535,6 +535,11 @@ Finally, the entire procedure is repeated for multiple azimuthal angles (rotatin
 </section>
 <section id="binning-method">
 <h3><strong>Binning Method</strong><a class="headerlink" href="#binning-method" title="Link to this heading"></a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For the binning method, it is crucial that the droplet remains centered in the simulation box. We recommend using a recentering command during the simulation, such as:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fix</span> <span class="pre">recenter</span> <span class="pre">group_id</span> <span class="pre">INIT</span> <span class="pre">INIT</span> <span class="pre">NULL</span></code></p>
+</div>
 <p>The <strong>Binning Method</strong> uses a spatial discretization approach, suitable for averaging over multiple frames to get a smooth density profile.</p>
 <ul class="simple">
 <li><p><strong>Theory</strong>: The simulation box is divided into a grid (bins) in the plane of interest (e.g., x-z).</p></li>
@@ -552,9 +557,9 @@ Finally, the entire procedure is repeated for multiple azimuthal angles (rotatin
 </ul>
 <p>Examples of these visualizations can be found in the respective tutorials for each method.</p>
 <p>## Troubleshooting</p>
-<p>NaN angles: Usually occur when the surface filter removes too many points (empty slice). Adjust <cite>surface_filter_offset</cite> (default 2.0) in <cite>ContactAngleSliced</cite> or relax slice width. Ensure enough atoms remain after filtering (&gt;=3) for circle fitting.</p>
-<p>Empty outputs / NoneType failures: Confirm <cite>width_cylinder</cite> and <cite>delta_cylinder</cite> are passed for cylindrical models and <cite>delta_gamma</cite> for spherical model. Parser must supply box dimensions for automatic max distance estimation.</p>
-<p>Multiprocessing hangs: Use the batch-parallel wrapper (<cite>ContactAngleSlicedParallel.process_frames_parallel</cite>) which employs spawn start method; avoid invoking OVITO parsers inside global contexts before multiprocessing starts.</p>
+<p>NaN angles: Usually occur when the surface filter removes too many points (empty slice). Adjust <code class="docutils literal notranslate"><span class="pre">surface_filter_offset</span></code> (default 2.0) in <code class="docutils literal notranslate"><span class="pre">ContactAngleSliced</span></code> or relax slice width. Ensure enough atoms remain after filtering (&gt;=3) for circle fitting.</p>
+<p>Empty outputs / NoneType failures: Confirm <code class="docutils literal notranslate"><span class="pre">width_cylinder</span></code> and <code class="docutils literal notranslate"><span class="pre">delta_cylinder</span></code> are passed for cylindrical models and <code class="docutils literal notranslate"><span class="pre">delta_gamma</span></code> for spherical model. Parser must supply box dimensions for automatic max distance estimation.</p>
+<p>Multiprocessing hangs: Use the batch-parallel wrapper (<code class="docutils literal notranslate"><span class="pre">ContactAngleSlicedParallel.process_frames_parallel</span></code>) which employs spawn start method; avoid invoking OVITO parsers inside global contexts before multiprocessing starts.</p>
 <p>OVITO ImportError: Install with the ovito extra or via the Conda command listed above. Verify channel priority and version pin if dependency resolution fails.</p>
 </section>
 </section>

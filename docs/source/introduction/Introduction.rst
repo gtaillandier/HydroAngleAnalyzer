@@ -86,6 +86,11 @@ Finally, the entire procedure is repeated for multiple azimuthal angles (rotatin
 **Binning Method**
 ^^^^^^^^^^^^^^^^^^
 
+.. warning::
+    For the binning method, it is crucial that the droplet remains centered in the simulation box. We recommend using a recentering command during the simulation, such as:
+
+    ``fix recenter group_id INIT INIT NULL``
+
 The **Binning Method** uses a spatial discretization approach, suitable for averaging over multiple frames to get a smooth density profile.
 
 *   **Theory**: The simulation box is divided into a grid (bins) in the plane of interest (e.g., x-z).
