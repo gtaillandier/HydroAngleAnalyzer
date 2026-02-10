@@ -74,13 +74,13 @@ The **Sliced Method** is ideal for analyzing the evolution of the contact angle 
 *   **Process**: For each slice, the liquid-vapor interface is determined. A geometric model (such as a sphere or cylinder) is then fitted to these interface points.
 *   **Application**: Best for spherical droplets or specific 2D projections where a clear profile can be mathematically fitted.
 
-To accurately define the liquid-vapor interface of the droplet, we employ a vertical slicing strategy along the z-axis. First, a definition of a 2D slicing plane passing through the droplet's geometric center is determined by an azimuthal angle. 
+To accurately define the liquid-vapor interface of the droplet, we employ a vertical slicing strategy along the z-axis. First, a definition of a 2D slicing plane passing through the droplet's geometric center is determined by an azimuthal angle.
 
-Within this plane, we identify the interface coordinates by scanning radially from the geometric center. For a given axis (defined by an altitudinal angle), the local density is measured at discrete intervals. 
-A function is then fitted to this density profile to locate the sharp drop in density that marks the limit between the liquid and vapor phases. This operation is repeated across a range of altitudinal angles to generate a cloud of points representing the droplet’s profile on that plane. 
+Within this plane, we identify the interface coordinates by scanning radially from the geometric center. For a given axis (defined by an altitudinal angle), the local density is measured at discrete intervals.
+A function is then fitted to this density profile to locate the sharp drop in density that marks the limit between the liquid and vapor phases. This operation is repeated across a range of altitudinal angles to generate a cloud of points representing the droplet’s profile on that plane.
 
-To calculate the contact angle, points near the substrate are first excluded to avoid boundary effects. A circle is then fitted to the remaining interface points, and the contact angle is derived from the intersection of this circle with the bottom of the droplet (the substrate). 
-Finally, the entire procedure is repeated for multiple azimuthal angles (rotating the slicing plane). This yields a distribution of contact angles, from which a mean contact angle is computed. 
+To calculate the contact angle, points near the substrate are first excluded to avoid boundary effects. A circle is then fitted to the remaining interface points, and the contact angle is derived from the intersection of this circle with the bottom of the droplet (the substrate).
+Finally, the entire procedure is repeated for multiple azimuthal angles (rotating the slicing plane). This yields a distribution of contact angles, from which a mean contact angle is computed.
 
 
 **Binning Method**
@@ -104,11 +104,10 @@ Examples of these visualizations can be found in the respective tutorials for ea
 
 ## Troubleshooting
 
-NaN angles: Usually occur when the surface filter removes too many points (empty slice). Adjust `surface_filter_offset` (default 2.0) in `ContactAngleSliced` or relax slice width. Ensure enough atoms remain after filtering (>=3) for circle fitting.
+NaN angles: Usually occur when the surface filter removes too many points (empty slice). Adjust ``surface_filter_offset`` (default 2.0) in ``ContactAngleSliced`` or relax slice width. Ensure enough atoms remain after filtering (>=3) for circle fitting.
 
-Empty outputs / NoneType failures: Confirm `width_cylinder` and `delta_cylinder` are passed for cylindrical models and `delta_gamma` for spherical model. Parser must supply box dimensions for automatic max distance estimation.
+Empty outputs / NoneType failures: Confirm ``width_cylinder`` and ``delta_cylinder`` are passed for cylindrical models and ``delta_gamma`` for spherical model. Parser must supply box dimensions for automatic max distance estimation.
 
-Multiprocessing hangs: Use the batch-parallel wrapper (`ContactAngleSlicedParallel.process_frames_parallel`) which employs spawn start method; avoid invoking OVITO parsers inside global contexts before multiprocessing starts.
+Multiprocessing hangs: Use the batch-parallel wrapper (``ContactAngleSlicedParallel.process_frames_parallel``) which employs spawn start method; avoid invoking OVITO parsers inside global contexts before multiprocessing starts.
 
 OVITO ImportError: Install with the ovito extra or via the Conda command listed above. Verify channel priority and version pin if dependency resolution fails.
-
