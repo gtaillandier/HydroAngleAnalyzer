@@ -107,7 +107,13 @@ class ContactAngleBinning:
         if droplet_geometry is None:
             droplet_geometry = self.droplet_geometry
         if width_cylinder is None:
-            width_cylinder = self.width_cylinder
+            if droplet_geometry in ("cylinder_x", "cylinder_y"):
+                if droplet_geometry == "cylinder_x":
+                    width_cylinder = parser.box_size_x(frame_index=frame_num)
+                elif droplet_geometry == "cylinder_y":
+                    width_cylinder = parser.box_size_y(frame_index=frame_num)
+            else:
+                width_cylinder = None
         print(f"Binning with model: {droplet_geometry} ...")
         rho_cc = np.zeros((len(self.xi_cc), len(self.zi_cc)))
         xi_par_0, zi_par_0 = copy.deepcopy(xi_par), copy.deepcopy(zi_par)
