@@ -73,9 +73,14 @@ By strictly adhering to this standardized structure, the ABC guarantees that dat
 
 ## The contact angle methods
 
-This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.
+This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis).
 
 ### Slicing method
+
+
+![3D spherical droplet scheme](wetting_angle_kit_3d_droplet.png){width=50%}
+
+![Sliced droplet scheme](wetting_angle_kit.png){width=50%}
 
 The Slicing Method performs a discrete, frame-by-frame analysis of the trajectory. By sampling radial slices from the droplet's geometric center, the algorithm fits circles to the liquid-vapor interface for each inclination. This technique allows for the precise determination of the contact angle at the intersection of the fitted circle and the substrate.
 

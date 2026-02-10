@@ -19,6 +19,7 @@ Contents:
    :maxdepth: 2
    :caption: Contents
 
+   introduction/index
    tutorials/index
    examples/index
    API/index

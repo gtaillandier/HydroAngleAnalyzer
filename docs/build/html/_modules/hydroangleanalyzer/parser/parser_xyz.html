@@ -6,30 +6,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>hydroangleanalyzer.parser.parser_xyz &mdash; HydroAngleAnalyzer 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/code-tabs.css?v=1bc26e2f" />
 
-
+  
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=92734c54"></script>
-      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=6dbb43f8"></script>
       <script src="../../../_static/code-tabs.js?v=c983d12e"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
       <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
       <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
-
-
-
-
-const initStyles = () => {
-    const defaultStyle = document.createElement('style');
-    defaultStyle.textContent = `pre.mermaid {
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
     /* Same as .mermaid-container > pre */
     display: block;
     width: 100%;
@@ -40,11 +38,12 @@ pre.mermaid > svg {
     height: 500px;
     width: 100%;
     max-width: 100% !important;
-}`;
-    document.head.appendChild(defaultStyle);
+}
+`;
+document.head.appendChild(defaultStyle);
 
-    const fullscreenStyle = document.createElement('style');
-    fullscreenStyle.textContent = `.mermaid-container {
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -196,32 +195,10 @@ pre.mermaid > svg {
 .mermaid-fullscreen-modal .mermaid-fullscreen-btn {
     display: none !important;
 }`;
-    document.head.appendChild(fullscreenStyle);
-}
+document.head.appendChild(fullscreenStyle);
 
 // Detect if page has dark background
 const isDarkTheme = () => {
-    // We use a set of heuristics:
-    // 1. Check for common dark mode classes or attributes
-    // 2. Check computed background color brightness
-    if (document.documentElement.classList.contains('dark') ||
-        document.documentElement.getAttribute('data-theme') === 'dark' ||
-        document.body.classList.contains('dark') ||
-        document.body.getAttribute('data-theme') === 'dark') {
-        // console.log("Dark theme detected via class/attribute");
-        return true;
-    }
-    if (document.documentElement.classList.contains('light') ||
-        document.documentElement.getAttribute('data-theme') === 'light' ||
-        document.body.classList.contains('light') ||
-        document.body.getAttribute('data-theme') === 'light') {
-        // console.log("Light theme detected via class/attribute");
-        return false;
-    }
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        // console.log("Dark theme detected via prefers-color-scheme");
-        return true;
-    }
     const bgColor = window.getComputedStyle(document.body).backgroundColor;
     const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
@@ -229,45 +206,15 @@ const isDarkTheme = () => {
         const g = parseInt(match[2]);
         const b = parseInt(match[3]);
         const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        // console.log("Background color brightness:", brightness);
         return brightness < 128;
     }
-    // console.log("No dark or light theme detected, defaulting to light theme");
     return false;
 };
 
-let darkTheme = isDarkTheme();
-let modal = null;
-let modalContent = null;
-let previousScrollOffset = [window.scrollX, window.scrollY];
+const load = async () => {
+    await mermaid.run();
 
-const runMermaid = async (rerun) => {
-    console.log("Running mermaid diagrams, rerun =", rerun);
-    // clear all existing mermaid charts
-    let all_mermaids = document.querySelectorAll(".mermaid");
-
-    if (rerun) {
-        all_mermaids.forEach((el) => {
-            if(!el.hasAttribute("data-original-code")) {
-                // store original code
-                // console.log(`Storing original code for first run: `, el.innerHTML);
-                el.setAttribute('data-original-code', el.innerHTML);
-            }
-            if(el.getAttribute("data-processed") === "true") {
-                // remove and restore original
-                el.removeAttribute("data-processed");
-                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
-                el.innerHTML = el.getAttribute('data-original-code');
-            } else {
-                // store original code
-                // console.log(`Storing original code for re-run: `, el.innerHTML);
-                el.setAttribute('data-original-code', el.innerHTML);
-            }
-        });
-        await mermaid.run();
-    }
-
-    all_mermaids = document.querySelectorAll(".mermaid");
+    const all_mermaids = document.querySelectorAll(".mermaid");
     const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
 
     if ("False" === "True") {
@@ -275,10 +222,10 @@ const runMermaid = async (rerun) => {
         if(mermaids_to_add_zoom > 0) {
             var svgs = d3.selectAll("");
             if(all_mermaids.length !== mermaids_processed.length) {
-                setTimeout(() => runMermaid(false), 200);
+                setTimeout(load, 200);
                 return;
             } else if(svgs.size() !== mermaids_to_add_zoom) {
-                setTimeout(() => runMermaid(false), 200);
+                setTimeout(load, 200);
                 return;
             } else {
                 svgs.each(function() {
@@ -294,21 +241,16 @@ const runMermaid = async (rerun) => {
         }
     } else if(all_mermaids.length !== mermaids_processed.length) {
         // Wait for mermaid to process all diagrams
-        setTimeout(() => runMermaid(false), 200);
+        setTimeout(load, 200);
         return;
     }
+
+    const darkTheme = isDarkTheme();
 
     // Stop here if not adding fullscreen capability
     if ("True" !== "True") return;
 
-    if (modal !== null ) {
-        // Destroy existing modal
-        modal.remove();
-        modal = null;
-        modalContent = null;
-    }
-
-    modal = document.createElement('div');
+    const modal = document.createElement('div');
     modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
@@ -319,8 +261,10 @@ const runMermaid = async (rerun) => {
     `;
     document.body.appendChild(modal);
 
-    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
     const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
 
     const closeModal = () => {
         modal.classList.remove('active');
@@ -339,14 +283,11 @@ const runMermaid = async (rerun) => {
         }
     });
 
+    const allButtons = [];
+
     document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
         if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
             mermaidDiv.closest('.mermaid-fullscreen-modal')) {
-            // Already processed, adjust button class if needed
-            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
-            if (existingBtn) {
-                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
-            }
             return;
         }
 
@@ -404,70 +345,59 @@ const runMermaid = async (rerun) => {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
+
         container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
     });
-};
 
-const load = async () => {
-    initStyles();
-
-    await runMermaid(true);
-
-    const reRunIfThemeChanges = async () => {
-        const newDarkTheme = isDarkTheme();
-        if (newDarkTheme !== darkTheme) {
-            darkTheme = newDarkTheme;
-            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
-            await mermaid.initialize(
-                {...JSON.parse(
-                    `{"startOnLoad": false}`
-                ),
-                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
-                }
-            );
-            await runMermaid(true);
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
         }
     };
 
-    // Update theme classes when theme changes
-    const themeObserver = new MutationObserver(reRunIfThemeChanges);
-    themeObserver.observe(document.documentElement, {
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
         attributes: true,
         attributeFilter: ['class', 'style', 'data-theme']
     });
-    themeObserver.observe(document.body, {
+    observer.observe(document.body, {
         attributes: true,
-        attributeFilter: ['class', 'style', 'data-theme']
+        attributeFilter: ['class', 'style']
     });
 };
 
-
-
-
-
-console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
-mermaid.initialize(
-    {...JSON.parse(
-        `{"startOnLoad": false}`
-    ),
-    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
-    }
-);
-
-window.addEventListener("load", load);</script>
+window.addEventListener("load", load);
+</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../../index.html" class="icon icon-home">
             HydroAngleAnalyzer
           </a>
@@ -481,6 +411,7 @@ window.addEventListener("load", load);</script>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">API Reference</a></li>
@@ -509,22 +440,21 @@ window.addEventListener("load", load);</script>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for hydroangleanalyzer.parser.parser_xyz</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.base_parser</span> <span class="kn">import</span> <span class="n">BaseParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseParser</span>
 
 
 <div class="viewcode-block" id="XYZParser">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser">[docs]</a>
-<span class="k">class</span> <span class="nc">XYZParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple in-memory XYZ trajectory parser with lattice extraction.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">XYZParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;XYZ trajectory parser.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -533,13 +463,13 @@ window.addEventListener("load", load);</script>
 <span class="sd">        with lattice vectors, then atom symbol + coordinates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_xyz_file</span><span class="p">()</span>
 
 <div class="viewcode-block" id="XYZParser.load_xyz_file">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.load_xyz_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_xyz_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_xyz_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load all frames from the XYZ file into memory.</span>
 
 <span class="sd">        Returns</span>
@@ -578,7 +508,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZParser.parse">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Cartesian coordinates for selected atoms in a frame.</span>
 
 <span class="sd">        Parameters</span>
@@ -594,15 +524,15 @@ window.addEventListener("load", load);</script>
 <span class="sd">            Coordinates of requested atoms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">frame_index</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">][</span><span class="n">indices</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="XYZParser.parse_liquid_particles">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.parse_liquid_particles">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_liquid_particles</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_liquid_particles</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">liquid_particle_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return positions of liquid particles (filter by symbols).</span>
@@ -624,21 +554,9 @@ window.addEventListener("load", load);</script>
         <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="XYZParser.parse_liquid">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.parse_liquid">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_liquid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated alias for parse_liquid_particles.&quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;parse_liquid is deprecated, use parse_liquid_particles instead.&quot;</span><span class="p">,</span>
-            <span class="ne">DeprecationWarning</span><span class="p">,</span>
-            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_liquid_particles</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="XYZParser.get_profile_coordinates">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.get_profile_coordinates">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_profile_coordinates</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_profile_coordinates</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">frame_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">droplet_geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cylinder_y&quot;</span><span class="p">,</span>
@@ -703,7 +621,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZParser.box_length_max">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.box_length_max">[docs]</a>
-    <span class="k">def</span> <span class="nf">box_length_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_length_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum lattice vector length for a frame.</span>
 
 <span class="sd">        Parameters</span>
@@ -722,7 +640,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZParser.box_size_x">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.box_size_x">[docs]</a>
-    <span class="k">def</span> <span class="nf">box_size_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_size_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the box length along x (a1x component).</span>
 
 <span class="sd">        Parameters</span>
@@ -741,7 +659,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZParser.box_size_y">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.box_size_y">[docs]</a>
-    <span class="k">def</span> <span class="nf">box_size_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_size_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the box length along y (a2y component).</span>
 
 <span class="sd">        Parameters</span>
@@ -760,7 +678,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZParser.frame_count">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZParser.frame_count">[docs]</a>
-    <span class="k">def</span> <span class="nf">frame_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total number of frames loaded.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span></div>
 </div>
@@ -769,7 +687,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZWaterMoleculeFinder">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder">[docs]</a>
-<span class="k">class</span> <span class="nc">XYZWaterMoleculeFinder</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">XYZWaterMoleculeFinder</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parser specialized for identifying water oxygen atoms in XYZ trajectories.</span>
 
 <span class="sd">    Parameters</span>
@@ -786,7 +704,7 @@ window.addEventListener("load", load);</script>
 <span class="sd">        Distance cutoff (Å) for O-H bonding to identify water molecules.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">filepath</span><span class="p">,</span>
         <span class="n">particle_type_wall</span><span class="p">,</span>
@@ -803,7 +721,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZWaterMoleculeFinder.load_xyz_file">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.load_xyz_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_xyz_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_xyz_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load frames (without lattice) for water oxygen analysis.&quot;&quot;&quot;</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -828,7 +746,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZWaterMoleculeFinder.parse">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">liquid_particle_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">liquid_particle_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return liquid particle coordinates filtering wall types.</span>
 
 <span class="sd">        Parameters</span>
@@ -848,21 +766,9 @@ window.addEventListener("load", load);</script>
         <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="XYZWaterMoleculeFinder.parse_liquid">
-<a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.parse_liquid">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_liquid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated alias for parse.&quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;parse_liquid is deprecated, use parse instead.&quot;</span><span class="p">,</span>
-            <span class="ne">DeprecationWarning</span><span class="p">,</span>
-            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="XYZWaterMoleculeFinder.get_profile_coordinates">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.get_profile_coordinates">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_profile_coordinates</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_profile_coordinates</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">frame_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">droplet_geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cylinder_y&quot;</span><span class="p">,</span>
@@ -927,7 +833,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZWaterMoleculeFinder.box_length_max">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.box_length_max">[docs]</a>
-    <span class="k">def</span> <span class="nf">box_length_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">box_length_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum lattice vector length for a frame.</span>
 
 <span class="sd">        Parameters</span>
@@ -946,7 +852,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZWaterMoleculeFinder.get_water_oxygen_indices">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.get_water_oxygen_indices">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_water_oxygen_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_oxygen_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return indices of oxygen atoms belonging to water molecules.</span>
 
 <span class="sd">        Parameters</span>
@@ -971,7 +877,7 @@ window.addEventListener("load", load);</script>
 
 <div class="viewcode-block" id="XYZWaterMoleculeFinder.get_water_oxygen_positions">
 <a class="viewcode-back" href="../../../API/index.html#hydroangleanalyzer.parser.XYZWaterMoleculeFinder.get_water_oxygen_positions">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_water_oxygen_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_oxygen_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return coordinates of water oxygen atoms for a frame.</span>
 
 <span class="sd">        Parameters</span>
@@ -991,7 +897,7 @@ window.addEventListener("load", load);</script>
         <span class="k">return</span> <span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_manual_water_identification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">oxygen_indices</span><span class="p">,</span> <span class="n">hydrogen_indices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_manual_water_identification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">oxygen_indices</span><span class="p">,</span> <span class="n">hydrogen_indices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify water oxygens by counting hydrogens within cutoff distance.</span>
 
 <span class="sd">        Parameters</span>
@@ -1035,7 +941,7 @@ window.addEventListener("load", load);</script>
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -1046,7 +952,7 @@ window.addEventListener("load", load);</script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

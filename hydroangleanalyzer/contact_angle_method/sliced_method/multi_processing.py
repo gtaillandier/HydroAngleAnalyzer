@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 class ContactAngleSlicedParallel:
     """Batch-parallel contact angle analyzer for sliced method.
+
     Frames are grouped into batches to mitigate parser pickling issues and to
     amortize object construction cost. Each batch is processed in a separate
     process using ``ProcessPoolExecutor``.

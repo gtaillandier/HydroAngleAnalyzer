@@ -63,7 +63,7 @@ Once the trajectory is parsed, the core analysis is performed. Two main theoreti
 Both methods are capable of analyzing:
 
 *   **Spherical Droplets**: Standard spherical cap shapes.
-*   **Cylindrical Droplets**: Cylindrical droplets (e.g., water on a nanowire or with periodic boundary conditions), analyzed along the cylinder's axis (x or y).
+*   **Cylindrical Droplets**: Filament-like droplets (e.g., water on a nanowire or with periodic boundary conditions), analyzed along the cylinder's axis (x or y).
 
 **Sliced Method**
 ^^^^^^^^^^^^^^^^^
