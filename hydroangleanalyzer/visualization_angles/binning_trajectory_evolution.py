@@ -79,6 +79,10 @@ class BinningTrajectoryAnalyzer(BaseTrajectoryAnalyzer):
             self.data[directory]["log_files"] = log_files
 
     def read_data(self):
+        """Alias for load_data for backward compatibility."""
+        self.load_data()
+
+    def load_data(self):
         """Read and parse data from log files in each directory."""
         self.load_files()
         for directory in self.directories:

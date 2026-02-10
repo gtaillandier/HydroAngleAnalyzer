@@ -171,7 +171,7 @@ class BaseTrajectoryAnalyzer(ABC):
 
         # Read data if not already loaded
         if not hasattr(self, "data") or not self.data:
-            self.read_data()
+            self.load_data()
 
         # Set up plot parameters
         plt.rcParams.update(

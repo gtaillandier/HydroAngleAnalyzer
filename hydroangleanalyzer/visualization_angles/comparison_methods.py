@@ -19,7 +19,7 @@ class MethodComparison:
         self.method_names = method_names or [a.get_method_name() for a in analyzers]
         for analyzer in self.analyzers:
             if not hasattr(analyzer, "data") or not analyzer.data:
-                analyzer.read_data()
+                analyzer.load_data()
 
     def _check_and_run_analysis(self, analyzer):
         """Run analyzer if expected output file is absent for any directory.
