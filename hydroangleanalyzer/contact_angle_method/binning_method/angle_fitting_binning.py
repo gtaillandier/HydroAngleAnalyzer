@@ -57,10 +57,12 @@ class ContactAngleBinning:
         else:
             self.binning_params = binning_params
         self._initialize_grid()
-        if self.droplet_geometry == "cylinder_x":
-            self.width_cylinder = parser.box_size_x(frame_index=1)
-        elif self.droplet_geometry == "cylinder_y":
-            self.width_cylinder = parser.box_size_y(frame_index=1)
+        if self.width_cylinder is None:
+            if self.droplet_geometry in ("cylinder_x", "cylinder_y"):
+                if self.droplet_geometry == "cylinder_x":
+                    self.width_cylinder = self.parser.box_size_x(frame_index=1)
+                elif self.droplet_geometry == "cylinder_y":
+                    self.width_cylinder = self.parser.box_size_y(frame_index=1)
         os.makedirs(self.output_dir, exist_ok=True)
         matplotlib.use("Agg")
 
@@ -81,9 +83,7 @@ class ContactAngleBinning:
         self.xi_cc = 0.5 * (self.xi[1:] + self.xi[:-1])
         self.zi_cc = 0.5 * (self.zi[1:] + self.zi[:-1])
 
-    def binning(
-        self, xi_par, zi_par, len_frames, droplet_geometry=None, width_cylinder=None
-    ):
+    def binning(self, xi_par, zi_par, len_frames):
         """Return 2D density field by binning particle coordinates.
 
         Parameters
@@ -104,28 +104,18 @@ class ContactAngleBinning:
         ndarray, shape (nbins_xi-1, nbins_zi-1)
             Averaged density field on cell centers.
         """
-        if droplet_geometry is None:
-            droplet_geometry = self.droplet_geometry
-        if width_cylinder is None:
-            if droplet_geometry in ("cylinder_x", "cylinder_y"):
-                if droplet_geometry == "cylinder_x":
-                    width_cylinder = parser.box_size_x(frame_index=frame_num)
-                elif droplet_geometry == "cylinder_y":
-                    width_cylinder = parser.box_size_y(frame_index=frame_num)
-            else:
-                width_cylinder = None
-        print(f"Binning with model: {droplet_geometry} ...")
+        print(f"Binning with model: {self.droplet_geometry} ...")
         rho_cc = np.zeros((len(self.xi_cc), len(self.zi_cc)))
         xi_par_0, zi_par_0 = copy.deepcopy(xi_par), copy.deepcopy(zi_par)
         for i in range(len(self.xi_cc)):
             if i % 10 == 0:
                 print(f"Advancement: {100 * i / (len(self.xi_cc) - 1):.2f}%")
-            if droplet_geometry in ("cylinder_x", "cylinder_y"):
-                dV = 2 * width_cylinder * self.dxi * self.dzi
-            elif droplet_geometry == "spherical":
+            if self.droplet_geometry in ("cylinder_x", "cylinder_y"):
+                dV = 2 * self.width_cylinder * self.dxi * self.dzi
+            elif self.droplet_geometry == "spherical":
                 dV = 2 * np.pi * (self.xi_cc[i]) * self.dxi * self.dzi
             else:
-                raise ValueError("Unknown model type: {}".format(droplet_geometry))
+                raise ValueError("Unknown model type: {}".format(self.droplet_geometry))
             for j in range(len(self.zi_cc)):
                 where = (
                     (xi_par_0 > self.xi[i])
