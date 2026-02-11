@@ -8,4 +8,4 @@ Learn about HydroAngleAnalyzer's theoretical foundations and package architectur
 
    Introduction
    Installation
-   Theoritical_foundations
+   Theoretical_foundations
