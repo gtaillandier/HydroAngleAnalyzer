@@ -23,10 +23,3 @@ Contents:
    tutorials/index
    examples/index
    API/index
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
