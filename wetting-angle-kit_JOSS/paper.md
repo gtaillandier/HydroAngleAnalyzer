@@ -73,7 +73,7 @@ By strictly adhering to this standardized structure, the ABC guarantees that dat
 
 ## The contact angle methods
 
-This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis).
+This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis)[Citation].
 
 ### Slicing method
 
