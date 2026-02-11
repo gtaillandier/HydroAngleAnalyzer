@@ -73,7 +73,7 @@ By strictly adhering to this standardized structure, the ABC guarantees that dat
 
 ## The contact angle methods
 
-This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis)[Citation].
+This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis) [@Scocchi2011].
 
 ### Slicing method
 
@@ -127,7 +127,7 @@ To validate the capabilities of wetting-angle-kit, molecular dynamics simulation
 
 Simulation Setup : To ensure geometric consistency and isolate the effect of droplet size, the substrate atoms were fixed (frozen) to create a rigid, atomically flat surface. This simplification minimizes thermal fluctuations of the substrate, which is a common approximation in nanoscale wetting studies.
 
-For each substrate, four independent simulations were performed with varying droplet sizes to assess size-dependence. The systems contained 500, 1000, 2000, and 6000 water molecules, respectively. Water interactions were modeled using the SPC/E potential [Citation], which has been identified in previous studies as highly suitable for wetting applications. Carbon-water interactions for the graphite surface were described using Lennard-Jones (LJ) potentials, while polymer interactions were derived from the OPLS-AA force field.
+For each substrate, four independent simulations were performed with varying droplet sizes to assess size-dependence. The systems contained 500, 1000, 2000, and 6000 water molecules, respectively. Water interactions were modeled using the SPC/E potential [@Roberts1999], which has been identified in previous studies as highly suitable for wetting applications. Carbon-water interactions for the graphite surface were described using Lennard-Jones (LJ) potentials, while polymer interactions were derived from the OPLS-AA force field.
 
 ##Theoretical Framework: Modified Young’s Equation
 
@@ -143,7 +143,7 @@ By plotting $\cos\theta$ against the inverse of the contact radius (or an equiva
 ![Mean cos angle vs surface for graphite](menscosnalge_vs_surface_graphite.pdf){width=50%}
 
 ![Mean cos angle vs surface for PTFE](menscosnalge_vs_surface_ptfe.pdf){width=50%}
-The analysis yielded a contact angle of 93° for the graphite surface. This result is consistent with literature values obtained using similar carbon-oxygen LJ parameters [Citation]. Similarly, the contact angles extracted for the PTFE surface (using OPLS-AA parameters) showed good agreement with expected interaction strengths. These results confirm the accuracy of the toolkit in reproducing standard wettability metrics.
+The analysis yielded a contact angle of 93° for the graphite surface. This result is consistent with literature values obtained using similar carbon-oxygen LJ parameters [@Jorgensen1996]. Similarly, the contact angles extracted for the PTFE surface (using OPLS-AA parameters) showed good agreement with expected interaction strengths. These results confirm the accuracy of the toolkit in reproducing standard wettability metrics.
 
 
 
