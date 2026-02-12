@@ -57,6 +57,8 @@ Wetting-angle-kit addresses this gap by providing a flexible, open-source framew
 
 The software architecture is organized into three interdependent modules: the Parser, the Contact Angle Analyzer, and the Visualization and Statistics module. The following sections outline the core principles of each component.
 
+![3D spherical droplet scheme](package_overviewDiagram.drawio.pdf){width=50%}
+
 ## The parser
 
 The Parser Module serves as the data collection layer of the package, designed to process MD trajectory files from various formats, including ASE-readable trajectories, LAMMPS dump files, and extended XYZ files.
@@ -78,9 +80,9 @@ This module provides two complementary computational approaches for estimating c
 ### Slicing method
 
 
-![3D spherical droplet scheme](wetting_angle_kit_3d_droplet.png){width=50%}
+![3D spherical droplet scheme](wetting_angle_kit_3d_droplet.pdf){width=50%}
 
-![Sliced droplet scheme](wetting_angle_kit.png){width=50%}
+![Sliced droplet scheme](wetting_angle_kit.pdf){width=50%}
 
 The Slicing Method performs a discrete, frame-by-frame analysis of the trajectory. By sampling radial slices from the droplet's geometric center, the algorithm fits circles to the liquid-vapor interface for each inclination. This technique allows for the precise determination of the contact angle at the intersection of the fitted circle and the substrate.
 
