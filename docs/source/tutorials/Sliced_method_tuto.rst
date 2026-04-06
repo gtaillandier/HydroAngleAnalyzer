@@ -61,7 +61,7 @@ Example trajectory::
        method="sliced",
        parser=parser,
        output_dir="result_dump_spherical_sliced",
-       liquid_indices=oxygen_indices,
+       atom_indices=oxygen_indices,
        droplet_geometry="spherical",  # Geometry fitting model
        delta_gamma=20,  # Smoothing parameter
    )
@@ -137,7 +137,7 @@ If plotting is enabled, a visualization of the droplet profile and the fitted sp
        method="sliced",
        parser=parser,
        output_dir="result_dump_spherical_sliced",
-       liquid_indices=oxygen_indices,
+       atom_indices=oxygen_indices,
        droplet_geometry="spherical",  # Fitting model
        delta_gamma=20,  # Smoothing parameter
    )

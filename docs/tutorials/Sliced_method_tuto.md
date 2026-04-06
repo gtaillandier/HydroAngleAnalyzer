@@ -55,7 +55,7 @@ analyzer = contact_angle_analyzer(
     method='sliced',
     parser=parser,
     output_dir='result_dump_spherical_sliced',
-    liquid_indices=oxygen_indices,
+    atom_indices=oxygen_indices,
     droplet_geometry='spherical',   # Geometry fitting model
     delta_gamma=20            # Smoothing parameter
 )
@@ -130,7 +130,7 @@ analyzer = contact_angle_analyzer(
     method='sliced',
     parser=parser,
     output_dir='result_dump_spherical_sliced',
-    liquid_indices=oxygen_indices,
+    atom_indices=oxygen_indices,
     droplet_geometry='spherical',  # Fitting model
     delta_gamma=20           # Smoothing parameter
 )

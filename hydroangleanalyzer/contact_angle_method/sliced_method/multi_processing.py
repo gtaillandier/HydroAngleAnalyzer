@@ -34,7 +34,7 @@ class ContactAngleSlicedParallel:
         Directory to write per-frame results.
     droplet_geometry : str, default "spherical"
         Geometric model identifier (e.g. "cylinder_x", "cylinder_y", "spherical").
-    liquid_indices : ndarray, optional
+    atom_indices : ndarray, optional
         Indices of liquid particles (subset). Empty array selects none.
     delta_gamma : float, optional
         Additional gamma constraint / filtering distance if used by sliced method.
@@ -47,7 +47,7 @@ class ContactAngleSlicedParallel:
         filename: str,
         output_repo: str,
         droplet_geometry: str = "spherical",
-        liquid_indices: Optional[np.ndarray] = None,
+        atom_indices: Optional[np.ndarray] = None,
         delta_gamma: float = None,
         delta_cylinder: float = None,
     ):
@@ -56,9 +56,7 @@ class ContactAngleSlicedParallel:
         self.delta_gamma = delta_gamma
         self.delta_cylinder = delta_cylinder
         self.droplet_geometry = droplet_geometry
-        self.liquid_indices = (
-            liquid_indices if liquid_indices is not None else np.array([])
-        )
+        self.atom_indices = atom_indices if atom_indices is not None else np.array([])
         os.makedirs(self.output_repo, exist_ok=True)
 
     def process_frames_parallel(
@@ -187,7 +185,7 @@ class ContactAngleSlicedParallel:
         for frame_num in batch_frames:
             try:
                 result = self._process_single_frame_with_parsers(
-                    frame_num, self.liquid_indices, parser
+                    frame_num, self.atom_indices, parser
                 )
                 batch_results.append(result)
             except Exception as e:  # pragma: no cover
@@ -196,7 +194,7 @@ class ContactAngleSlicedParallel:
         return batch_results
 
     def _process_single_frame_with_parsers(
-        self, frame_num: int, liquid_indices: np.ndarray, parser: BaseParser
+        self, frame_num: int, atom_indices: np.ndarray, parser: BaseParser
     ) -> Tuple[int, Optional[float]]:
         """Process a single frame and compute mean contact angle.
 
@@ -217,7 +215,7 @@ class ContactAngleSlicedParallel:
         try:
             liquid_positions = parser.parse(
                 frame_index=frame_num,
-                indices=liquid_indices,
+                indices=atom_indices,
             )
             max_dist = int(
                 np.max(

@@ -21,7 +21,7 @@ class ContactAngleBinning:
     def __init__(
         self,
         parser,
-        liquid_indices,
+        atom_indices,
         droplet_geometry="spherical",
         width_cylinder=None,
         binning_params=None,
@@ -29,7 +29,7 @@ class ContactAngleBinning:
         plot_graphs=True,
     ):
         self.parser = parser
-        self.liquid_indices = liquid_indices
+        self.atom_indices = atom_indices
         self.droplet_geometry = droplet_geometry
         self.width_cylinder = width_cylinder
         self.output_dir = output_dir
@@ -251,7 +251,7 @@ class ContactAngleBinning:
         xi_par, zi_par, len_frames = self.parser.get_profile_coordinates(
             frame_indices=frame_list,
             droplet_geometry=self.droplet_geometry,
-            atom_indices=self.liquid_indices,
+            atom_indices=self.atom_indices,
         )
         particles_number = len(xi_par) / max(len_frames, 1)
         print(
