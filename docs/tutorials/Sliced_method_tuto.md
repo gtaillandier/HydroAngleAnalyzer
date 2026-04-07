@@ -43,7 +43,7 @@ wat_find =     DumpWaterMoleculeFinder(
     hydrogen_type=2 )        # Hydrogen atom type
 
 # --- Step 3: Identify oxygen atom indices ---
-oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
 print("Number of water molecules:", len(oxygen_indices))
 
 # --- Step 4: Initialize the parser ---
@@ -73,8 +73,16 @@ print("Analysis results:", results)
 
 After running the example, you'll see something like:
 ````
-Number of water molecules: 423
-Analysis results: {'frame': 1, 'contact_angle': 104.7, 'fit_quality': 0.96}
+Number of water molecules: 4000
+2026-04-06 20:47:54,562 - INFO - Processing 1 frames in 1 batches with 4 workers
+2026-04-06 20:47:54,907 - INFO - Detected parser type: dump
+2026-04-06 20:47:55,137 - INFO - START processing frame 1
+2026-04-06 20:47:55,144 - INFO - Frame 1: Parsed 4000 liquid particles with max_dist 59
+2026-04-06 20:47:59,686 - INFO - Frame 1 - mean angle: 94.46°
+2026-04-06 20:47:59,687 - INFO - Completed batch 1/1 (1 frames)
+2026-04-06 20:47:59,807 - INFO - Successfully processed 1/1 frames
+Analysis results: {'mean_angle': 94.4618784164532, 'std_angle': 0.0, 'angles': {1: 94.4618784164532}, 'frames_analyzed': [1], 'method_metadata': {'frames_per_angle': 1}}
+
 ````
 
 If plotting is enabled, a visualization of the droplet profile and the fitted spherical interface is generated in `result_dump_spherical_sliced/`.
@@ -119,11 +127,11 @@ wat_find =     DumpWaterMoleculeFinder(
     hydrogen_type=2
 )
 
-oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
 print(f"Number of water molecules: {len(oxygen_indices)}")
 
 # --- Step 3: Initialize parser ---
-parser = DumpParser(filename, particle_type_wall={3})
+parser = DumpParser(filename)
 
 # --- Step 4: Create analyzer for the sliced method ---
 analyzer = contact_angle_analyzer(
@@ -131,8 +139,8 @@ analyzer = contact_angle_analyzer(
     parser=parser,
     output_dir='result_dump_spherical_sliced',
     atom_indices=oxygen_indices,
-    droplet_geometry='spherical',  # Fitting model
-    delta_gamma=20           # Smoothing parameter
+    droplet_geometry='spherical', 
+    delta_gamma=20          
 )
 
 # --- Step 5: Run analysis ---

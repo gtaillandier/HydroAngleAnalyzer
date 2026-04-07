@@ -34,36 +34,36 @@ def test_dump_parser_no_ovito(mock_import_file):
 
 # --- Test parse ---
 def test_parse(dump_parser):
-    frame_indexs = 0
-    positions = dump_parser.parse(frame_indexs)
+    frame_index = 0
+    positions = dump_parser.parse(frame_index)
     assert isinstance(positions, np.ndarray)
     assert positions.shape[1] == 3  # x, y, z coordinates
 
     # Test with specific indices
     indices = np.array([1, 2])
-    positions_subset = dump_parser.parse(frame_indexs, indices)
+    positions_subset = dump_parser.parse(frame_index, indices)
     assert positions_subset.shape[0] <= positions.shape[0]
 
 
 # --- Test box_size_x and box_size_y ---
 def test_box_size_x(dump_parser):
-    frame_indexs = 0
-    box_size_x = dump_parser.box_size_x(frame_indexs)
+    frame_index = 0
+    box_size_x = dump_parser.box_size_x(frame_index)
     assert isinstance(box_size_x, float)
     assert box_size_x > 0
 
 
 def test_box_size_y(dump_parser):
-    frame_indexs = 0
-    box_size_y = dump_parser.box_size_y(frame_indexs)
+    frame_index = 0
+    box_size_y = dump_parser.box_size_y(frame_index)
     assert isinstance(box_size_y, float)
     assert box_size_y > 0
 
 
 # --- Test box_length_max ---
 def test_box_length_max(dump_parser):
-    frame_indexs = 0
-    max_length = dump_parser.box_length_max(frame_indexs)
+    frame_index = 0
+    max_length = dump_parser.box_length_max(frame_index)
     assert isinstance(max_length, float)
     assert max_length > 0
 

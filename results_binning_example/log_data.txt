@@ -1,0 +1,15 @@
+Simulation parameters:
+reduced_particles_number:4000.0
+model_type:cylinder_y
+width_cylinder:21
+Fitted parameters:
+rho1:-2.3781271243725324e-05
+rho2:0.03399319772786516
+R_eq:54.591307969995604
+zi_c:15.207556565450814
+zi_0:6.347066999160663
+t1:-6.114639675484825
+t2:0.7690177673409699
+
+
+Contact angle:99.34076240144502

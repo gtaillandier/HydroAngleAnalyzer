@@ -32,23 +32,23 @@ def test_load_xyz_file(xyz_parser):
 
 # --- Test parse ---
 def test_parse(xyz_parser):
-    frame_indexs = 0
-    positions = xyz_parser.parse(frame_indexs)
+    frame_index = 0
+    positions = xyz_parser.parse(frame_index)
     assert isinstance(positions, np.ndarray)
     assert positions.shape[1] == 3  # x, y, z coordinates
 
     # Test with specific indices
     indices = [0, 1, 2]
-    positions_subset = xyz_parser.parse(frame_indexs, indices)
+    positions_subset = xyz_parser.parse(frame_index, indices)
     assert positions_subset.shape[0] == len(indices)
 
 
 # --- Test parse_liquid_particles ---
 def test_parse_liquid_particles(xyz_parser):
-    frame_indexs = 0
+    frame_index = 0
     particle_type_liquid = ["O", "H"]
     liquid_positions = xyz_parser.parse_liquid_particles(
-        particle_type_liquid, frame_indexs
+        particle_type_liquid, frame_index
     )
     assert isinstance(liquid_positions, np.ndarray)
     assert liquid_positions.shape[1] == 3  # x, y, z coordinates
@@ -74,23 +74,23 @@ def test_get_cylindrical_coordinates(xyz_parser):
 
 # --- Test box_length_max ---
 def test_box_length_max(xyz_parser):
-    frame_indexs = 0
-    max_length = xyz_parser.box_length_max(frame_indexs)
+    frame_index = 0
+    max_length = xyz_parser.box_length_max(frame_index)
     assert isinstance(max_length, float)
     assert max_length > 0
 
 
 # --- Test box_size_x and box_size_y ---
 def test_box_size_x(xyz_parser):
-    frame_indexs = 0
-    box_size_x = xyz_parser.box_size_x(frame_indexs)
+    frame_index = 0
+    box_size_x = xyz_parser.box_size_x(frame_index)
     assert isinstance(box_size_x, float)
     assert box_size_x > 0
 
 
 def test_box_size_y(xyz_parser):
-    frame_indexs = 0
-    box_size_y = xyz_parser.box_size_y(frame_indexs)
+    frame_index = 0
+    box_size_y = xyz_parser.box_size_y(frame_index)
     assert isinstance(box_size_y, float)
     assert box_size_y > 0
 

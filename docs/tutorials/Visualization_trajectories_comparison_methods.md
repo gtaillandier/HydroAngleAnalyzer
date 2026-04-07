@@ -43,10 +43,10 @@ Specify the directories containing your trajectory data:
 
 ```python
 directories = [
-    "sliced_analysis_CA/result_dump_traj_2k_reduce_binned",
-    "sliced_analysis_CA/result_dump_traj_500_reduce_binned",
-    "sliced_analysis_CA/result_dump_traj_1k_reduce_binned",
-    "sliced_analysis_CA/result_dump_traj_8k_reduce_binned",
+    "sliced_analysis_CA/result_dump_traj_500_binned",
+    "sliced_analysis_CA/result_dump_traj_1k_binned",
+    "sliced_analysis_CA/result_dump_traj_2k_binned",
+    "sliced_analysis_CA/result_dump_traj_4k_binned",
 ]
 
 # Initialize the analyzers

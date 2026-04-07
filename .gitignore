@@ -6,5 +6,5 @@ __pycache__/
 *.egg-info/
 
 docs/_build/
-.agent
 .git
+.ruff_cache

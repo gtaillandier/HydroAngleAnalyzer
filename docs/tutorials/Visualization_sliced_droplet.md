@@ -17,6 +17,9 @@ The visualization workflow involves the following steps:
 
 ## 2. Import Required Modules
 ```python
+import matplotlib
+matplotlib.use('Agg')  # Required to prevent Qt conflicts with Ovito
+
 import numpy as np
 from hydroangleanalyzer.parser import (
     DumpParser,
@@ -24,7 +27,7 @@ from hydroangleanalyzer.parser import (
     DumpWallParser,
 )
 from hydroangleanalyzer.contact_angle_method.sliced_method import ContactAngleSliced
-from hydroangleanalyzer.visualization_statistics_angles import Droplet_sliced_Plotter
+from hydroangleanalyzer.visualization_angles import DropletSlicedPlotter
 ```
 
 ---
@@ -44,7 +47,7 @@ wat_find = DumpWaterMoleculeFinder(
     filename, particle_type_wall={3}, oxygen_type=1, hydrogen_type=2
 )
 
-oxygen_indices = wat_find.get_water_oxygen_ids(frame_indexs=0)
+oxygen_indices = wat_find.get_water_oxygen_ids(frame_index=0)
 print("Number of water molecules detected:", len(oxygen_indices))
 ```
 
@@ -53,10 +56,10 @@ print("Number of water molecules detected:", len(oxygen_indices))
 ## 5. Parse Atomic Coordinates
 ```python
 parser = DumpParser(filepath=filename)
-oxygen_position = parser.parse(frame_indexs=10, indices=oxygen_indices)
+oxygen_position = parser.parse(frame_index=10, indices=oxygen_indices)
 
-coord_wall = DumpWallParser(filename, particule_liquid_type={1, 2})
-wall_coords = coord_wall.parse(frame_indexs=1)
+coord_wall = DumpWallParser(filename, liquid_particle_types=[1, 2])
+wall_coords = coord_wall.parse(frame_index=1)
 ```
 
 ---
@@ -80,7 +83,7 @@ print("Mean contact angles (°):", list_alfas)
 
 ## 7. Visualize the Droplet
 ```python
-plotter = Droplet_sliced_Plotter(center=True, show_wall=True, molecule_view=True)
+plotter = DropletSlicedPlotter(center=True, show_wall=True, molecule_view=True)
 
 plotter.plot_surface_points(
     oxygen_position=oxygen_position,

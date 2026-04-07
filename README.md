@@ -48,12 +48,12 @@ conda install --strict-channel-priority -c https://conda.ovito.org -c conda-forg
 
 ```python
 from hydroangleanalyzer import (
-    DumpParser, SlicedContactAngleAnalyzer, BinningContactAngleAnalyzer,
+    XYZParser, SlicedContactAngleAnalyzer, BinningContactAngleAnalyzer,
     detect_parser_type, contact_angle_analyzer
 )
 
-trajectory_file = "trajectory.lammpstrj"
-parser = DumpParser(trajectory_file)
+trajectory_file = "trajectory.xyz"
+parser = XYZParser(trajectory_file)
 
 sliced = SlicedContactAngleAnalyzer(parser, output_repo="out_sliced", atom_indices=oxygen_ids, droplet_geometry="spherical", delta_gamma=5)
 results = sliced.analyze(frame_range=range(0, 50))
