@@ -18,7 +18,8 @@ The visualization workflow involves the following steps:
 ## 2. Import Required Modules
 ```python
 import matplotlib
-matplotlib.use('Agg')  # Required to prevent Qt conflicts with Ovito
+
+matplotlib.use("Agg")  # Required to prevent Qt conflicts with Ovito
 
 import numpy as np
 from hydroangleanalyzer.parser import (

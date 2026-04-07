@@ -139,8 +139,8 @@ analyzer = contact_angle_analyzer(
     parser=parser,
     output_dir='result_dump_spherical_sliced',
     atom_indices=oxygen_indices,
-    droplet_geometry='spherical', 
-    delta_gamma=20          
+    droplet_geometry='spherical',
+    delta_gamma=20
 )
 
 # --- Step 5: Run analysis ---
