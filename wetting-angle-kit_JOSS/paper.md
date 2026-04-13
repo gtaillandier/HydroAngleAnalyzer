@@ -43,7 +43,7 @@ bibliography: paper.bib
 
 # Summary
 
-Wetting-angle-kit is a Python toolkit designed to extract wettability properties, specifically the contact angle of a droplet on a surface, from molecular dynamics (MD) simulations.
+Wetting-angle-kit is a Python toolkit designed to extract wettability properties, specifically the contact angle of a droplet on a surface, from molecular dynamics (MD) simulations. The software is intended for researchers working in molecular simulation of liquids on top of solid surfaces.
 
 It supports a variety of standard file formats including extended XYZ, LAMMPS, and ASE-readable trajectories and offers two distinct computational methods for contact angle analysis. Furthermore, the package includes robust utilities for statistical post-processing and data visualization, providing a comprehensive workflow for wettability studies.
 
@@ -51,87 +51,37 @@ It supports a variety of standard file formats including extended XYZ, LAMMPS, a
 
 The measurement of contact angles in molecular dynamics simulations has advanced significantly since early methodologies were proposed in 1997, with notable developments occurring in 2012, 2016, and 2024 [1-4]. Despite these advancements, the field currently lacks a standardized, unified platform for comparing and validating the diverse methods used to derive contact angles. This fragmentation poses challenges to reproducibility and collaborative research.
 
-Wetting-angle-kit addresses this gap by providing a flexible, open-source framework. It allows researchers to implement new post process of the MD simulation of contact angle, benchmark them against established techniques, and establish a consistent baseline for wettability analysis in molecular dynamics.
+Wetting-angle-kit addresses this gap by providing a flexible, open-source framework. It allows researchers to implement new post-processing of the MD simulation of contact angle, benchmark them against established techniques, and establish a consistent baseline for wettability analysis in molecular dynamics.
 
-# Software Description, Features, and Computational Workflow
+# State of the field
 
-The software architecture is organized into three interdependent modules: the Parser, the Contact Angle Analyzer, and the Visualization and Statistics module. The following sections outline the core principles of each component.
+General-purpose molecular simulation post-process analysis tools, such as MDAnalysis and MDsuite, provide flexible frameworks for analyzing and visualizing trajectories. However, they do not include a standardized implementation of contact angle extraction methods, which are typically developed as custom scripts tailored to specific systems.
+
+Existing approaches to estimating the contact angle vary significantly, ranging from geometric fitting techniques to density-based methods, and often offer limited interoperability and comparability. Wetting-angle-kit complements existing tools by focusing specifically on wettability analysis and providing a consistent environment for comparing multiple methods. This design promotes reproducibility and facilitates the development and/or implementation of other methods.
+
+# Software design
+
+Wetting-angle-kit is organized into three main components: parsing, analysis, and visualization. This modular design separates data handling, analysis, and visualization, allowing each component to evolve independently and simplifying the integration of new features.
 
 ![3D spherical droplet scheme](package_overviewDiagram.drawio.pdf){width=50%}
 
-## The parser
 
-The Parser Module serves as the data collection layer of the package, designed to process MD trajectory files from various formats, including ASE-readable trajectories, LAMMPS dump files, and extended XYZ files.
+The parser module provides a unified interface for reading trajectory data from multiple formats, ensuring consistent handling of atomic coordinates, simulation boxes, and frame information. This abstraction ensures that analyses are independent of the input format, enabling consistent workflows across different simulation engines.
 
-Central to this module is the BaseParser abstract base class (ABC), which enforces a uniform interface for all file handlers. This architecture ensures the consistent extraction of critical simulation data, including:
+This consistency facilitates seamless integration with downstream analysis methods and ensures the system's scalability, enabling researchers to easily incorporate support for additional file formats or simulation engines.
 
-Atomic coordinates for selected species.
-
-Frame indices and counts.
-
-Simulation box dimensions (periodic boundary conditions).
-
-By strictly adhering to this standardized structure, the ABC guarantees that data is normalized across different input formats. This consistency facilitates seamless integration with downstream analysis methods and ensures extensibility, allowing researchers to easily incorporate support for additional file formats or simulation engines.
-
-## The contact angle methods
-
-This module provides two complementary computational approaches for estimating contact angles, both inheriting from the BaseContactAngleAnalyzer abstract base class. This design ensures that both methods adhere to a standardized interface while addressing different analytical needs.All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis) [@Scocchi2011].
-
-### Slicing method
-
+The analysis module implements two complementary approaches for contact angle estimation. The slicing method performs frame-by-frame geometric analysis, enabling detailed temporal resolution at the cost of higher computational expense. In contrast, the binning method constructs time-averaged density fields, providing a computationally efficient approach suitable for large datasets and symmetric systems. Supporting both methods allows users to balance accuracy and performance depending on their application. All methods must support the two main geometric models: **spherical** (for spherical cap droplets) and **cylindrical** (for filament-like droplets, analyzed along a specific axis) [@Scocchi2011].
 
 ![3D spherical droplet scheme](wetting_angle_kit_3d_droplet.pdf){width=50%}
 
 ![Sliced droplet scheme](wetting_angle_kit.pdf){width=50%}
 
-The Slicing Method performs a discrete, frame-by-frame analysis of the trajectory. By sampling radial slices from the droplet's geometric center, the algorithm fits circles to the liquid-vapor interface for each inclination. This technique allows for the precise determination of the contact angle at the intersection of the fitted circle and the substrate.
+The software architecture relies on abstract base classes to enforce consistent interfaces and facilitate extensibility. This design enables users to implement new analysis methods while maintaining compatibility with existing workflows, promoting reuse and method comparison.
 
-The Slicing Method is particularly advantageous for analyzing temporal evolution in long trajectories, enabling users to identify when a droplet reaches an equilibrium regime. While it offers high information for complex trajectory files, it is computationally intensive.
-
-### Binning method
-
-The Binning Method utilizes a global averaging approach. It aggregates particle coordinates across multiple frames into a 2D spatial grid, generating a time-averaged density field. This density field is fitted with a hyperbolic tangent model to describe the liquid-vapor interface, from which the contact angle is derived.
-
-This method is computationally efficient and ideal for symmetric droplets or scenarios where a global, averaged representation is preferred. It excels at handling large datasets by reducing the dimensionality of the problem, though it requires a sufficient sample size to generate smooth density profiles.
-
-### Comparison
-
-Together, these approaches offer a versatile toolkit:
-
-SlicedContactAngleAnalyzer: Best for high-precision, temporal analysis of complex geometries.
-
-BinnedContactAngleAnalyzer: Best for rapid, computationally efficient analysis of symmetric systems and large datasets.
-
-## The visualization modules
-
-The Visualization and Statistics module is designed to facilitate the interpretation of simulation results. Built upon the BaseTrajectoryAnalyzer ABC, this module defines standard methods for computing statistics, extracting surface areas of the droplets, and generating visual outputs.
-Derived classes, such as BinningTrajectoryAnalyzer and SlicedTrajectoryAnalyzer, implement specific logic for their respective methods. Key visualization features include:  Static and Interactive Plotting: Classes such as DropletSlicedPlotter and DropletSlicedPlotterPlotly generate plots of droplet slices, visualizing surface contours, tangent lines, and fitted circles.
-
-Animation: The ContactAngleAnimator class creates interactive animations of the contact angle evolution, offering a dynamic view of droplet behavior throughout the simulation.
-
-Method Comparison: The MethodComparison utility allows users to overlay and juxtapose statistical results from different analyzers, essential for validating new methods against established baselines.
+Visualization tools are included to support interpretation and validation of analysis results without requiring external post-processing tools.
 
 
-
-The BaseTrajectoryAnalyzer abstract base class serves as the foundation for trajectory analysis, defining methods for computing statistics, generating visualizations, and extracting contact angles and surface areas. Derived classes, such as BinningTrajectoryAnalyzer and SlicedTrajectoryAnalyzer, implement these methods for specific analysis techniques.
-
-For visualization, the module includes classes like DropletSlicedPlotter and DropletSlicedPlotterPlotly, which generate static and interactive plots of droplet slices, respectively. These tools allow users to visualize surface contours, fitted circles, and tangent lines, enhancing the interpretability of contact angle measurements. Additionally, the ContactAngleAnimator class generates interactive animations of  contact angles per frame, providing a dynamic view of droplet behavior over the simulation timeline.
-
-The MethodComparison utility enables comparative analysis across multiple trajectory analyzers, offering functions to overlay and juxtapose statistical results. This feature is particularly useful for validating results across different methods or simulation setups.
-
-Overall, the visualization and statistics module add tools to analyze, visualize, and compare contact angle data, fostering a deeper understanding of wettability phenomena in MD simulations.
-
-
-
-# Examples and Applications
-
-To validate the capabilities of wetting-angle-kit, molecular dynamics simulations were conducted using LAMMPS. The study focused on the wetting behavior of water droplets on two distinct substrates: a multi-layer graphene sheet (representing graphite) and a crystalline polymer surface (approximating PTFE).
-
-Simulation Setup : To ensure geometric consistency and isolate the effect of droplet size, the substrate atoms were fixed (frozen) to create a rigid, atomically flat surface. This simplification minimizes thermal fluctuations of the substrate, which is a common approximation in nanoscale wetting studies.
-
-For each substrate, four independent simulations were performed with varying droplet sizes to assess size-dependence. The systems contained 500, 1000, 2000, and 6000 water molecules, respectively. Water interactions were modeled using the SPC/E potential [@Roberts1999], which has been identified in previous studies as highly suitable for wetting applications. Carbon-water interactions for the graphite surface were described using Lennard-Jones (LJ) potentials, while polymer interactions were derived from the OPLS-AA force field.
-
-##Theoretical Framework: Modified Young’s Equation
+# Theoretical framework: Modified Young’s Equation
 
 To extract the macroscopic contact angle from nanoscale measurements, the relationship between the measured contact angle ($\theta$) and the droplet size is analyzed using the Modified Young’s Equation. This relationship accounts for line tension effects, which are significant at the nanoscale. The equation is linearized to facilitate extrapolation:
 
@@ -141,13 +91,19 @@ $$\cos\theta = \cos\theta_\infty - \frac{\tau}{\gamma_{LV}} \cdot \frac{1}{r_B}$
 
 By plotting $\cos\theta$ against the inverse of the contact radius (or an equivalent geometric parameter derived from contact area $A$), the data yields a linear trend. The slope of this line corresponds to the influence of line tension ($\tau$) and surface tension ($\gamma_{LV}$), while the intercept provides the contact angle of an infinite droplet ($\cos\theta_\infty$). This regression allows for the extrapolation of fundamental wettability properties from finite-sized nanodroplets.
 
-##Validation Results
+# Research impact statement
+
+Wetting-angle-kit provides a reproducible framework for contact angle analysis in molecular simulations, addressing a common need in studies of nanoscale wetting. The package has been validated using MD simulations of water droplets on graphene and polymer substrates, yielding contact angle values consistent with literature results (e.g., ~93° for graphene, ~110° for PTFE). This result is consistent with literature values obtained using similar carbon-oxygen LJ parameters [@Jorgensen1996]. 
+
 ![Mean cos angle vs surface for graphite](menscosnalge_vs_surface_graphite.pdf){width=50%}
 
 ![Mean cos angle vs surface for PTFE](menscosnalge_vs_surface_ptfe.pdf){width=50%}
-The analysis yielded a contact angle of 93° for the graphite surface. This result is consistent with literature values obtained using similar carbon-oxygen LJ parameters [@Jorgensen1996]. Similarly, the contact angles extracted for the PTFE surface (using OPLS-AA parameters) showed good agreement with expected interaction strengths. These results confirm the accuracy of the toolkit in reproducing standard wettability metrics.
+
+By enabling systematic comparison of analysis methods and providing standardized workflows, the software supports more robust and reproducible wettability studies. Its modular design also facilitates integration into existing simulation pipelines and encourages community-driven extensions. The package is expected to be particularly useful for researchers using various types of force fields (classical and MLIPs) or investigating nanoscale interfacial phenomena.
 
 
+# AI usage  disclosure
+Generative AI tools were used in the development of the software, for drafting and assist debugging. Generative AI was used to assist in refining the language, traduction and clarity of the manuscript.
 
 # Acknowledgements
 
