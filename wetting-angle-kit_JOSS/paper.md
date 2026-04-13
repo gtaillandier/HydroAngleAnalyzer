@@ -93,7 +93,7 @@ By plotting $\cos\theta$ against the inverse of the contact radius (or an equiva
 
 # Research impact statement
 
-Wetting-angle-kit provides a reproducible framework for contact angle analysis in molecular simulations, addressing a common need in studies of nanoscale wetting. The package has been validated using MD simulations of water droplets on graphene and polymer substrates, yielding contact angle values consistent with literature results (e.g., ~93° for graphene, ~110° for PTFE). This result is consistent with literature values obtained using similar carbon-oxygen LJ parameters [@Jorgensen1996]. 
+Wetting-angle-kit provides a reproducible framework for contact angle analysis in molecular simulations, addressing a common need in studies of nanoscale wetting. The package has been validated using MD simulations of water droplets on graphene and polymer substrates, yielding contact angle values consistent with literature results (e.g., ~93° for graphene, ~110° for PTFE). This result is consistent with literature values obtained using similar carbon-oxygen LJ parameters [@Jorgensen1996].
 
 ![Mean cos angle vs surface for graphite](menscosnalge_vs_surface_graphite.pdf){width=50%}
 
